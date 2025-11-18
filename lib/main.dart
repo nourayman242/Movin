@@ -11,7 +11,6 @@ import 'package:movin/presentation/splash_screen/screens/splash.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   setUpServiceLocator();
-
   runApp(const Movin());
 }
 

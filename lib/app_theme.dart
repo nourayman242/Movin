@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LogoKeys {
-  static const String logoKey = 'assets/images/logo.jpeg';
+  static const String logoKey = 'assets/images/logo.png';
 }
 
 // APP COLORS

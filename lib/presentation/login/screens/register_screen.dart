@@ -33,7 +33,7 @@ class _RegisterScareenState extends State<RegisterScareen> {
             key: _formKey,
             child: ListView(
               children: [
-                AppWidgets.logo(LogoKeys.logoKey, size: 200),
+                AppWidgets.logo(LogoKeys.logoKey, size: 250),
                 AppWidgets.heading('Welcome to Movin'),
                 AppWidgets.subtitle(
                   'Your journey to the perfect property starts here',

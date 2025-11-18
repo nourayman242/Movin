@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:movin/data/api_services/login_services.dart';
 import 'package:movin/data/api_services/register_services.dart';
 
 @module
@@ -25,4 +26,7 @@ abstract class NetworkServices {
   RegisterServices registerServices(Dio dio) {
     return RegisterServices(dio);
   }
+   @lazySingleton
+  LoginServices loginServices(Dio dio) =>
+      LoginServices(dio);
 }
