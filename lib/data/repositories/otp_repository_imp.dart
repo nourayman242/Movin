@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:movin/data/api_services/otp_services.dart';
-import 'package:movin/data/models/otp_dto.dart';
 import 'package:movin/domain/entities/otp_entity.dart';
 import 'package:movin/domain/repositories/otp_repository.dart';
+import '../../data/models/otp_dto.dart';
 
 @LazySingleton(as: OtpRepository)
 class OtpRepositoryImpl implements OtpRepository {
@@ -19,10 +19,8 @@ class OtpRepositoryImpl implements OtpRepository {
     final entity = OtpEntity(email: email, otp: otp);
     final dto = OtpDto.fromEntity(entity);
 
-    print("Verify OTP DTO: ${dto.toJson()}");
-
     try {
-      await api.verifyOtp(dto);
+      await api.verifyOtp(dto); // Calls POST /api/auth/verify-otp
       return;
     } on DioError catch (e) {
       final msg = e.response?.data?['message'] ?? e.message;

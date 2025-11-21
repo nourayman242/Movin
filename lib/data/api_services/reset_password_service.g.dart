@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'otp_services.dart';
+part of 'reset_password_service.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'otp_services.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
 
-class _OtpServices implements OtpServices {
-  _OtpServices(
+class _ResetPasswordService implements ResetPasswordService {
+  _ResetPasswordService(
     this._dio, {
     this.baseUrl,
     this.errorLogger,
@@ -22,7 +22,7 @@ class _OtpServices implements OtpServices {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<void> verifyOtp(OtpDto dto) async {
+  Future<void> resetPassword(ResetPasswordDto dto) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -35,7 +35,7 @@ class _OtpServices implements OtpServices {
     )
         .compose(
           _dio.options,
-          '/api/auth/verify-otp',
+          '/api/auth/reset-password',
           queryParameters: queryParameters,
           data: _data,
         )

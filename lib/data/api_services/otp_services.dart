@@ -1,7 +1,6 @@
-import 'package:dio/dio.dart';
-import 'package:movin/data/api_services/otp_response.dart';
-import 'package:movin/data/models/otp_dto.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:dio/dio.dart';
+import '../models/otp_dto.dart';
 
 part 'otp_services.g.dart';
 
@@ -9,7 +8,6 @@ part 'otp_services.g.dart';
 abstract class OtpServices {
   factory OtpServices(Dio dio, {String baseUrl}) = _OtpServices;
 
-  // POST /api/auth/verify-otp
-  @POST('/api/auth/verify-otp')
-  Future<OtpResponse> verifyOtp(@Body() OtpDto dto);
+  @POST("/api/auth/verify-otp")
+  Future<void> verifyOtp(@Body() OtpDto dto);
 }
