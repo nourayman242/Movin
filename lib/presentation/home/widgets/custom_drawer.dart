@@ -49,6 +49,12 @@ class CustomDrawer extends StatelessWidget {
                           _navigateTo(context, const ViewHistoryPage()),
                     ),
                     DrawerItem(
+                      icon: Icons.calculate_outlined,
+                      text: 'Budget Calculator',
+                      color: AppColors.navyLight,
+                      onTap: () {},
+                    ),
+                    DrawerItem(
                       icon: Icons.star_outline,
                       text: 'Rate Properties',
                       iconColor: Colors.amber,
