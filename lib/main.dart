@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
+import 'package:movin/presentation/home/screens/Property_detials/screens/property_detials.dart';
 import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
 import 'package:movin/presentation/home/screens/seller_home.dart';
 import 'package:movin/presentation/login/screens/forgot_password_page.dart';
