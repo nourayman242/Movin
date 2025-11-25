@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movin/presentation/login/cubit/otp_cubit.dart';
+import 'package:movin/presentation/login/cubit/otp_state.dart';
 import '../../../app_theme.dart';
 import 'reset_password_page.dart';
 
@@ -24,6 +27,8 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
       _focusNodes[index - 1].requestFocus();
     }
   }
+
+  String get _otp => _otpControllers.map((c) => c.text).join().trim();
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +57,6 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
               textAlign: TextAlign.center,
             ),
             AppWidgets.verticalSpace(40),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(6, (index) {
@@ -92,32 +96,52 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                 );
               }),
             ),
-
             AppWidgets.verticalSpace(50),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                style: AppButtons.primary,
-                onPressed: () {
-                  String otp = _otpControllers.map((c) => c.text).join().trim();
-                  if (otp.length == 6) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ResetPasswordPage(),
-                      ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Please enter all 6 digits"),
-                      ),
-                    );
-                  }
-                },
-                child: const Text("Verify"),
-              ),
+            BlocConsumer<OtpCubit, OtpState>(
+              listener: (context, state) {
+                if (state is OtpSuccess) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.message)));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ResetPasswordPage(email: '',),
+                    ),
+                  );
+                } else if (state is OtpFailure) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.message)));
+                }
+              },
+              builder: (context, state) {
+                if (state is OtpLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: AppButtons.primary,
+                    onPressed: () {
+                      if (_otp.length == 6) {
+                        context.read<OtpCubit>().verifyOtp(
+                          email: widget.email,
+                          otp: _otp,
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Please enter all 6 digits"),
+                          ),
+                        );
+                      }
+                    },
+                    child: const Text("Verify OTP"),
+                  ),
+                );
+              },
             ),
           ],
         ),
