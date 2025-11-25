@@ -40,7 +40,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       Center(
                         child: AppWidgets.logo(
                           LogoKeys.logoKey,
-                          size: screenHeight * 0.18,
+                          size: screenHeight * 0.20,
                         ),
                       ),
 

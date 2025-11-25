@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/presentation/home/screens/Property_detials/screens/property_detials.dart';
 import 'package:movin/presentation/home/widgets/categoty_screen.dart';
 import 'package:movin/presentation/home/widgets/custom_drawer.dart';
 import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
@@ -166,6 +167,15 @@ class _BuyerHomeState extends State<BuyerHome> {
                 ],
               ),
             ),
+          ),
+          TextButton( // remove this button, only do for check the PropertyDetailsScreen
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => PropertyDetailsScreen()),
+              );
+            },
+            child: Text('PropertyDetails'),
           ),
         ],
       ),

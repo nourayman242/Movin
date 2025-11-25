@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
+import 'package:movin/presentation/home/managers/mode_service.dart';
 
 class RoleSelection extends StatefulWidget {
   const RoleSelection({super.key});
@@ -21,12 +22,19 @@ class _RoleSelectionState extends State<RoleSelection> {
       return;
     }
     await SharedHelper.setUserRole(_selectedRole!);
-    if (!mounted) return;
-    if (_selectedRole == 'buyer') {
-      Navigator.pushReplacementNamed(context, '/buyerhome');
-    } else if (_selectedRole == 'seller') {
-      Navigator.pushReplacementNamed(context, '/sellerhome');
-    }
+    // if (!mounted) return;
+    // if (_selectedRole == 'buyer') {
+    //   Navigator.pushReplacementNamed(context, '/buyerhome');
+    // } else if (_selectedRole == 'seller') {
+    //   Navigator.pushReplacementNamed(context, '/sellerhome');
+    // }
+    // 🔥 IMPORTANT: update global notifier so HomePage rebuilds
+  ModeService.isSellerNotifier.value = _selectedRole == 'seller';
+
+  if (!mounted) return;
+
+  // Navigate to home (only once)
+  Navigator.pushReplacementNamed(context, '/home');
   }
 
   // role card ui widget

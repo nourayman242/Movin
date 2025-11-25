@@ -61,4 +61,10 @@ class SharedHelper {
     await prefs.remove(_isLoggedInKey);
     await prefs.remove(_userRoleKey);
   }
+  // saved token after login
+  static Future<void> saveToken(String token) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('token', token);
+}
+
 }
