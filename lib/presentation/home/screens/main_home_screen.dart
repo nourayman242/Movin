@@ -14,7 +14,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   int _index = 0;
 
   final List pages = [
-    const HomeScreen(),
+    const HomePage(),
     const ForSaleScreen(),
     const ForSaleScreen(), //ForRentScreen(),
     const ForSaleScreen(), //CommericalScreen(),

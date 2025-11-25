@@ -5,6 +5,8 @@ class SellerHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text("seller home screen ");
+    return Scaffold(
+      
+    );
   }
 }

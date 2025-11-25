@@ -99,38 +99,38 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       Navigator.pushReplacementNamed(context, '/role');
-                      //   final email = userValue.text.trim();
-                      //   final password = passValue.text.trim();
+                        // final email = userValue.text.trim();
+                        // final password = passValue.text.trim();
 
-                      //   final entity = LoginEntity(
-                      //     email: email,
-                      //     password: password,
-                      //   );
+                        // final entity = LoginEntity(
+                        //   email: email,
+                        //   password: password,
+                        // );
 
-                      //   try {
-                      //     final response = await repo.loginUser(entity);
+                        // try {
+                        //   final response = await repo.loginUser(entity);
 
-                      //     await SharedHelper.saveToken(response.token);
-                      //     await SharedHelper.setLoggedIn(true);
+                        //   await SharedHelper.saveToken(response.token);
+                        //   await SharedHelper.setLoggedIn(true);
 
-                      //     if (!context.mounted) return;
+                        //   if (!context.mounted) return;
 
-                      //     Navigator.pushReplacementNamed(context, '/role').then((
-                      //       _,
-                      //     ) {
-                      //       userValue.clear();
-                      //       passValue.clear();
-                      //     });
-                      //   } catch (e) {
-                      //     if (!context.mounted) return;
+                        //   Navigator.pushReplacementNamed(context, '/role').then((
+                        //     _,
+                        //   ) {
+                        //     userValue.clear();
+                        //     passValue.clear();
+                        //   });
+                        // } catch (e) {
+                        //   if (!context.mounted) return;
 
-                      //     ScaffoldMessenger.of(context).showSnackBar(
-                      //       SnackBar(
+                        //   ScaffoldMessenger.of(context).showSnackBar(
+                        //     SnackBar(
 
-                      //         content: Text(e.toString()),
-                      //       ),
-                      //     );
-                      //   }
+                        //       content: Text(e.toString()),
+                        //     ),
+                        //   );
+                        // }
                     }
                   },
                   child: const Text(
