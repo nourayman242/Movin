@@ -168,7 +168,7 @@ class _BuyerHomeState extends State<BuyerHome> {
               ),
             ),
           ),
-          TextButton(
+          TextButton( // remove this button, only do for check the PropertyDetailsScreen
             onPressed: () {
               Navigator.push(
                 context,
