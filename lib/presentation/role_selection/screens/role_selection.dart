@@ -22,19 +22,11 @@ class _RoleSelectionState extends State<RoleSelection> {
       return;
     }
     await SharedHelper.setUserRole(_selectedRole!);
-    // if (!mounted) return;
-    // if (_selectedRole == 'buyer') {
-    //   Navigator.pushReplacementNamed(context, '/buyerhome');
-    // } else if (_selectedRole == 'seller') {
-    //   Navigator.pushReplacementNamed(context, '/sellerhome');
-    // }
-    // 🔥 IMPORTANT: update global notifier so HomePage rebuilds
-  ModeService.isSellerNotifier.value = _selectedRole == 'seller';
+    ModeService.isSellerNotifier.value = _selectedRole == 'seller';
 
-  if (!mounted) return;
+    if (!mounted) return;
 
-  // Navigate to home (only once)
-  Navigator.pushReplacementNamed(context, '/home');
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   // role card ui widget
