@@ -4,19 +4,14 @@ import 'package:movin/presentation/home/managers/mode_service.dart';
 class ModeToggleStatement extends StatelessWidget {
   const ModeToggleStatement({super.key});
 
-  void _toggleMode(BuildContext context) async {
-    await ModeService.toggleMode();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          ModeService.isSellerNotifier.value
-              ? 'Switched to Seller mode'
-              : 'Switched to Buyer mode',
-        ),
-        duration: const Duration(seconds: 1),
-      ),
-    );
-  }
+ void _toggleModeAndNavigate(BuildContext context) async {
+  final safeContext = Navigator.of(context, rootNavigator: true).context;
+  Navigator.pop(context);
+  await Future.delayed(const Duration(milliseconds: 200));
+  await ModeService.toggleMode();
+  Navigator.pushReplacementNamed(safeContext, '/home');
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +19,7 @@ class ModeToggleStatement extends StatelessWidget {
       color: Colors.grey.shade200,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: GestureDetector(
-        onTap: () => _toggleMode(context),
+        onTap: () => _toggleModeAndNavigate(context),
         child: Row(
           children: [
             const Icon(Icons.sync, color: Colors.green),
