@@ -28,7 +28,12 @@ import 'package:movin/domain/repositories/forget_pass_repository.dart' as _i686;
 import 'package:movin/domain/repositories/login_repositories.dart' as _i772;
 import 'package:movin/domain/repositories/otp_repository.dart' as _i574;
 import 'package:movin/domain/repositories/register_repository.dart' as _i623;
+
+import 'package:movin/presentation/budget_calculator/managers/bc_bloc/loan_calc_bloc.dart'
+    as _i872;
+
 import 'package:movin/domain/repositories/reset_pass_repository.dart' as _i332;
+
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -42,6 +47,7 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     final networkServices = _$NetworkServices();
+    gh.factory<_i872.LoanCalcBloc>(() => _i872.LoanCalcBloc());
     gh.lazySingleton<_i361.Dio>(() => networkServices.dio);
     gh.lazySingleton<_i332.ResetPasswordRepository>(() =>
         _i684.ResetPasswordRepositoryImpl(gh<_i295.ResetPasswordService>()));

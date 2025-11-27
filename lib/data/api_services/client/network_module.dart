@@ -9,6 +9,7 @@ abstract class NetworkServices {
   @lazySingleton
   Dio get dio {
     final base = 'https://movin-app-production.up.railway.app';
+    
     // //'http://192.168.1.16:5000';
     // kIsWeb
     // ? 'http://localhost:5000' //chrome
