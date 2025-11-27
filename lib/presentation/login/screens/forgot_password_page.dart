@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../app_theme.dart';
 import 'otp_verification_page.dart';
+//test
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -39,7 +40,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       Center(
                         child: AppWidgets.logo(
                           LogoKeys.logoKey,
-                          size: screenHeight * 0.18,
+                          size: screenHeight * 0.20,
                         ),
                       ),
 

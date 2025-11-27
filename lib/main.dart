@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
+import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
+import 'package:movin/presentation/home/screens/home.dart';
 import 'package:movin/presentation/home/screens/seller_home.dart';
 import 'package:movin/presentation/login/screens/forgot_password_page.dart';
 import 'package:movin/presentation/login/screens/login_screen.dart';
@@ -8,10 +10,10 @@ import 'package:movin/presentation/onboarding/screens/onboarding.dart';
 import 'package:movin/presentation/role_selection/screens/role_selection.dart';
 import 'package:movin/presentation/splash_screen/screens/splash.dart';
 
-void main() {
+void main()async {
   WidgetsFlutterBinding.ensureInitialized();
+  await ModeService.loadUserMode();
   setUpServiceLocator();
-
   runApp(const Movin());
 }
 
@@ -30,6 +32,7 @@ class Movin extends StatelessWidget {
         '/buyerhome': (_) => const BuyerHome(),
         '/sellerhome': (_) => const SellerHome(),
         '/forgotpassword': (_) => const ForgotPasswordPage(),
+        '/home':(_)=> const HomePage(),
       },
     );
   }
