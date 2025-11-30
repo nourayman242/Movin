@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/presentation/budget_calculator/screens/budget_calculator_screen.dart';
 import 'package:movin/presentation/home/inner_pages/profile_page.dart';
 import 'package:movin/presentation/home/inner_pages/rate_properties_page.dart';
 import 'package:movin/presentation/home/inner_pages/settings_page.dart';
@@ -47,6 +48,19 @@ class CustomDrawer extends StatelessWidget {
                       color: AppColors.navyLight,
                       onTap: () =>
                           _navigateTo(context, const ViewHistoryPage()),
+                    ),
+                    DrawerItem(
+                      icon: Icons.calculate_outlined,
+                      text: 'Budget Calculator',
+                      color: AppColors.navyLight,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BudgetCalculatorScreen(),
+                          ),
+                        );
+                      },
                     ),
                     DrawerItem(
                       icon: Icons.star_outline,
