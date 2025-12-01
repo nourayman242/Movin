@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/home/managers/mode_service.dart';
 
 class ModeToggleStatement extends StatelessWidget {
   const ModeToggleStatement({super.key});
 
- void _toggleModeAndNavigate(BuildContext context) async {
-  final safeContext = Navigator.of(context, rootNavigator: true).context;
-  Navigator.pop(context);
-  await Future.delayed(const Duration(milliseconds: 200));
-  await ModeService.toggleMode();
-  Navigator.pushReplacementNamed(safeContext, '/home');
-}
-
+  void _toggleModeAndNavigate(BuildContext context) async {
+    final safeContext = Navigator.of(context, rootNavigator: true).context;
+    Navigator.pop(context);
+    await Future.delayed(const Duration(milliseconds: 200));
+    await ModeService.toggleMode();
+    Navigator.pushReplacementNamed(safeContext, '/home');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,14 @@ class ModeToggleStatement extends StatelessWidget {
         onTap: () => _toggleModeAndNavigate(context),
         child: Row(
           children: [
-            const Icon(Icons.sync, color: Colors.green),
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Colors.green.withOpacity(0.15),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.sync, color: Colors.green, size: 18),
+            ),
             const SizedBox(width: 10),
             ValueListenableBuilder<bool>(
               valueListenable: ModeService.isSellerNotifier,
@@ -33,7 +40,7 @@ class ModeToggleStatement extends StatelessWidget {
                 return Text(
                   toggleText,
                   style: const TextStyle(
-                    color: Colors.green,
+                    color: AppColors.navyLight,
                     fontWeight: FontWeight.bold,
                   ),
                 );
