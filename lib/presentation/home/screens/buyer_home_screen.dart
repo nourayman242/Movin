@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/domain/entities/property_model.dart';
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
 import 'package:movin/presentation/home/widgets/categoty_screen.dart';
 import 'package:movin/presentation/home/widgets/custom_drawer.dart';
 import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
+import 'package:movin/presentation/home/widgets/property_card.dart';
 import 'package:movin/presentation/notifications/screens/notifications_screen.dart';
 
 class BuyerHome extends StatefulWidget {
@@ -14,6 +16,41 @@ class BuyerHome extends StatefulWidget {
 }
 
 class _BuyerHomeState extends State<BuyerHome> {
+  final List<PropertyModel> recommendedWRecent = [
+    PropertyModel(
+      id: "1",
+      title: "Modern Apartment",
+      location: "New Cairo",
+      image: "assets/images/villa3.jpg",
+      tag: "For Rent",
+      price: "\$250,000",
+      beds: 3,
+      baths: 2,
+      sqft: 1200,
+    ),
+    PropertyModel(
+      id: "2",
+      title: "Luxury Villa",
+      location: "6th October",
+      image: "assets/images/villa3.jpg",
+      tag: "For Sale",
+      price: "\$850,000",
+      beds: 5,
+      baths: 4,
+      sqft: 3200,
+    ),
+    PropertyModel(
+      id: "2",
+      title: "Luxury Villa",
+      location: "6th October",
+      image: "assets/images/villa3.jpg",
+      tag: "For Sale",
+      price: "\$850,000",
+      beds: 5,
+      baths: 4,
+      sqft: 3200,
+    ),
+  ];
   String selectedCategory = "For Sale";
   @override
   Widget build(BuildContext context) {
@@ -182,16 +219,129 @@ class _BuyerHomeState extends State<BuyerHome> {
               ),
             ),
           ),
-          TextButton(
-            // remove this button, only do for check the PropertyDetailsScreen
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => PropertyDetailsScreen()),
-              );
-            },
-            child: Text('PropertyDetails'),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Text(
+                  "Recommended",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.navyDark,
+                  ),
+                ),
+                Text(
+                  "View More",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.primaryNavy,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
+
+          const SizedBox(height: 12),
+
+          SizedBox(
+            height: 320,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.only(left: 20),
+              itemCount: recommendedWRecent.length, //stat
+              separatorBuilder: (_, __) => const SizedBox(width: 16),
+              itemBuilder: (context, index) {
+                final property = recommendedWRecent[index];
+                return PropertyCard(
+                  property: property,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PropertyDetailsScreen(),
+                      ),
+                    );
+                  },
+                  onFavoriteToggle: () {
+                    setState(() {
+                      property.isfavorite = !property.isfavorite;
+                    });
+                  },
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 25),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Text(
+                  "Recent Listings",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.navyDark,
+                  ),
+                ),
+                Text(
+                  "View More",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.primaryNavy,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          SizedBox(
+            height: 320,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.only(left: 20),
+              itemCount: recommendedWRecent.length, //stat
+              separatorBuilder: (_, __) => const SizedBox(width: 16),
+              itemBuilder: (context, index) {
+                final property = recommendedWRecent[index];
+                return PropertyCard(
+                  property: property,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PropertyDetailsScreen(),
+                      ),
+                    );
+                  },
+                  onFavoriteToggle: () {
+                    setState(() {
+                      property.isfavorite = !property.isfavorite;
+                    });
+                  },
+                );
+              },
+            ),
+          ),
+
+          // TextButton(
+          //   // remove this button, only do for check the PropertyDetailsScreen
+          //   onPressed: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(builder: (_) => PropertyDetailsScreen()),
+          //     );
+          //   },
+          //   child: Text('PropertyDetails'),
+          // ),
         ],
       ),
     );
