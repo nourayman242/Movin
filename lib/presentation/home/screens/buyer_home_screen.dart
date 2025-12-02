@@ -41,8 +41,6 @@ class _BuyerHomeState extends State<BuyerHome> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ///////////menu
-                    // iconContainer(Icons.menu),
                     Builder(
                       builder: (context) => InkWell(
                         borderRadius: BorderRadius.circular(12),
