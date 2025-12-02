@@ -28,12 +28,9 @@ import 'package:movin/domain/repositories/forget_pass_repository.dart' as _i686;
 import 'package:movin/domain/repositories/login_repositories.dart' as _i772;
 import 'package:movin/domain/repositories/otp_repository.dart' as _i574;
 import 'package:movin/domain/repositories/register_repository.dart' as _i623;
-
+import 'package:movin/domain/repositories/reset_pass_repository.dart' as _i332;
 import 'package:movin/presentation/budget_calculator/managers/bc_bloc/loan_calc_bloc.dart'
     as _i872;
-
-import 'package:movin/domain/repositories/reset_pass_repository.dart' as _i332;
-
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt

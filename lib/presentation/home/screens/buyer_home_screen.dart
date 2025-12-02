@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/presentation/home/screens/Property_detials/screens/property_detials.dart';
+import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
 import 'package:movin/presentation/home/widgets/categoty_screen.dart';
 import 'package:movin/presentation/home/widgets/custom_drawer.dart';
 import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
+import 'package:movin/presentation/notifications/screens/notifications_screen.dart';
 
 class BuyerHome extends StatefulWidget {
   const BuyerHome({super.key});
@@ -50,12 +51,27 @@ class _BuyerHomeState extends State<BuyerHome> {
                     ),
                     Row(
                       children: [
-                        iconContainer(
-                          Icons.notifications_none_outlined,
-                          hasBadge: true,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const NotificationsScreen(),
+                              ),
+                            );
+                          },
+                          child: iconContainer(
+                            Icons.notifications_none_outlined,
+                            hasBadge: true,
+                          ),
                         ),
                         const SizedBox(width: 12),
-                        iconContainer(Icons.favorite_border),
+
+                        GestureDetector(
+                          onTap: () {},
+                          child: iconContainer(Icons.favorite_border),
+                        ),
                       ],
                     ),
                   ],
@@ -166,7 +182,8 @@ class _BuyerHomeState extends State<BuyerHome> {
               ),
             ),
           ),
-          TextButton( // remove this button, only do for check the PropertyDetailsScreen
+          TextButton(
+            // remove this button, only do for check the PropertyDetailsScreen
             onPressed: () {
               Navigator.push(
                 context,
