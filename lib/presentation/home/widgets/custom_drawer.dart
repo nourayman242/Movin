@@ -26,7 +26,7 @@ class CustomDrawer extends StatelessWidget {
             const CustomDrawerHeader(),
             const Divider(
               thickness: 1,
-              color: Color.fromARGB(255, 134, 135, 138),
+              color: Color.fromARGB(255, 178, 178, 180),
               height: 1,
             ),
 
@@ -34,25 +34,18 @@ class CustomDrawer extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    DrawerItem(
-                      icon: Icons.person_outline,
-                      text: 'Profile',
-                      iconColor: Colors.pinkAccent,
-                      circleColor: Colors.pinkAccent.withOpacity(0.1),
-                      color: AppColors.navyLight,
-                      onTap: () => _navigateTo(context, const ProfilePage()),
-                    ),
-                    DrawerItem(
-                      icon: Icons.history_outlined,
-                      text: 'View History',
-                      color: AppColors.navyLight,
-                      onTap: () =>
-                          _navigateTo(context, const ViewHistoryPage()),
-                    ),
+                    SizedBox(height: 50),
                     DrawerItem(
                       icon: Icons.calculate_outlined,
                       text: 'Budget Calculator',
                       color: AppColors.navyLight,
+                      iconColor: const Color.fromARGB(255, 85, 131, 212),
+                      circleColor: const Color.fromARGB(
+                        255,
+                        85,
+                        131,
+                        212,
+                      ).withOpacity(0.1),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -62,6 +55,7 @@ class CustomDrawer extends StatelessWidget {
                         );
                       },
                     ),
+                    SizedBox(height: 15),
                     DrawerItem(
                       icon: Icons.star_outline,
                       text: 'Rate Properties',
@@ -71,12 +65,39 @@ class CustomDrawer extends StatelessWidget {
                       onTap: () =>
                           _navigateTo(context, const RatePropertiesPage()),
                     ),
+                    SizedBox(height: 15),
+                    DrawerItem(
+                      icon: Icons.person_outline,
+                      text: 'Profile',
+                      iconColor: Colors.pinkAccent,
+                      circleColor: Colors.pinkAccent.withOpacity(0.1),
+                      color: AppColors.navyLight,
+                      onTap: () => _navigateTo(context, const ProfilePage()),
+                    ),
+                    SizedBox(height: 15),
+                    DrawerItem(
+                      icon: Icons.history_outlined,
+                      text: 'View History',
+                      color: AppColors.navyLight,
+                      iconColor: const Color.fromARGB(255, 105, 109, 115),
+                      circleColor: const Color.fromARGB(
+                        255,
+                        105,
+                        109,
+                        115,
+                      ).withOpacity(0.1),
+                      onTap: () =>
+                          _navigateTo(context, const ViewHistoryPage()),
+                    ),
+                    SizedBox(height: 15),
+
                     DrawerItem(
                       icon: Icons.settings_outlined,
                       text: 'Settings',
                       color: AppColors.navyLight,
                       onTap: () => _navigateTo(context, const SettingsPage()),
                     ),
+                    SizedBox(height: 15),
                     DrawerItem(
                       icon: Icons.help_outline,
                       text: 'Help & Support',
@@ -90,11 +111,12 @@ class CustomDrawer extends StatelessWidget {
 
             const Divider(
               thickness: 1,
-              color: Color.fromARGB(255, 134, 135, 138),
+              color: Color.fromARGB(255, 178, 178, 180),
               height: 1,
             ),
+            SizedBox(height: 15),
             const ModeToggleStatement(),
-
+            SizedBox(height: 15),
             DrawerItem(
               icon: Icons.logout_outlined,
               text: 'Logout',
