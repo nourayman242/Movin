@@ -135,7 +135,6 @@ class _SellerHomeState extends State<SellerHome>
                           ),
                           const SizedBox(height: 30),
 
-                          // Stats rows
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -157,7 +156,7 @@ class _SellerHomeState extends State<SellerHome>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               _statCard(
-                                "Inquiries",
+                                "Inquiries           ",
                                 "156",
                                 Icons.chat_bubble_outline,
                               ),
@@ -189,126 +188,6 @@ class _SellerHomeState extends State<SellerHome>
           ),
         ),
       ),
-
-      // body: Column(
-      //   children: [
-      //     Container(
-      //       padding: const EdgeInsets.only(
-      //         top: 50,
-      //         left: 20,
-      //         right: 20,
-      //         bottom: 30,
-      //       ),
-      //       decoration: const BoxDecoration(
-      //         color: AppColors.primaryNavy,
-      //         borderRadius: BorderRadius.only(
-      //           bottomLeft: Radius.circular(0),
-      //           bottomRight: Radius.circular(0),
-      //         ),
-      //       ),
-      //       child: Column(
-      //         crossAxisAlignment: CrossAxisAlignment.start,
-      //         children: [
-      //           Row(
-      //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //             children: [
-      //               Builder(
-      //                 builder: (context) => InkWell(
-      //                   borderRadius: BorderRadius.circular(12),
-      //                   onTap: () => Scaffold.of(context).openDrawer(),
-      //                   child: iconContainer(Icons.menu),
-      //                 ),
-      //               ),
-
-      //               Row(
-      //                 children: [
-      //                   Container(
-      //                     margin: const EdgeInsets.only(right: 14),
-      //                     child: ElevatedButton.icon(
-      //                       style: ElevatedButton.styleFrom(
-      //                         backgroundColor: AppColors.gold,
-      //                         shape: RoundedRectangleBorder(
-      //                           borderRadius: BorderRadius.circular(30),
-      //                         ),
-      //                       ),
-      //                       icon: const Icon(Icons.add, color: Colors.black),
-      //                       label: const Text(
-      //                         "Add Property",
-      //                         style: TextStyle(color: Colors.black),
-      //                       ),
-      //                       onPressed: () {},
-      //                     ),
-      //                   ),
-      //                   iconContainer(
-      //                     Icons.notifications_none_outlined,
-      //                     hasBadge: true,
-      //                   ),
-      //                 ],
-      //               ),
-      //             ],
-      //           ),
-      //           const SizedBox(height: 30),
-
-      //           const Text(
-      //             "Seller Dashboard",
-      //             style: TextStyle(
-      //               fontSize: 20,
-      //               color: Colors.white,
-      //               fontWeight: FontWeight.bold,
-      //             ),
-      //           ),
-      //           const Text(
-      //             "Manage your properties  and track performance",
-      //             style: TextStyle(color: Colors.white60, fontSize: 18),
-      //           ),
-
-      //           const SizedBox(height: 30),
-
-      //           Row(
-      //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //             children: [
-      //               _statCard("Active Listings", "12", Icons.home_outlined),
-      //               const SizedBox(width: 20),
-      //               _statCard(
-      //                 "Total Views",
-      //                 "8.4k",
-      //                 Icons.remove_red_eye_outlined,
-      //               ),
-      //             ],
-      //           ),
-      //           const SizedBox(height: 20),
-      //           Row(
-      //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //             children: [
-      //               _statCard(
-      //                 "Inquiries         ",
-      //                 "156",
-      //                 Icons.chat_bubble_outline,
-      //               ),
-      //               const SizedBox(width: 20),
-      //               _statCard("Conversion ", "18%", Icons.trending_up),
-      //             ],
-      //           ),
-      //         ],
-      //       ),
-      //     ),
-      //     const SizedBox(height: 12),
-      //     _tabsSection(),
-      //     const SizedBox(height: 12),
-      //     Expanded(
-      //       child: TabBarView(
-      //         controller: _tabController,
-      //         children: [
-      //           // Overview (scrollable)
-      //           SingleChildScrollView(child: _overviewContent()),
-      //           SingleChildScrollView(child: Center(child: Text("My Listings"))),
-      //           SingleChildScrollView(child: Center(child: Text("News"))),
-      //           // _myListingsContent(),
-      //           // _newsContent(),
-      //         ],
-      //       ),
-      //     ),
-      //   ],
     );
   }
 
@@ -607,7 +486,6 @@ class _SellerHomeState extends State<SellerHome>
 
         const SizedBox(height: 10),
 
-        // Filter + Sort Row
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
@@ -618,9 +496,28 @@ class _SellerHomeState extends State<SellerHome>
 
         const SizedBox(height: 10),
 
-        // Listings List
         ...listings.map((item) => _fullListingCard(item)).toList(),
 
+        const SizedBox(height: 20),
+        Center(
+          child: Container(
+            margin: const EdgeInsets.only(right: 14),
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+              icon: const Icon(Icons.add, color: Colors.black),
+              label: const Text(
+                "Add Property",
+                style: TextStyle(color: Colors.black),
+              ),
+              onPressed: () {},
+            ),
+          ),
+        ),
         const SizedBox(height: 40),
       ],
     );
@@ -668,22 +565,116 @@ class _SellerHomeState extends State<SellerHome>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Image
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(18),
-              topRight: Radius.circular(18),
-            ),
-            child: Image.asset(
-              item['image'],
-              height: 180,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(18),
+                  topRight: Radius.circular(18),
+                ),
+                child: Image.asset(
+                  item['image'],
+                  height: 180,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              positionedBadge(status),
 
-          // Status Badge
-          PositionedBadge(status),
+              Positioned(
+                top: 12,
+                right: 12,
+                child: PopupMenuButton<String>(
+                  elevation: 4,
+                  color: AppColors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  onSelected: (value) {
+                    if (value == "edit") {
+                      // TODO: add your edit navigation / logic
+                      print("Edit clicked");
+                    } else if (value == "delete") {
+                      // TODO: add your delete logic
+                      print("Delete clicked");
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      padding: EdgeInsets.zero,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                          print("Edit clicked");
+                        },
+                        splashColor: AppColors.gold,
+                        highlightColor: AppColors.gold,
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                          child: Row(
+                            children: const [
+                              Icon(
+                                Icons.edit,
+                                size: 20,
+                                color: AppColors.navyDark,
+                              ),
+                              SizedBox(width: 10),
+                              Text("Edit"),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    PopupMenuItem(
+                      padding: EdgeInsets.zero,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                          print("Delete clicked");
+                        },
+                        splashColor: AppColors.gold,
+                        highlightColor: AppColors.gold,
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                          child: Row(
+                            children: const [
+                              Icon(
+                                Icons.delete_outline,
+                                size: 20,
+                                color: Colors.red,
+                              ),
+                              SizedBox(width: 10),
+                              Text("Delete"),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.more_vert,
+                      color: Colors.black54,
+                      size: 22,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
 
           Padding(
             padding: const EdgeInsets.all(16),
@@ -697,6 +688,7 @@ class _SellerHomeState extends State<SellerHome>
                     fontSize: 16,
                   ),
                 ),
+
                 const SizedBox(height: 4),
                 Text(
                   item['location'],
@@ -704,7 +696,6 @@ class _SellerHomeState extends State<SellerHome>
                 ),
 
                 const SizedBox(height: 10),
-
                 Text(
                   item['price'],
                   style: const TextStyle(
@@ -719,13 +710,12 @@ class _SellerHomeState extends State<SellerHome>
                 Row(
                   children: [
                     const Icon(
-                      Icons.remove_red_eye,
+                      Icons.remove_red_eye_outlined,
                       size: 18,
                       color: Colors.grey,
                     ),
                     const SizedBox(width: 6),
                     Text("${item['views']}"),
-
                     const SizedBox(width: 16),
                     const Icon(
                       Icons.favorite_border,
@@ -734,7 +724,6 @@ class _SellerHomeState extends State<SellerHome>
                     ),
                     const SizedBox(width: 6),
                     Text("${item['likes']}"),
-
                     const SizedBox(width: 16),
                     const Icon(
                       Icons.chat_bubble_outline,
@@ -753,8 +742,7 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
-  // Floating Status Badge
-  Widget PositionedBadge(String status) {
+  Widget positionedBadge(String status) {
     final color = status == "active" ? AppColors.gold : Colors.orange;
 
     return Positioned(
@@ -780,11 +768,12 @@ class _SellerHomeState extends State<SellerHome>
 
   Widget _newsContent() {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const SizedBox(height: 16),
 
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 1),
           child: const Text(
             "Latest Real Estate News",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -879,11 +868,14 @@ class _SellerHomeState extends State<SellerHome>
 
                 const SizedBox(height: 10),
 
-                const Text(
-                  "Read More →",
-                  style: TextStyle(
-                    color: AppColors.gold,
-                    fontWeight: FontWeight.bold,
+                TextButton(
+                  onPressed: () {},
+                  child: const Text(
+                    "Read More →",
+                    style: TextStyle(
+                      color: AppColors.gold,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
@@ -894,3 +886,215 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 }
+
+
+// import 'package:flutter/material.dart';
+// import 'package:movin/app_theme.dart';
+// import 'package:movin/presentation/home/widgets/custom_drawer.dart';
+// import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
+// import 'viewmodels/seller_home_viewmodel.dart';
+// import 'widgets/tabs_section.dart';
+// import 'widgets/stat_card.dart';
+// import 'widgets/performance_card.dart';
+// import 'widgets/full_listing_card.dart';
+// import 'widgets/news_card.dart';
+
+// class SellerHome extends StatefulWidget {
+//   const SellerHome({super.key});
+
+//   @override
+//   State<SellerHome> createState() => _SellerHomeState();
+// }
+
+// class _SellerHomeState extends State<SellerHome>
+//     with SingleTickerProviderStateMixin {
+//   late TabController _tabController;
+//   final vm = SellerHomeViewModel();
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _tabController = TabController(length: 3, vsync: this);
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: AppColors.background,
+//       drawer: const CustomDrawer(),
+//       body: NestedScrollView(
+//         headerSliverBuilder: (context, _) => [buildHeader()],
+//         body: TabBarView(
+//           controller: _tabController,
+//           children: [
+//             _overviewContent(),
+//             _myListingsContent(),
+//             _newsContent(),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   SliverToBoxAdapter buildHeader() {
+//     return SliverToBoxAdapter(
+//       child: Column(
+//         children: [
+//           Container(
+//             padding: const EdgeInsets.fromLTRB(20, 50, 20, 30),
+//             color: AppColors.primaryNavy,
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 buildHeaderBar(),
+//                 const SizedBox(height: 30),
+//                 const Text(
+//                   "Seller Dashboard",
+//                   style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+//                 ),
+//                 const Text(
+//                   "Manage your properties and track performance",
+//                   style: TextStyle(color: Colors.white60, fontSize: 18),
+//                 ),
+//                 const SizedBox(height: 30),
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                   children: const [
+//                     Padding(
+//                       padding: EdgeInsets.all(8.0),
+//                       child: StatCard(title: "Active Listings", value: "12", icon: Icons.home_outlined),
+//                     ),
+//                     SizedBox(width: 20),
+//                     StatCard(title: "Total Views", value: "8.4k", icon: Icons.remove_red_eye_outlined),
+//                   ],
+//                 ),
+//                 const SizedBox(height: 20),
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                   children: const [
+//                     StatCard(title: "Inquiries", value: "156", icon: Icons.chat_bubble_outline),
+//                     SizedBox(width: 20),
+//                     StatCard(title: "Conversion", value: "18%", icon: Icons.trending_up),
+//                   ],
+//                 ),
+//               ],
+//             ),
+//           ),
+
+//           const SizedBox(height: 12),
+//           TabsSection(controller: _tabController),
+//           const SizedBox(height: 12),
+//         ],
+//       ),
+//     );
+//   }
+
+//   Row buildHeaderBar() {
+//     return Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//       children: [
+//         Builder(
+//           builder: (context) => InkWell(
+//             borderRadius: BorderRadius.circular(12),
+//             onTap: () => Scaffold.of(context).openDrawer(),
+//             child: iconContainer(Icons.menu),
+//           ),
+//         ),
+//         Row(
+//           children: [
+//             ElevatedButton.icon(
+//               style: ElevatedButton.styleFrom(
+//                 backgroundColor: AppColors.gold,
+//                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+//               ),
+//               icon: const Icon(Icons.add, color: Colors.black),
+//               label: const Text("Add Property", style: TextStyle(color: Colors.black)),
+//               onPressed: () {},
+//             ),
+//             const SizedBox(width: 14),
+//             iconContainer(Icons.notifications_none_outlined, hasBadge: true),
+//           ],
+//         )
+//       ],
+//     );
+//   }
+
+//   Widget _overviewContent() {
+//     return SingleChildScrollView(
+//       child: Column(
+//         children: [
+//           const PerformanceCard(),
+//           const SizedBox(height: 16),
+//           Container(
+//             margin: const EdgeInsets.all(16),
+//             padding: const EdgeInsets.symmetric(vertical: 10),
+//             decoration: BoxDecoration(
+//               color: AppColors.white,
+//               borderRadius: BorderRadius.circular(18),
+//               boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 14)],
+//             ),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 const Padding(
+//                   padding: EdgeInsets.all(16),
+//                   child: Text("Top Performing Listings", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+//                 ),
+//                 ...vm.listings.map((l) => FullListingCard(item: l)).toList(),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+  
+
+//   Widget _myListingsContent() {
+//     return SingleChildScrollView(
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           const SizedBox(height: 16),
+//           Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 20),
+//             child: Text("All Listings (${vm.listings.length})",
+//                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.navyDark)),
+//           ),
+//           const SizedBox(height: 16),
+//           ...vm.listings.map((item) => FullListingCard(item: item)).toList(),
+//           const SizedBox(height: 20),
+//         ],
+//       ),
+//     );
+//   }
+
+//   Widget _newsContent() {
+//     return SingleChildScrollView(
+//       child: Column(
+//         children: const [
+//           SizedBox(height: 16),
+//           Padding(
+//             padding: EdgeInsets.symmetric(horizontal: 16),
+//             child: Text("Latest Real Estate News",
+//                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+//           ),
+//           SizedBox(height: 12),
+//           NewsCard(
+//             image: "assets/images/building1.jpeg",
+//             title: "Dubai Real Estate Market Shows Strong Growth in Q4 2024",
+//             date: "2 days ago",
+//             description: "The Dubai property market continues to demonstrate resilience...",
+//           ),
+//           NewsCard(
+//             image: "assets/images/building2.jpeg",
+//             title: "New Sustainable Housing Projects Announced Across UAE",
+//             date: "1 week ago",
+//             description: "Developers are shifting towards eco-friendly architecture...",
+//           ),
+//           SizedBox(height: 40),
+//         ],
+//       ),
+//     );
+//   }
+// }
