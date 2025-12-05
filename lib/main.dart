@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
+import 'package:movin/presentation/add_property/add_property_screen.dart';
 import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
 import 'package:movin/presentation/home/screens/home.dart';
@@ -33,6 +34,7 @@ class Movin extends StatelessWidget {
         '/sellerhome': (_) => const SellerHome(),
         '/forgotpassword': (_) => const ForgotPasswordPage(),
         '/home':(_)=> const HomePage(),
+        '/addproperty': (_) => const AddPropertyScreen(),
       },
     );
   }

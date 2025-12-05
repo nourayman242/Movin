@@ -106,7 +106,12 @@ class _SellerHomeState extends State<SellerHome>
                                         "Add Property",
                                         style: TextStyle(color: Colors.black),
                                       ),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          '/addproperty',
+                                        );
+                                      },
                                     ),
                                   ),
                                   iconContainer(
