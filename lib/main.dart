@@ -34,7 +34,9 @@ class Movin extends StatelessWidget {
         '/sellerhome': (_) => const SellerHome(),
         '/forgotpassword': (_) => const ForgotPasswordPage(),
         '/home':(_)=> const HomePage(),
+
         '/addproperty': (_) => const AddPropertyScreen(),
+
       },
     );
   }
