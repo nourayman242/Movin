@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/domain/entities/property_model.dart';
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
+import 'package:movin/presentation/home/screens/filter_screen.dart';
 import 'package:movin/presentation/home/widgets/categoty_screen.dart';
 import 'package:movin/presentation/home/widgets/custom_drawer.dart';
 import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
 import 'package:movin/presentation/home/widgets/property_card.dart';
 import 'package:movin/presentation/notifications/screens/notifications_screen.dart';
-
 class BuyerHome extends StatefulWidget {
   const BuyerHome({super.key});
 
@@ -155,14 +155,23 @@ class _BuyerHomeState extends State<BuyerHome> {
                           ),
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryNavy,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Icon(Icons.tune, color: Colors.white),
-                      ),
+                      GestureDetector(
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const FilterScreen()),
+    );
+  },
+  child: Container(
+    padding: const EdgeInsets.all(8),
+    decoration: BoxDecoration(
+      color: AppColors.primaryNavy,
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: const Icon(Icons.tune, color: Colors.white),
+  ),
+)
+
                     ],
                   ),
                 ),
