@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/domain/entities/property_model.dart';
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
+
+import 'package:movin/presentation/browse_property/screens/browse_properties.dart';
+import 'package:movin/presentation/browse_property/widgets/dummy_properties.dart';
+
 import 'package:movin/presentation/home/screens/filter_screen.dart';
 import 'package:movin/presentation/home/widgets/categoty_screen.dart';
 import 'package:movin/presentation/home/widgets/custom_drawer.dart';
 import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
 import 'package:movin/presentation/home/widgets/property_card.dart';
 import 'package:movin/presentation/notifications/screens/notifications_screen.dart';
+
+import 'package:movin/presentation/view_more_home/screens/view_more_home.dart';
+
 class BuyerHome extends StatefulWidget {
   const BuyerHome({super.key});
 
@@ -16,44 +23,160 @@ class BuyerHome extends StatefulWidget {
 }
 
 class _BuyerHomeState extends State<BuyerHome> {
-  final List<PropertyModel> recommendedWRecent = [
-    PropertyModel(
-      id: "1",
-      title: "Modern Apartment",
-      location: "New Cairo",
-      image: "assets/images/villa3.jpg",
-      tag: "For Rent",
-      price: "\$250,000",
-      beds: 3,
-      baths: 2,
-      sqft: 1200,
-    ),
-    PropertyModel(
-      id: "2",
-      title: "Luxury Villa",
-      location: "6th October",
-      image: "assets/images/villa3.jpg",
-      tag: "For Sale",
-      price: "\$850,000",
-      beds: 5,
-      baths: 4,
-      sqft: 3200,
-    ),
-    PropertyModel(
-      id: "2",
-      title: "Luxury Villa",
-      location: "6th October",
-      image: "assets/images/villa3.jpg",
-      tag: "For Sale",
-      price: "\$850,000",
-      beds: 5,
-      baths: 4,
-      sqft: 3200,
-    ),
-  ];
+  // final List<PropertyModel> recommendedWRecent = [
+  //   PropertyModel(
+  //     id: "1",
+  //     title: "Modern Apartment",
+  //     location: "New Cairo",
+  //     image: "assets/images/villa3.jpg",
+  //     tag: "For Rent",
+  //     price: "250,000 EGP / month",
+  //     beds: 3,
+  //     baths: 2,
+  //     sqft: 1200,
+  //   ),
+  //   PropertyModel(
+  //     id: "2",
+  //     title: "Luxury Villa",
+  //     location: "6th October",
+  //     image: "assets/images/villa3.jpg",
+  //     tag: "For Sale",
+  //     price: "850,000 EGP",
+  //     beds: 5,
+  //     baths: 4,
+  //     sqft: 3200,
+  //   ),
+  //   PropertyModel(
+  //     id: "3",
+  //     title: "Luxury Villa",
+  //     location: "6th October",
+  //     image: "assets/images/villa3.jpg",
+  //     tag: "For Sale",
+  //     price: "850,000 EGP",
+  //     beds: 5,
+  //     baths: 4,
+  //     sqft: 3200,
+  //   ),
+  //   PropertyModel(
+  //     id: "4",
+  //     title: "Modern Apartment",
+  //     location: "New Cairo",
+  //     image: "assets/images/villa3.jpg",
+  //     tag: "For Rent",
+  //     price: "250,000 EGP / month",
+  //     beds: 3,
+  //     baths: 2,
+  //     sqft: 1200,
+  //   ),
+  //   PropertyModel(
+  //     id: "5",
+  //     title: "Luxury Villa",
+  //     location: "6th October",
+  //     image: "assets/images/villa3.jpg",
+  //     tag: "For Sale",
+  //     price: "850,000 EGP",
+  //     beds: 5,
+  //     baths: 4,
+  //     sqft: 3200,
+  //   ),
+  //   PropertyModel(
+  //     id: "6",
+  //     title: "Luxury Villa",
+  //     location: "6th October",
+  //     image: "assets/images/villa3.jpg",
+  //     tag: "For Sale",
+  //     price: "850,000 EGP",
+  //     beds: 5,
+  //     baths: 4,
+  //     sqft: 3200,
+  //   ),
+  // ];
+  // final List<PropertyModel> recent = [
+  //   PropertyModel(
+  //     id: "1",
+  //     title: "Modern Apartment",
+  //     location: "New Cairo",
+  //     image: "assets/images/villa3.jpg",
+  //     tag: "For Rent",
+  //     price: "250,000 EGP / month",
+  //     beds: 3,
+  //     baths: 2,
+  //     sqft: 1200,
+  //   ),
+  //   PropertyModel(
+  //     id: "2",
+  //     title: "Luxury Villa",
+  //     location: "6th October",
+  //     image: "assets/images/villa3.jpg",
+  //     tag: "For Sale",
+  //     price: "850,000 EGP",
+  //     beds: 5,
+  //     baths: 4,
+  //     sqft: 3200,
+  //   ),
+  //   PropertyModel(
+  //     id: "3",
+  //     title: "Luxury Villa",
+  //     location: "6th October",
+  //     image: "assets/images/villa3.jpg",
+  //     tag: "For Sale",
+  //     price: "850,000 EGP",
+  //     beds: 5,
+  //     baths: 4,
+  //     sqft: 3200,
+  //   ),
+  //   PropertyModel(
+  //     id: "4",
+  //     title: "Modern Apartment",
+  //     location: "New Cairo",
+  //     image: "assets/images/villa3.jpg",
+  //     tag: "For Rent",
+  //     price: "250,000 EGP / month",
+  //     beds: 3,
+  //     baths: 2,
+  //     sqft: 1200,
+  //   ),
+  //   PropertyModel(
+  //     id: "5",
+  //     title: "Luxury Villa",
+  //     location: "6th October",
+  //     image: "assets/images/villa3.jpg",
+  //     tag: "For Sale",
+  //     price: "850,000 EGP",
+  //     beds: 5,
+  //     baths: 4,
+  //     sqft: 3200,
+  //   ),
+  //   PropertyModel(
+  //     id: "6",
+  //     title: "Luxury Villa",
+  //     location: "6th October",
+  //     image: "assets/images/villa3.jpg",
+  //     tag: "For Sale",
+  //     price: "850,000 EGP",
+  //     beds: 5,
+  //     baths: 4,
+  //     sqft: 3200,
+  //   ),
+  // ];
   String selectedCategory = "For Sale";
+
+  void navigateToPropertyDetails() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => PropertyDetailsScreen()),
+    );
+  }
+
+  void toggleFavorite(PropertyModel property) {
+    setState(() {
+      property.isfavorite = !property.isfavorite;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final filtered = dummyProperties;
     return Scaffold(
       drawer: const CustomDrawer(),
       backgroundColor: AppColors.background,
@@ -156,22 +279,23 @@ class _BuyerHomeState extends State<BuyerHome> {
                         ),
                       ),
                       GestureDetector(
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const FilterScreen()),
-    );
-  },
-  child: Container(
-    padding: const EdgeInsets.all(8),
-    decoration: BoxDecoration(
-      color: AppColors.primaryNavy,
-      borderRadius: BorderRadius.circular(20),
-    ),
-    child: const Icon(Icons.tune, color: Colors.white),
-  ),
-)
-
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const FilterScreen(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryNavy,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Icon(Icons.tune, color: Colors.white),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -204,25 +328,70 @@ class _BuyerHomeState extends State<BuyerHome> {
                 mainAxisSpacing: 16,
                 childAspectRatio: 1.2,
                 children: [
-                  _propertyCard(
-                    icon: Icons.home_outlined,
-                    title: "For Sale",
-                    count: "2,453",
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              BrowsePropertiesScreen(type: 'sale'),
+                        ),
+                      );
+                    },
+                    child: _propertyCard(
+                      icon: Icons.home_outlined,
+                      title: "For Sale",
+                      count: "2,453",
+                    ),
                   ),
-                  _propertyCard(
-                    icon: Icons.key_outlined,
-                    title: "For Rent",
-                    count: "1,832",
+
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              BrowsePropertiesScreen(type: 'rent'),
+                        ),
+                      );
+                    },
+                    child: _propertyCard(
+                      icon: Icons.key_outlined,
+                      title: "For Rent",
+                      count: "1,832",
+                    ),
                   ),
-                  _propertyCard(
-                    icon: Icons.apartment_outlined,
-                    title: "Commercial",
-                    count: "567",
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              BrowsePropertiesScreen(type: 'Commercial'),
+                        ),
+                      );
+                    },
+                    child: _propertyCard(
+                      icon: Icons.apartment_outlined,
+                      title: "Commercial",
+                      count: "567",
+                    ),
                   ),
-                  _propertyCard(
-                    icon: Icons.show_chart_outlined,
-                    title: "Investments",
-                    count: "342",
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              BrowsePropertiesScreen(type: 'Investment'),
+                        ),
+                      );
+                    },
+                    child: _propertyCard(
+                      icon: Icons.show_chart_outlined,
+                      title: "Investments",
+                      count: "342",
+                    ),
                   ),
                 ],
               ),
@@ -233,8 +402,8 @@ class _BuyerHomeState extends State<BuyerHome> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text(
+              children: [
+                const Text(
                   "Recommended",
                   style: TextStyle(
                     fontSize: 20,
@@ -242,12 +411,18 @@ class _BuyerHomeState extends State<BuyerHome> {
                     color: AppColors.navyDark,
                   ),
                 ),
-                Text(
-                  "View More",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.primaryNavy,
-                    fontWeight: FontWeight.w600,
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ViewMoreHome()),
+                  ),
+                  child: const Text(
+                    "View More",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.primaryNavy,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
@@ -261,25 +436,15 @@ class _BuyerHomeState extends State<BuyerHome> {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.only(left: 20),
-              itemCount: recommendedWRecent.length, //stat
+              itemCount: filtered.length, //stat
               separatorBuilder: (_, __) => const SizedBox(width: 16),
               itemBuilder: (context, index) {
-                final property = recommendedWRecent[index];
+                final property = filtered[index];
                 return PropertyCard(
                   property: property,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PropertyDetailsScreen(),
-                      ),
-                    );
-                  },
-                  onFavoriteToggle: () {
-                    setState(() {
-                      property.isfavorite = !property.isfavorite;
-                    });
-                  },
+                  /////////////////////////////////////////
+                  onTap: navigateToPropertyDetails,
+                  onFavoriteToggle: () => toggleFavorite(property),
                 );
               },
             ),
@@ -289,7 +454,7 @@ class _BuyerHomeState extends State<BuyerHome> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Text(
                   "Recent Listings",
                   style: TextStyle(
@@ -298,12 +463,18 @@ class _BuyerHomeState extends State<BuyerHome> {
                     color: AppColors.navyDark,
                   ),
                 ),
-                Text(
-                  "View More",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.primaryNavy,
-                    fontWeight: FontWeight.w600,
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ViewMoreHome()),
+                  ),
+                  child: const Text(
+                    "View More",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.primaryNavy,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
@@ -317,10 +488,10 @@ class _BuyerHomeState extends State<BuyerHome> {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.only(left: 20),
-              itemCount: recommendedWRecent.length, //stat
+              itemCount: filtered.length, //stat
               separatorBuilder: (_, __) => const SizedBox(width: 16),
               itemBuilder: (context, index) {
-                final property = recommendedWRecent[index];
+                final property = filtered[index];
                 return PropertyCard(
                   property: property,
                   onTap: () {
@@ -365,16 +536,16 @@ class _BuyerHomeState extends State<BuyerHome> {
 
     return InkWell(
       borderRadius: BorderRadius.circular(16),
-      onTap: () {
-        setState(() => selectedCategory = title);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                CategoryScreen(categoryTitle: title, propertyCount: count),
-          ),
-        );
-      },
+      // onTap: () {
+      //   setState(() => selectedCategory = title);
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) =>
+      //           CategoryScreen(categoryTitle: title, propertyCount: count),
+      //     ),
+      //   );
+      // },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,

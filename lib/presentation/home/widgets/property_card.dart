@@ -56,6 +56,7 @@ class PropertyCard extends StatelessWidget {
                         horizontal: 10,
                         vertical: 6,
                       ),
+                      ///////////////will editeddddd
                       decoration: BoxDecoration(
                         color: property.tag.toLowerCase().contains('rent')
                             ? AppColors.gold
@@ -63,7 +64,7 @@ class PropertyCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        property.tag,
+                        _getTagText(property.tag),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -99,7 +100,7 @@ class PropertyCard extends StatelessWidget {
                 ],
               ),
             ),
-            //det
+            //details
             Padding(
               padding: const EdgeInsetsGeometry.all(12),
               child: Column(
@@ -179,4 +180,19 @@ Widget _verticalDivider() {
     color: Colors.grey.shade200,
     margin: const EdgeInsets.symmetric(horizontal: 8),
   );
+}
+
+String _getTagText(String tag) {
+  switch (tag) {
+    case "rent":
+      return "For Rent";
+    case "sale":
+      return "For Sale";
+    case "investment":
+      return "Investment";
+    case "commercial":
+      return "Commercial";
+    default:
+      return tag;
+  }
 }
