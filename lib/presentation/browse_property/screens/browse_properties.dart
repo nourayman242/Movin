@@ -56,7 +56,7 @@ class _BrowsePropertiesScreenState extends State<BrowsePropertiesScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SearchHeader(onFilterTap: () {}),
+            SearchHeader(),
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 14),

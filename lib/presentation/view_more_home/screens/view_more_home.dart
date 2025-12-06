@@ -53,7 +53,7 @@ class _ViewMoreHomeState extends State<ViewMoreHome> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SearchHeader(onFilterTap: () {}),
+            SearchHeader(),
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 14),
