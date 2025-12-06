@@ -92,51 +92,6 @@ class _RatePropertiesPageState extends State<RatePropertiesPage> {
 
     return true;
   }
-
-  // void _addProperty() {
-  //   if (!_validate()) return;
-
-  //   final property = {
-  //     "type": selectedType!,
-  //     "city": cityController.text.trim(),
-  //     "location": locationController.text.trim(),
-  //     "bedrooms": bedroomsController.text.trim(),
-  //     "bathrooms": bathroomsController.text.trim(),
-  //     "size": sizeController.text.trim(),
-  //     "floor": floorController.text.trim(),
-  //     "furnished": furnished,
-  //     "landArea": landAreaController.text.trim(),
-  //     "builtUpArea": builtUpAreaController.text.trim(),
-  //     "numberOfFloors": numberOfFloorsController.text.trim(),
-  //     "hasGarden": hasGarden,
-  //     "hasPool": hasPool,
-  //     "hasTerrace": hasTerrace,
-  //     "description": descriptionController.text.trim(),
-  //     "predictedPrice": "2,000,000 EGP",
-  //   };
-
-  //   setState(() {
-  //     ratedProperties.add(property);
-
-  //     // Clear form
-  //     selectedType = null;
-  //     cityController.clear();
-  //     locationController.clear();
-  //     bedroomsController.clear();
-  //     bathroomsController.clear();
-  //     sizeController.clear();
-  //     floorController.clear();
-  //     landAreaController.clear();
-  //     builtUpAreaController.clear();
-  //     numberOfFloorsController.clear();
-  //     descriptionController.clear();
-  //     furnished = null;
-  //     hasGarden = null;
-  //     hasPool = null;
-  //     hasTerrace = null;
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -390,29 +345,6 @@ class _RatePropertiesPageState extends State<RatePropertiesPage> {
             ],
 
             const SizedBox(height: 12),
-
-            // ElevatedButton(
-            //   onPressed: () {
-            //     _showRatingPopup();
-            //   },
-            //   style: ElevatedButton.styleFrom(
-            //     backgroundColor: navy,
-            //     shape: RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.circular(14),
-            //     ),
-            //     padding: const EdgeInsets.symmetric(vertical: 14),
-            //     elevation: 6,
-            //   ),
-            //   child: Text(
-            //     "Get a Rating",
-            //     style: TextStyle(
-            //       color: offWhite,
-            //       backgroundColor: navy,
-            //       fontSize: 16,
-            //       fontWeight: FontWeight.bold,
-            //     ),
-            //   ),
-            // ),
             SizedBox(height: 30,),
             Center(
               child: ElevatedButton(
