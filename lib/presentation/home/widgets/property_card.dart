@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/domain/entities/property_model.dart';
+import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
+import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
+import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_state.dart';
 
 class PropertyCard extends StatelessWidget {
   final PropertyModel property;
   final VoidCallback? onTap;
-  final VoidCallback? onFavoriteToggle;
+  //final VoidCallback? onFavoriteToggle;
 
   const PropertyCard({
     super.key,
     required this.property,
     required this.onTap,
-    required this.onFavoriteToggle,
+    
   });
 
   @override
@@ -75,28 +79,35 @@ class PropertyCard extends StatelessWidget {
                   ),
                   //3
                   Positioned(
-                    right: 8,
-                    top: 8,
-                    child: GestureDetector(
-                      onTap: onFavoriteToggle,
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          property.isfavorite
-                              ? Icons.favorite
-                              : Icons.favorite_border,
-                          size: 18,
-                          color: property.isfavorite
-                              ? Colors.red
-                              : AppColors.primaryNavy, //AppColors.gold
-                        ),
-                      ),
-                    ),
-                  ),
+  right: 8,
+  top: 8,
+  child: BlocBuilder<FavoriteBloc, FavoriteState>(
+    builder: (context, state) {
+      final isFav = state.isFavorite(property.id);
+
+      return GestureDetector(
+        onTap: () {
+          context
+              .read<FavoriteBloc>()
+              .add(FavoriteToggle(property.id));
+        },
+        child: Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.9),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            isFav ? Icons.favorite : Icons.favorite_border,
+            size: 18,
+            color: isFav ? Colors.red : AppColors.primaryNavy, 
+          ),
+        ),
+      );
+    },
+  ),
+),
+
                 ],
               ),
             ),

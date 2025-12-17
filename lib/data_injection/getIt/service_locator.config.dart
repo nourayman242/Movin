@@ -31,6 +31,9 @@ import 'package:movin/domain/repositories/register_repository.dart' as _i623;
 import 'package:movin/domain/repositories/reset_pass_repository.dart' as _i332;
 import 'package:movin/presentation/budget_calculator/managers/bc_bloc/loan_calc_bloc.dart'
     as _i872;
+import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart'
+    as _i841;
+import 'package:movin/presentation/fav_screen/manager/fav_hive.dart' as _i718;
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -46,6 +49,8 @@ extension GetItInjectableX on _i174.GetIt {
     final networkServices = _$NetworkServices();
     gh.factory<_i872.LoanCalcBloc>(() => _i872.LoanCalcBloc());
     gh.lazySingleton<_i361.Dio>(() => networkServices.dio);
+    gh.lazySingleton<_i718.FavoriteHiveService>(
+        () => _i718.FavoriteHiveService());
     gh.lazySingleton<_i332.ResetPasswordRepository>(() =>
         _i684.ResetPasswordRepositoryImpl(gh<_i295.ResetPasswordService>()));
     gh.lazySingleton<_i686.ForgetPassRepository>(
@@ -58,6 +63,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i736.OtpRepositoryImpl(gh<_i97.OtpServices>()));
     gh.lazySingleton<_i772.LoginRepository>(
         () => _i107.LoginRepositoryImpl(gh<_i633.LoginServices>()));
+    gh.factory<_i841.FavoriteBloc>(
+        () => _i841.FavoriteBloc(gh<_i718.FavoriteHiveService>()));
     gh.lazySingleton<_i623.RegisterRepository>(
         () => _i666.RegisterRepositoryImpl(gh<_i232.RegisterServices>()));
     return this;

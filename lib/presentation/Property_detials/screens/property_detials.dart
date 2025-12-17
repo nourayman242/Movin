@@ -9,7 +9,13 @@ import 'package:movin/presentation/home/widgets/property/tabs/property_tabs.dart
 import 'package:movin/presentation/home/widgets/property/title_card.dart';
 
 class PropertyDetailsScreen extends StatefulWidget {
-  const PropertyDetailsScreen({super.key});
+  final int propertyId; 
+
+  const PropertyDetailsScreen({
+    super.key,
+    required this.propertyId,
+  });
+  
 
   @override
   State<PropertyDetailsScreen> createState() => _PropertyDetailsScreenState();
@@ -45,8 +51,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
               children: [
                 PropertyImageSlider(
                   controller: controller.pageController,
-                  isFavorite: controller.isFavorite,
-                  onToggleFavorite: controller.toggleFavorite,
+                   propertyId: widget.propertyId,
                 ),
                 SizedBox(height: 16.h),
                 TitleCard(controller: controller),

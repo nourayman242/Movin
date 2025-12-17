@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/domain/entities/property_model.dart';
+import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
+import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
+import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_state.dart';
 
 class BrowsePropertyCard extends StatelessWidget {
   final PropertyModel property;
   final VoidCallback? onTap;
-  final VoidCallback? onFavoriteToggle;
+  //final VoidCallback? onFavoriteToggle;
 
   const BrowsePropertyCard({
     required this.property,
     required this.onTap,
-    required this.onFavoriteToggle,
+    //required this.onFavoriteToggle,
     super.key,
   });
 
@@ -68,20 +72,27 @@ class BrowsePropertyCard extends StatelessWidget {
                 Positioned(
                   top: 10,
                   right: 10,
-                  child: GestureDetector(
-                    onTap:onFavoriteToggle,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        property.isfavorite
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                       color: property.isfavorite
-                                ? Colors.red
-                                : AppColors.primaryNavy,
-                      ),
-                    ),
-                  ),
+                  child:BlocBuilder<FavoriteBloc, FavoriteState>(
+  builder: (context, state) {
+    final isFav = state.isFavorite(property.id);
+
+    return GestureDetector(
+      onTap: () {
+        context
+            .read<FavoriteBloc>()
+            .add(FavoriteToggle(property.id));
+      },
+      child: CircleAvatar(
+        backgroundColor: Colors.white,
+        child: Icon(
+          isFav ? Icons.favorite : Icons.favorite_border,
+          color: isFav ? Colors.red : AppColors.primaryNavy,
+        ),
+      ),
+    );
+  },
+),
+
                 ),
               ],
             ),

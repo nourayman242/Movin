@@ -1,5 +1,5 @@
 class PropertyModel {
-  final String id;
+  final int id;
   final String title;
   final String location;
   final String image;
@@ -8,7 +8,7 @@ class PropertyModel {
   final int beds;
   final int baths;
   final int sqft;
-  bool isfavorite;
+  //bool isfavorite;
 
   PropertyModel({
     required this.id,
@@ -20,6 +20,6 @@ class PropertyModel {
     required this.beds,
     required this.baths,
     required this.sqft,
-    this.isfavorite = false,
+   // this.isfavorite = false,
   });
 }

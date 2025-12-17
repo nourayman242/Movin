@@ -2,7 +2,7 @@ import 'package:movin/domain/entities/property_model.dart';
 
 List<PropertyModel> dummyProperties = [
   PropertyModel(
-    id: "1",
+    id: 1,
     title: "Modern Luxury Villa",
     location: "Dubai Marina",
     image: "assets/images/villa3.jpg",
@@ -13,7 +13,7 @@ List<PropertyModel> dummyProperties = [
     sqft: 3500,
   ),
   PropertyModel(
-    id: "2",
+    id: 2,
     title: "Skyline Apartment",
     location: "New York City",
     image: "assets/images/villa3.jpg",
@@ -24,7 +24,7 @@ List<PropertyModel> dummyProperties = [
     sqft: 1800,
   ),
   PropertyModel(
-    id: "3",
+    id: 3,
     title: "Commercial Office Space",
     location: "Cairo Downtown",
     image: "assets/images/villa3.jpg",
@@ -35,7 +35,7 @@ List<PropertyModel> dummyProperties = [
     sqft: 5000,
   ),
   PropertyModel(
-    id: "4",
+    id: 4,
     title: "Investment Villa",
     location: "Bali",
     image: "assets/images/villa3.jpg",
@@ -46,7 +46,7 @@ List<PropertyModel> dummyProperties = [
     sqft: 4200,
   ),
   PropertyModel(
-    id: "5",
+    id: 5,
     title: "Modern Luxury Villa",
     location: "Dubai Marina",
     image: "assets/images/villa3.jpg",
@@ -57,7 +57,7 @@ List<PropertyModel> dummyProperties = [
     sqft: 3500,
   ),
   PropertyModel(
-    id: "6",
+    id: 6,
     title: "Skyline Apartment",
     location: "New York City",
     image: "assets/images/villa3.jpg",
@@ -68,7 +68,7 @@ List<PropertyModel> dummyProperties = [
     sqft: 1800,
   ),
   PropertyModel(
-    id: "7",
+    id: 7,
     title: "Commercial Office Space",
     location: "Cairo Downtown",
     image: "assets/images/villa3.jpg",
@@ -79,7 +79,7 @@ List<PropertyModel> dummyProperties = [
     sqft: 5000,
   ),
   PropertyModel(
-    id: "8",
+    id: 8,
     title: "Investment Villa",
     location: "Bali",
     image: "assets/images/villa3.jpg",
@@ -90,7 +90,7 @@ List<PropertyModel> dummyProperties = [
     sqft: 4200,
   ),
   PropertyModel(
-    id: "9",
+    id: 9,
     title: "Modern Luxury Villa",
     location: "Dubai Marina",
     image: "assets/images/villa3.jpg",
@@ -101,7 +101,7 @@ List<PropertyModel> dummyProperties = [
     sqft: 3500,
   ),
   PropertyModel(
-    id: "10",
+    id: 10,
     title: "Skyline Apartment",
     location: "New York City",
     image: "assets/images/villa3.jpg",
@@ -112,7 +112,7 @@ List<PropertyModel> dummyProperties = [
     sqft: 1800,
   ),
   PropertyModel(
-    id: "11",
+    id: 11,
     title: "Commercial Office Space",
     location: "Cairo Downtown",
     image: "assets/images/villa3.jpg",
@@ -123,7 +123,7 @@ List<PropertyModel> dummyProperties = [
     sqft: 5000,
   ),
   PropertyModel(
-    id: "12",
+    id: 12,
     title: "Investment Villa",
     location: "Bali",
     image: "assets/images/villa3.jpg",
@@ -134,7 +134,7 @@ List<PropertyModel> dummyProperties = [
     sqft: 4200,
   ),
   PropertyModel(
-    id: "13",
+    id: 13,
     title: "Modern Luxury Villa",
     location: "Dubai Marina",
     image: "assets/images/villa3.jpg",
@@ -145,7 +145,7 @@ List<PropertyModel> dummyProperties = [
     sqft: 3500,
   ),
   PropertyModel(
-    id: "14",
+    id: 14,
     title: "Skyline Apartment",
     location: "New York City",
     image: "assets/images/villa3.jpg",
@@ -156,7 +156,7 @@ List<PropertyModel> dummyProperties = [
     sqft: 1800,
   ),
   PropertyModel(
-    id: "15",
+    id: 15,
     title: "Commercial Office Space",
     location: "Cairo Downtown",
     image: "assets/images/villa3.jpg",
@@ -167,7 +167,7 @@ List<PropertyModel> dummyProperties = [
     sqft: 5000,
   ),
   PropertyModel(
-    id: "16",
+    id: 16,
     title: "Investment Villa",
     location: "Bali",
     image: "assets/images/villa3.jpg",

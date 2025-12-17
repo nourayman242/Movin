@@ -17,7 +17,7 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
 
   List<PropertyModel> historyProperties = [
     PropertyModel(
-      id: '1',
+      id: 1,
       title: "Modern Apartment",
       location: "Zamalek, Cairo",
       image: "assets/images/villa3.jpg",
@@ -26,10 +26,10 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
       beds: 3,
       baths: 2,
       sqft: 1450,
-      isfavorite: false,
+      
     ),
     PropertyModel(
-      id: '2',
+      id: 2,
       title: "Villa with Garden",
       location: "Sheikh Zayed",
       image: "assets/images/villa3.jpg",
@@ -38,7 +38,6 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
       beds: 5,
       baths: 4,
       sqft: 4500,
-      isfavorite: true,
     ),
   ];
 
@@ -48,12 +47,12 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
     });
   }
 
-  void toggleFavorite(int index) {
-    setState(() {
-      historyProperties[index].isfavorite =
-          !historyProperties[index].isfavorite;
-    });
-  }
+  // void toggleFavorite(int index) {
+  //   setState(() {
+  //     historyProperties[index].isfavorite =
+  //         !historyProperties[index].isfavorite;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -140,11 +139,11 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PropertyDetailsScreen(),
+                          builder: (context) => PropertyDetailsScreen(propertyId: property.id,),
                         ),
                       );
                     },
-                    onFavoriteToggle: () => toggleFavorite(index),
+                    //onFavoriteToggle: () => toggleFavorite(index),
                   );
                 },
               ),

@@ -25,7 +25,7 @@ class _BrowsePropertiesScreenState extends State<BrowsePropertiesScreen> {
   void navigateToDetails(property) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => PropertyDetailsScreen()),
+      MaterialPageRoute(builder: (context) => PropertyDetailsScreen(propertyId: property.id,)),
     );
   }
 
@@ -76,7 +76,7 @@ class _BrowsePropertiesScreenState extends State<BrowsePropertiesScreen> {
                   return BrowsePropertyCard(
                     property: property,
                     onTap: () => navigateToDetails(property),
-                    onFavoriteToggle: () => toggleFavorite(property),
+                    //onFavoriteToggle: () => toggleFavorite(property),
                   );
                 },
               ),

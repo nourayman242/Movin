@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
+import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
+import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_state.dart';
 import 'package:movin/presentation/home/widgets/shared/circle_button.dart';
 
 
 class PropertyImageSlider extends StatelessWidget {
   final PageController controller;
-  final bool isFavorite;
-  final VoidCallback onToggleFavorite;
+ final int propertyId;
 
   const PropertyImageSlider({
     super.key,
     required this.controller,
-    required this.isFavorite,
-    required this.onToggleFavorite,
+    required this.propertyId,
   });
 
   @override
@@ -55,10 +57,22 @@ class PropertyImageSlider extends StatelessWidget {
             children: [
               CircleButton(icon: Icons.share, onTap: () {}),
               SizedBox(width: 10.w),
-              CircleButton(
-                icon: isFavorite ? Icons.favorite : Icons.favorite_border,
-                color: isFavorite ? Colors.red : null,
-                onTap: onToggleFavorite,
+
+
+               BlocBuilder<FavoriteBloc, FavoriteState>(
+                builder: (context, state) {
+                  final isFav = state.isFavorite(propertyId);
+
+                  return CircleButton(
+                    icon: isFav ? Icons.favorite : Icons.favorite_border,
+                    color: isFav ? Colors.red : null,
+                    onTap: () {
+                      context
+                          .read<FavoriteBloc>()
+                          .add(FavoriteToggle(propertyId));
+                    },
+                  );
+                },
               ),
             ],
           ),
