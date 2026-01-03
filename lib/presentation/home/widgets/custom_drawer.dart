@@ -8,6 +8,7 @@ import 'package:movin/presentation/home/inner_pages/view_history_page.dart';
 import 'package:movin/presentation/home/widgets/drawer_header.dart';
 import 'package:movin/presentation/home/widgets/drawer_item.dart';
 import 'package:movin/presentation/home/widgets/mode_toggle_statement.dart';
+import 'package:movin/presentation/profile/profile_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -23,7 +24,16 @@ class CustomDrawer extends StatelessWidget {
         backgroundColor: AppColors.background,
         child: Column(
           children: [
-            const CustomDrawerHeader(),
+            GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const ProfileScreen(),
+                    ),
+                  );
+                },
+              child: const CustomDrawerHeader()),
             const Divider(
               thickness: 1,
               color: Color.fromARGB(255, 178, 178, 180),
