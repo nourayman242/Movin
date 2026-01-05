@@ -8,7 +8,7 @@ import 'package:movin/data/api_services/register_services.dart';
 abstract class NetworkServices {
   @lazySingleton
   Dio get dio {
-    final base = 'https://movin-app-production.up.railway.app';
+    final base = 'https://movin-oipd650to-malakkhaled22s-projects.vercel.app';
     
     // //'http://192.168.1.16:5000';
     // kIsWeb
