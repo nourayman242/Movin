@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/domain/entities/property_model.dart';
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
 
 import 'package:movin/presentation/browse_property/screens/browse_properties.dart';
 import 'package:movin/presentation/browse_property/widgets/dummy_properties.dart';
+import 'package:movin/presentation/fav_screen/screens/fav_screen.dart';
 
 import 'package:movin/presentation/home/screens/filter_screen.dart';
 import 'package:movin/presentation/home/widgets/custom_drawer.dart';
@@ -22,156 +22,7 @@ class BuyerHome extends StatefulWidget {
 }
 
 class _BuyerHomeState extends State<BuyerHome> {
-  // final List<PropertyModel> recommendedWRecent = [
-  //   PropertyModel(
-  //     id: "1",
-  //     title: "Modern Apartment",
-  //     location: "New Cairo",
-  //     image: "assets/images/villa3.jpg",
-  //     tag: "For Rent",
-  //     price: "250,000 EGP / month",
-  //     beds: 3,
-  //     baths: 2,
-  //     sqft: 1200,
-  //   ),
-  //   PropertyModel(
-  //     id: "2",
-  //     title: "Luxury Villa",
-  //     location: "6th October",
-  //     image: "assets/images/villa3.jpg",
-  //     tag: "For Sale",
-  //     price: "850,000 EGP",
-  //     beds: 5,
-  //     baths: 4,
-  //     sqft: 3200,
-  //   ),
-  //   PropertyModel(
-  //     id: "3",
-  //     title: "Luxury Villa",
-  //     location: "6th October",
-  //     image: "assets/images/villa3.jpg",
-  //     tag: "For Sale",
-  //     price: "850,000 EGP",
-  //     beds: 5,
-  //     baths: 4,
-  //     sqft: 3200,
-  //   ),
-  //   PropertyModel(
-  //     id: "4",
-  //     title: "Modern Apartment",
-  //     location: "New Cairo",
-  //     image: "assets/images/villa3.jpg",
-  //     tag: "For Rent",
-  //     price: "250,000 EGP / month",
-  //     beds: 3,
-  //     baths: 2,
-  //     sqft: 1200,
-  //   ),
-  //   PropertyModel(
-  //     id: "5",
-  //     title: "Luxury Villa",
-  //     location: "6th October",
-  //     image: "assets/images/villa3.jpg",
-  //     tag: "For Sale",
-  //     price: "850,000 EGP",
-  //     beds: 5,
-  //     baths: 4,
-  //     sqft: 3200,
-  //   ),
-  //   PropertyModel(
-  //     id: "6",
-  //     title: "Luxury Villa",
-  //     location: "6th October",
-  //     image: "assets/images/villa3.jpg",
-  //     tag: "For Sale",
-  //     price: "850,000 EGP",
-  //     beds: 5,
-  //     baths: 4,
-  //     sqft: 3200,
-  //   ),
-  // ];
-  // final List<PropertyModel> recent = [
-  //   PropertyModel(
-  //     id: "1",
-  //     title: "Modern Apartment",
-  //     location: "New Cairo",
-  //     image: "assets/images/villa3.jpg",
-  //     tag: "For Rent",
-  //     price: "250,000 EGP / month",
-  //     beds: 3,
-  //     baths: 2,
-  //     sqft: 1200,
-  //   ),
-  //   PropertyModel(
-  //     id: "2",
-  //     title: "Luxury Villa",
-  //     location: "6th October",
-  //     image: "assets/images/villa3.jpg",
-  //     tag: "For Sale",
-  //     price: "850,000 EGP",
-  //     beds: 5,
-  //     baths: 4,
-  //     sqft: 3200,
-  //   ),
-  //   PropertyModel(
-  //     id: "3",
-  //     title: "Luxury Villa",
-  //     location: "6th October",
-  //     image: "assets/images/villa3.jpg",
-  //     tag: "For Sale",
-  //     price: "850,000 EGP",
-  //     beds: 5,
-  //     baths: 4,
-  //     sqft: 3200,
-  //   ),
-  //   PropertyModel(
-  //     id: "4",
-  //     title: "Modern Apartment",
-  //     location: "New Cairo",
-  //     image: "assets/images/villa3.jpg",
-  //     tag: "For Rent",
-  //     price: "250,000 EGP / month",
-  //     beds: 3,
-  //     baths: 2,
-  //     sqft: 1200,
-  //   ),
-  //   PropertyModel(
-  //     id: "5",
-  //     title: "Luxury Villa",
-  //     location: "6th October",
-  //     image: "assets/images/villa3.jpg",
-  //     tag: "For Sale",
-  //     price: "850,000 EGP",
-  //     beds: 5,
-  //     baths: 4,
-  //     sqft: 3200,
-  //   ),
-  //   PropertyModel(
-  //     id: "6",
-  //     title: "Luxury Villa",
-  //     location: "6th October",
-  //     image: "assets/images/villa3.jpg",
-  //     tag: "For Sale",
-  //     price: "850,000 EGP",
-  //     beds: 5,
-  //     baths: 4,
-  //     sqft: 3200,
-  //   ),
-  // ];
   String selectedCategory = "For Sale";
-
-  void navigateToPropertyDetails() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => PropertyDetailsScreen()),
-    );
-  }
-
-  void toggleFavorite(PropertyModel property) {
-    setState(() {
-      property.isfavorite = !property.isfavorite;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +79,14 @@ class _BuyerHomeState extends State<BuyerHome> {
                         const SizedBox(width: 12),
 
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const FavScreen(),
+                              ),
+                            );
+                          },
                           child: iconContainer(Icons.favorite_border),
                         ),
                       ],
@@ -442,8 +300,15 @@ class _BuyerHomeState extends State<BuyerHome> {
                 return PropertyCard(
                   property: property,
                   /////////////////////////////////////////
-                  onTap: navigateToPropertyDetails,
-                  onFavoriteToggle: () => toggleFavorite(property),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            PropertyDetailsScreen(propertyId: property.id),
+                      ),
+                    );
+                  },
                 );
               },
             ),
@@ -497,30 +362,16 @@ class _BuyerHomeState extends State<BuyerHome> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PropertyDetailsScreen(),
+                        builder: (context) => PropertyDetailsScreen(
+                          propertyId: property.id,
+                        ), //////////////
                       ),
                     );
-                  },
-                  onFavoriteToggle: () {
-                    setState(() {
-                      property.isfavorite = !property.isfavorite;
-                    });
                   },
                 );
               },
             ),
           ),
-
-          // TextButton(
-          //   // remove this button, only do for check the PropertyDetailsScreen
-          //   onPressed: () {
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(builder: (_) => PropertyDetailsScreen()),
-          //     );
-          //   },
-          //   child: Text('PropertyDetails'),
-          // ),
         ],
       ),
     );

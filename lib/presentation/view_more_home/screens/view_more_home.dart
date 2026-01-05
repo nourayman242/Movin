@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/domain/entities/property_model.dart';
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
 import 'package:movin/presentation/browse_property/widgets/browse_property_card.dart';
 import 'package:movin/presentation/browse_property/widgets/dummy_properties.dart';
@@ -14,16 +15,19 @@ class ViewMoreHome extends StatefulWidget {
 }
 
 class _ViewMoreHomeState extends State<ViewMoreHome> {
-  void toggleFavorite(property) {
-    setState(() {
-      property.isfavorite = !property.isfavorite;
-    });
-  }
+  
+  // void toggleFavorite(PropertyModel property) {
+  //   setState(() {
+  //     property.isfavorite = !property.isfavorite;
+  //   });
+  // }
 
-  void navigateToDetails(property) {
+  void navigateToDetails(PropertyModel property) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => PropertyDetailsScreen()),
+      MaterialPageRoute(
+        builder: (context) => PropertyDetailsScreen(propertyId: property.id),
+      ),
     );
   }
 
@@ -72,7 +76,7 @@ class _ViewMoreHomeState extends State<ViewMoreHome> {
                   return BrowsePropertyCard(
                     property: property,
                     onTap: () => navigateToDetails(property),
-                    onFavoriteToggle: () => toggleFavorite(property),
+                   // onFavoriteToggle: () => toggleFavorite(property),
                   );
                 },
               ),
