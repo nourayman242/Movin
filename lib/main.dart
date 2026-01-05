@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
-<<<<<<< HEAD
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
-import 'package:movin/presentation/fav_screen/manager/fav_hive.dart';
-=======
 import 'package:movin/presentation/add_property/add_property_screen.dart';
->>>>>>> 494d6736646b5949ae6cbb4af331bf53ff99d22a
 import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
 import 'package:movin/presentation/home/screens/home.dart';
@@ -34,26 +29,10 @@ void main() async {
 }
 
 class Movin extends StatelessWidget {
-  
-  const Movin({super.key,});
+  const Movin({super.key});
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-    return  MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: const Splash(),
-        routes: {
-          '/onboarding': (_) => const OnboardingScreen(),
-          '/login': (_) => const LoginScreen(),
-          '/role': (_) => const RoleSelection(),
-          '/buyerhome': (_) => const BuyerHome(),
-          '/sellerhome': (_) => const SellerHome(),
-          '/forgotpassword': (_) => const ForgotPasswordPage(),
-          '/home':(_)=> const HomePage(),
-        },
-      
-=======
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const Splash(),
@@ -67,7 +46,6 @@ class Movin extends StatelessWidget {
         '/home': (_) => const HomePage(),
         '/addproperty': (_) => const AddPropertyScreen(),
       },
->>>>>>> 494d6736646b5949ae6cbb4af331bf53ff99d22a
     );
   }
 }
