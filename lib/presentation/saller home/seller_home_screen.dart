@@ -108,19 +108,13 @@ class _SellerHomeState extends State<SellerHome>
                                       ),
                                       onPressed: () {
                                         Navigator.pushNamed(
-
-
                                           context,
                                           '/addproperty',
                                         );
-
-                                          
-
                                       },
                                     ),
                                   ),
                                   iconContainer(
-                          
                                     Icons.notifications_none_outlined,
                                     hasBadge: true,
                                   ),
