@@ -48,12 +48,6 @@ dependencies:
   provider: ^6.1.5+1
   image_picker: ^1.2.1
 
-
-  
-
-
-
-
 dev_dependencies:
   build_runner: ^2.4.6
 

@@ -7,6 +7,8 @@ import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 
 
+
+
 import 'package:movin/presentation/add_property/add_property_screen.dart';
 import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
@@ -48,7 +50,6 @@ class Movin extends StatelessWidget {
         '/forgotpassword': (_) => const ForgotPasswordPage(),
         '/addproperty': (_) => const AddPropertyScreen(),
         '/home':(_)=> const HomePage(),
-
 
       },
     );
