@@ -120,6 +120,7 @@ class _SellerHomeState extends State<SellerHome>
                                     ),
                                   ),
                                   iconContainer(
+                          
                                     Icons.notifications_none_outlined,
                                     hasBadge: true,
                                   ),

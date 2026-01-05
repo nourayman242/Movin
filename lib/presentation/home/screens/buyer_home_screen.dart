@@ -7,7 +7,6 @@ import 'package:movin/presentation/browse_property/screens/browse_properties.dar
 import 'package:movin/presentation/browse_property/widgets/dummy_properties.dart';
 
 import 'package:movin/presentation/home/screens/filter_screen.dart';
-import 'package:movin/presentation/home/widgets/categoty_screen.dart';
 import 'package:movin/presentation/home/widgets/custom_drawer.dart';
 import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
 import 'package:movin/presentation/home/widgets/property_card.dart';

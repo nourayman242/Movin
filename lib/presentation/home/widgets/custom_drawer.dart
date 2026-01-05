@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/budget_calculator/screens/budget_calculator_screen.dart';
-import 'package:movin/presentation/home/inner_pages/profile_page.dart';
 import 'package:movin/presentation/home/inner_pages/rate_properties_page.dart';
 import 'package:movin/presentation/home/inner_pages/settings_page.dart';
 import 'package:movin/presentation/home/inner_pages/view_history_page.dart';
@@ -76,15 +75,15 @@ class CustomDrawer extends StatelessWidget {
                           _navigateTo(context, const RatePropertiesPage()),
                     ),
                     SizedBox(height: 15),
-                    DrawerItem(
-                      icon: Icons.person_outline,
-                      text: 'Profile',
-                      iconColor: Colors.pinkAccent,
-                      circleColor: Colors.pinkAccent.withOpacity(0.1),
-                      color: AppColors.navyLight,
-                      onTap: () => _navigateTo(context, const ProfilePage()),
-                    ),
-                    SizedBox(height: 15),
+                    // DrawerItem(
+                    //   icon: Icons.person_outline,
+                    //   text: 'Profile',
+                    //   iconColor: Colors.pinkAccent,
+                    //   circleColor: Colors.pinkAccent.withOpacity(0.1),
+                    //   color: AppColors.navyLight,
+                    //   onTap: () => _navigateTo(context, const ProfilePage()),
+                    // ),
+                    //SizedBox(height: 15),
                     DrawerItem(
                       icon: Icons.history_outlined,
                       text: 'View History',

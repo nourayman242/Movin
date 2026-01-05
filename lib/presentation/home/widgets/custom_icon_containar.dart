@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
 
-Widget iconContainer(IconData icon, {bool hasBadge = false}) {
+
+Widget iconContainer(
+  
+  IconData icon, {
+  bool hasBadge = false,
+}) {
   return Stack(
     clipBehavior: Clip.none,
     children: [
