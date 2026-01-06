@@ -7,9 +7,9 @@ import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 
 
-
-
 import 'package:movin/presentation/add_property/add_property_screen.dart';
+
+
 import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
 import 'package:movin/presentation/home/screens/home.dart';
@@ -18,6 +18,8 @@ import 'package:movin/presentation/login/screens/forgot_password_page.dart';
 import 'package:movin/presentation/login/screens/login_screen.dart';
 import 'package:movin/presentation/onboarding/screens/onboarding.dart';
 import 'package:movin/presentation/role_selection/screens/role_selection.dart';
+import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc.dart';
+import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
 import 'package:movin/presentation/splash_screen/screens/splash.dart';
 
 void main() async {
@@ -26,8 +28,11 @@ void main() async {
   await Hive.initFlutter();
   await setUpServiceLocator();
   runApp(
-    BlocProvider(
-      create: (_) => getIt<FavoriteBloc>()..add(FavoriteLoad()),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => getIt<FavoriteBloc>()..add(FavoriteLoad())),
+        BlocProvider(create: (_) => getIt<SettingsBloc>()..add(LoadSettings())),
+      ],
       child: Movin(),
     ),
   );
@@ -48,10 +53,14 @@ class Movin extends StatelessWidget {
         '/buyerhome': (_) => const BuyerHome(),
         '/sellerhome': (_) => const SellerHome(),
         '/forgotpassword': (_) => const ForgotPasswordPage(),
+
+
+        '/home': (_) => const HomePage(),
+
         '/addproperty': (_) => const AddPropertyScreen(),
-        '/home':(_)=> const HomePage(),
 
       },
     );
   }
+
 }
