@@ -13,19 +13,11 @@ class RegisterDto {
     required this.phone,
   });
 
-  // factory RegisterDto.fromJson(Map<String, dynamic> json) {
-  //   return RegisterDto(
-  //     username: json['username'],
-  //     email: json['email'],
-  //     password: json['password'],
-  //     phone: json['phone'].toString(),
-  //   );
-  // }
   factory RegisterDto.fromJson(Map<String, dynamic> json) {
   return RegisterDto(
     username: json['username'] ?? '',
     email: json['email'] ?? '',
-    password: '', // backend NEVER returns password
+    password: '',
     phone: json['phone']?.toString() ?? '',
   );
 }
