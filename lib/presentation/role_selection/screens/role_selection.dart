@@ -51,7 +51,15 @@ class _RoleSelectionState extends State<RoleSelection> {
         duration: const Duration(milliseconds: 160),
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: bg,
+          //
+          color: AppColors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
           border: border,
           borderRadius: BorderRadius.circular(14),
         ),
@@ -74,7 +82,7 @@ class _RoleSelectionState extends State<RoleSelection> {
               title,
               style: AppTextStyles.heading.copyWith(
                 fontSize: 18,
-                color: AppColors.white,
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 12),
@@ -96,7 +104,8 @@ class _RoleSelectionState extends State<RoleSelection> {
                       child: Text(
                         b,
                         style: AppTextStyles.subHeading.copyWith(
-                          color: Colors.white70,
+                          //color: Colors.white70,
+                          color: const Color.fromARGB(255, 49, 46, 46),
                           fontSize: 13,
                         ),
                       ),
@@ -147,78 +156,154 @@ class _RoleSelectionState extends State<RoleSelection> {
     ];
 
     return Scaffold(
-      backgroundColor: AppColors.primaryNavy,
+      // backgroundColor: AppColors.primaryNavy,
+      backgroundColor: AppColors.white,
+
       appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: isWied ? 48 : 18,
-            vertical: 20,
-          ),
-          child: Column(
-            children: [
-              Text(
-                "How would you like to use Movin?",
-                style: AppTextStyles.heading.copyWith(
-                  color: AppColors.white,
-                  fontSize: 22,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: isWied ? 48 : 18,
+              vertical: 20,
+            ),
+            child: Column(
+              children: [
+                Text(
+                  "How would you like to use Movin?",
+                  style: AppTextStyles.heading.copyWith(
+                    color: Colors.black,
+                    fontSize: 22,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              Text(
-                "Choose your preffered role to get started",
-                style: AppTextStyles.subHeading.copyWith(color: Colors.white70),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 28),
+                const SizedBox(height: 24),
+                Text(
+                  "Choose your preffered role to get started",
+                  style: AppTextStyles.subHeading.copyWith(
+                    color: AppColors.grey,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 28),
 
-              //responsive
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final double spacing = 16;
-                  final double totalWidth = constraints.maxWidth;
-                  final int colCount = columns;
-                  final double itemWidth =
-                      (totalWidth - (spacing * (colCount - 1))) / colCount;
-                  return Wrap(
-                    spacing: spacing,
-                    runSpacing: 16,
-                    children: cards
-                        .map((w) => SizedBox(width: itemWidth, child: w))
-                        .toList(),
-                  );
-                },
-              ),
-              const Spacer(),
-              Row(
-                children: [
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: _confirmRole,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.gold,
-                        foregroundColor: AppColors.navyDark,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final double spacing = 16;
+                    final double totalWidth = constraints.maxWidth;
+                    final int colCount = columns;
+                    final double itemWidth =
+                        (totalWidth - (spacing * (colCount - 1))) / colCount;
+
+                    return Wrap(
+                      spacing: spacing,
+                      runSpacing: 16,
+                      children: cards
+                          .map((w) => SizedBox(width: itemWidth, child: w))
+                          .toList(),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 120),
+
+                //
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _confirmRole,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.gold,
+                      foregroundColor: AppColors.navyDark,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text(
-                        'Continue',
-                        style: AppTextStyles.button.copyWith(
-                          color: AppColors.navyDark,
-                        ),
+                    ),
+                    child: Text(
+                      'Continue',
+                      style: AppTextStyles.button.copyWith(
+                        color: AppColors.navyDark,
                       ),
                     ),
                   ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
+
+      //  SafeArea(
+      //   child: Padding(
+      //     padding: EdgeInsets.symmetric(
+      //       horizontal: isWied ? 48 : 18,
+      //       vertical: 20,
+      //     ),
+      //     child: Column(
+      //       children: [
+      //         Text(
+      //           "How would you like to use Movin?",
+      //           style: AppTextStyles.heading.copyWith(
+      //             color: Colors.black,
+      //             fontSize: 22,
+      //           ),
+      //           textAlign: TextAlign.center,
+      //         ),
+      //         const SizedBox(height: 24),
+      //         Text(
+      //           "Choose your preffered role to get started",
+      //           style: AppTextStyles.subHeading.copyWith(color: AppColors.grey),
+      //           textAlign: TextAlign.center,
+      //         ),
+      //         const SizedBox(height: 28),
+
+      //         //responsive
+      //         LayoutBuilder(
+      //           builder: (context, constraints) {
+      //             final double spacing = 16;
+      //             final double totalWidth = constraints.maxWidth;
+      //             final int colCount = columns;
+      //             final double itemWidth =
+      //                 (totalWidth - (spacing * (colCount - 1))) / colCount;
+      //             return Wrap(
+      //               spacing: spacing,
+      //               runSpacing: 16,
+      //               children: cards
+      //                   .map((w) => SizedBox(width: itemWidth, child: w))
+      //                   .toList(),
+      //             );
+      //           },
+      //         ),
+      //         const Spacer(),
+      //         Row(
+      //           children: [
+      //             const SizedBox(width: 12),
+      //             Expanded(
+      //               child: ElevatedButton(
+      //                 onPressed: _confirmRole,
+      //                 style: ElevatedButton.styleFrom(
+      //                   backgroundColor: AppColors.gold,
+      //                   foregroundColor: AppColors.navyDark,
+      //                   padding: const EdgeInsets.symmetric(vertical: 14),
+      //                   shape: RoundedRectangleBorder(
+      //                     borderRadius: BorderRadius.circular(10),
+      //                   ),
+      //                 ),
+      //                 child: Text(
+      //                   'Continue',
+      //                   style: AppTextStyles.button.copyWith(
+      //                     color: AppColors.navyDark,
+      //                   ),
+      //                 ),
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //       ],
+      //     ),
+      //   ),
+      // ),
     );
   }
 }
