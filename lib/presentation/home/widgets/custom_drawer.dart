@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/data_injection/getIt/service_locator.dart';
+
 import 'package:movin/presentation/budget_calculator/screens/budget_calculator_screen.dart';
 import 'package:movin/presentation/home/inner_pages/rate_properties_page.dart';
-import 'package:movin/presentation/home/inner_pages/settings_page.dart';
+
 import 'package:movin/presentation/home/inner_pages/view_history_page.dart';
 import 'package:movin/presentation/home/widgets/drawer_header.dart';
 import 'package:movin/presentation/home/widgets/drawer_item.dart';

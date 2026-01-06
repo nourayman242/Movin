@@ -2,14 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
-
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
-
-
 import 'package:movin/presentation/add_property/add_property_screen.dart';
-
-
 import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
 import 'package:movin/presentation/home/screens/home.dart';
@@ -53,14 +48,9 @@ class Movin extends StatelessWidget {
         '/buyerhome': (_) => const BuyerHome(),
         '/sellerhome': (_) => const SellerHome(),
         '/forgotpassword': (_) => const ForgotPasswordPage(),
-
-
         '/home': (_) => const HomePage(),
-
         '/addproperty': (_) => const AddPropertyScreen(),
-
       },
     );
   }
-
 }
