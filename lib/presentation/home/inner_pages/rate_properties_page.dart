@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movin/presentation/add_property/add_property_screen.dart';
 
 class RatePropertiesPage extends StatefulWidget {
   const RatePropertiesPage({super.key});
@@ -48,18 +49,24 @@ class _RatePropertiesPageState extends State<RatePropertiesPage> {
 
     switch (selectedType) {
       case "Apartment":
-        if (bedroomsController.text.trim().isEmpty) missingFields.add("Bedrooms");
-        if (bathroomsController.text.trim().isEmpty) missingFields.add("Bathrooms");
+        if (bedroomsController.text.trim().isEmpty)
+          missingFields.add("Bedrooms");
+        if (bathroomsController.text.trim().isEmpty)
+          missingFields.add("Bathrooms");
         if (sizeController.text.trim().isEmpty) missingFields.add("Size");
         if (floorController.text.trim().isEmpty) missingFields.add("Floor");
         if (furnished == null) missingFields.add("Furnished");
         break;
 
       case "Villa":
-        if (bedroomsController.text.trim().isEmpty) missingFields.add("Bedrooms");
-        if (bathroomsController.text.trim().isEmpty) missingFields.add("Bathrooms");
-        if (landAreaController.text.trim().isEmpty) missingFields.add("Land Area");
-        if (builtUpAreaController.text.trim().isEmpty) missingFields.add("Built-up Area");
+        if (bedroomsController.text.trim().isEmpty)
+          missingFields.add("Bedrooms");
+        if (bathroomsController.text.trim().isEmpty)
+          missingFields.add("Bathrooms");
+        if (landAreaController.text.trim().isEmpty)
+          missingFields.add("Land Area");
+        if (builtUpAreaController.text.trim().isEmpty)
+          missingFields.add("Built-up Area");
         if (numberOfFloorsController.text.trim().isEmpty)
           missingFields.add("Number of Floors");
         if (hasGarden == null) missingFields.add("Has Garden");
@@ -72,8 +79,10 @@ class _RatePropertiesPageState extends State<RatePropertiesPage> {
         break;
 
       case "Penthouse":
-        if (bedroomsController.text.trim().isEmpty) missingFields.add("Bedrooms");
-        if (bathroomsController.text.trim().isEmpty) missingFields.add("Bathrooms");
+        if (bedroomsController.text.trim().isEmpty)
+          missingFields.add("Bedrooms");
+        if (bathroomsController.text.trim().isEmpty)
+          missingFields.add("Bathrooms");
         if (sizeController.text.trim().isEmpty) missingFields.add("Size");
         if (floorController.text.trim().isEmpty) missingFields.add("Floor");
         if (hasTerrace == null) missingFields.add("Has Terrace");
@@ -81,17 +90,20 @@ class _RatePropertiesPageState extends State<RatePropertiesPage> {
     }
 
     if (missingFields.isNotEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-          "⚠️ Please fill the required fields: ${missingFields.join(", ")}",
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "⚠️ Please fill the required fields: ${missingFields.join(", ")}",
+          ),
+          backgroundColor: Colors.redAccent,
         ),
-        backgroundColor: Colors.redAccent,
-      ));
+      );
       return false;
     }
 
     return true;
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -345,11 +357,11 @@ class _RatePropertiesPageState extends State<RatePropertiesPage> {
             ],
 
             const SizedBox(height: 12),
-            SizedBox(height: 30,),
+            SizedBox(height: 30),
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  if(_validate()){
+                  if (_validate()) {
                     _showRatingPopup();
                   }
                 },
@@ -541,7 +553,12 @@ class _RatePropertiesPageState extends State<RatePropertiesPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddPropertyScreen(),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: navy,
