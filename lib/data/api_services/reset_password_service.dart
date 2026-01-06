@@ -6,8 +6,13 @@ part 'reset_password_service.g.dart';
 
 @RestApi()
 abstract class ResetPasswordService {
-  factory ResetPasswordService(Dio dio, {String baseUrl}) = _ResetPasswordService;
+  factory ResetPasswordService(
+    Dio dio, {
+    String baseUrl,
+  }) = _ResetPasswordService;
 
   @POST("/api/auth/reset-password")
-  Future<void> resetPassword(@Body() ResetPasswordDto dto);
+  Future<void> resetPassword(
+    @Body() ResetPasswordDto dto,
+  );
 }

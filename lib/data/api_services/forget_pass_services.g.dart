@@ -8,8 +8,8 @@ part of 'forget_pass_services.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
 
-class _ForgetPassServices implements ForgetPassServices {
-  _ForgetPassServices(
+class _ForgotPasswordService implements ForgotPasswordService {
+  _ForgotPasswordService(
     this._dio, {
     this.baseUrl,
     this.errorLogger,
@@ -22,13 +22,13 @@ class _ForgetPassServices implements ForgetPassServices {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<ForgetPassResponse> sendForgetPassword(ForgetPassDto dto) async {
+  Future<void> sendOtp(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(dto.toJson());
-    final _options = _setStreamType<ForgetPassResponse>(Options(
+    _data.addAll(body);
+    final _options = _setStreamType<void>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -44,15 +44,7 @@ class _ForgetPassServices implements ForgetPassServices {
           _dio.options.baseUrl,
           baseUrl,
         )));
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ForgetPassResponse _value;
-    try {
-      _value = ForgetPassResponse.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
+    await _dio.fetch<void>(_options);
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

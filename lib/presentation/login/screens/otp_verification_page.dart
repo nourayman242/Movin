@@ -106,7 +106,8 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ResetPasswordPage(email: '',),
+                      builder: (context) =>
+                          ResetPasswordPage(email: widget.email),
                     ),
                   );
                 } else if (state is OtpFailure) {
