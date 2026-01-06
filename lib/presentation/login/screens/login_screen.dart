@@ -114,6 +114,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           await SharedHelper.setLoggedIn(true);
 
                           if (!context.mounted) return;
+                           ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Login successfully')),
+                        );
 
                           Navigator.pushReplacementNamed(context, '/role').then((
                             _,
