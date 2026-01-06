@@ -1,4 +1,5 @@
 
-abstract class ForgetPassRepository {
-  Future<void> sendOtp(String email);
+abstract class ForgotPasswordRepository {
+  Future<void> sendOtp({required String email});
+
 }

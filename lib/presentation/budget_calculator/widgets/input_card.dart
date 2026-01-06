@@ -12,6 +12,7 @@ class InputsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: AppColors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       elevation: 2,
       child: Padding(
@@ -53,8 +54,9 @@ class InputsCard extends StatelessWidget {
               isInt: true,
               valueSelector: (state) => state.loan.loanTermYears.toDouble(),
               valueFormatter: (v) => '${v.toInt()} years',
-              onChanged: (context, v) =>
-                  context.read<LoanCalcBloc>().add(LoanTermYearsChanged(v.toInt())),
+              onChanged: (context, v) => context.read<LoanCalcBloc>().add(
+                LoanTermYearsChanged(v.toInt()),
+              ),
             ),
           ],
         ),

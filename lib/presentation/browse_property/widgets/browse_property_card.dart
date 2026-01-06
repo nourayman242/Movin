@@ -41,7 +41,7 @@ class BrowsePropertyCard extends StatelessWidget {
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(20),
                   ),
-                  child: Image.network(
+                  child: Image.asset(
                     property.image,
                     height: 200,
                     width: double.infinity,

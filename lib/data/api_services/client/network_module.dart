@@ -1,8 +1,12 @@
 import 'package:dio/dio.dart';
 
 import 'package:injectable/injectable.dart';
+import 'package:movin/data/api_services/forget_pass_services.dart';
 import 'package:movin/data/api_services/login_services.dart';
 import 'package:movin/data/api_services/register_services.dart';
+import 'package:movin/data/repositories/forget_pass_repository_imp.dart';
+import 'package:movin/domain/repositories/forget_pass_repository.dart';
+import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
 
 @module
 abstract class NetworkServices {
@@ -30,4 +34,22 @@ abstract class NetworkServices {
 
   @lazySingleton
   LoginServices loginServices(Dio dio) => LoginServices(dio);
+
+    
+  @lazySingleton
+  ForgotPasswordService forgotPasswordService(Dio dio) {
+    return ForgotPasswordService(dio);
+  }
+
+  
+  @lazySingleton
+  ForgotPasswordRepository forgotPasswordRepository(ForgotPasswordService service) {
+    return ForgotPasswordRepositoryImpl(service);
+  }
+
+  
+  @factory
+  ForgotPasswordCubit forgotPasswordCubit(ForgotPasswordRepository repo) {
+    return ForgotPasswordCubit(repo);
+  }
 }
