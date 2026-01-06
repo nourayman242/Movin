@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
+import 'package:movin/domain/entities/login_entity.dart';
 import 'package:movin/domain/repositories/login_repositories.dart';
 import 'package:movin/presentation/login/screens/register_screen.dart';
 
