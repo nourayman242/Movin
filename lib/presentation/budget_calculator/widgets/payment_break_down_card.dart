@@ -20,7 +20,10 @@ class PaymentBreakdownCard extends StatelessWidget {
           prev.noOfPayments != curr.noOfPayments,
       builder: (context, state) {
         return Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          color: AppColors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.large),
             child: Column(
@@ -64,13 +67,13 @@ class PaymentBreakdownCard extends StatelessWidget {
   }) {
     return Row(
       children: [
-        CircleAvatar(backgroundColor: color, child: Icon(icon, color: Colors.white)),
+        CircleAvatar(
+          backgroundColor: color,
+          child: Icon(icon, color: Colors.white),
+        ),
         const SizedBox(width: 12),
         Expanded(child: Text(label, style: AppTextStyles.subHeading)),
-        Text(
-          value,
-          style: AppTextStyles.label,
-        )
+        Text(value, style: AppTextStyles.label),
       ],
     );
   }

@@ -163,10 +163,16 @@ class _NotificationsScreenState extends State<NotificationsScreen>
         labelColor: AppColors.primaryNavy,
         unselectedLabelColor: Colors.grey,
         indicator: BoxDecoration(
-          color: Colors.transparent,
-          //AppColors.white,
-          borderRadius: BorderRadius.circular(30),
+          // color: AppColors.background,
+          // borderRadius: BorderRadius.circular(20),
         ),
+        //indicatorSize: TabBarIndicatorSize.label,
+
+        // BoxDecoration(
+        //   color: Colors.transparent,
+        //   //AppColors.white,
+        //   borderRadius: BorderRadius.circular(30),
+        // ),
         tabs: const [
           Tab(text: 'All'),
           Tab(text: 'Messages'),

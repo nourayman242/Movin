@@ -386,16 +386,7 @@ class _BuyerHomeState extends State<BuyerHome> {
 
     return InkWell(
       borderRadius: BorderRadius.circular(16),
-      // onTap: () {
-      //   setState(() => selectedCategory = title);
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //       builder: (context) =>
-      //           CategoryScreen(categoryTitle: title, propertyCount: count),
-      //     ),
-      //   );
-      // },
+
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
@@ -413,33 +404,41 @@ class _BuyerHomeState extends State<BuyerHome> {
               : [],
         ),
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 32,
-              color: isActive ? AppColors.gold : AppColors.navyDark,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: TextStyle(
-                color: isActive ? Colors.white : AppColors.navyDark,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
+        child: SizedBox(
+          //
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 32,
+                color: isActive ? AppColors.gold : AppColors.navyDark,
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              count,
-              style: TextStyle(
-                color: isActive ? AppColors.gold : Colors.grey,
-                fontSize: 14,
+              const SizedBox(height: 12),
+              Text(
+                title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: isActive ? Colors.white : AppColors.navyDark,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 4),
+              Text(
+                count,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: isActive ? AppColors.gold : Colors.grey,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
