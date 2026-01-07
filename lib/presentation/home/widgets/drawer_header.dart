@@ -27,7 +27,7 @@ class _CustomDrawerHeaderState extends State<CustomDrawerHeader> {
             radius: 35,
             backgroundColor: AppColors.primaryNavy,
             child: const Text(
-              'JD',
+              'DM',
               style: TextStyle(
                 color: Color.fromARGB(255, 241, 242, 245),
                 fontSize: 28,
@@ -44,14 +44,14 @@ class _CustomDrawerHeaderState extends State<CustomDrawerHeader> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'John Doe',
+                      'Dr Mohammed',
                       style: AppTextStyles.subHeading.copyWith(
                         color: AppColors.navyDark,
                       ),
                     ),
                     const SizedBox(height: 2),
                     const Text(
-                      'john.doe@example.com',
+                      'mohammed@gmail.com',
                       style: TextStyle(color: AppColors.navyDark, fontSize: 14),
                     ),
                     const SizedBox(height: 4),

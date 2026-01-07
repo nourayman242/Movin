@@ -109,11 +109,9 @@ class _SellerHomeState extends State<SellerHome>
                                       ),
                                       onPressed: () {
                                         Navigator.pushNamed(
-
-
-
-                                            context, '/addproperty');
-
+                                          context,
+                                          '/addproperty',
+                                        );
                                       },
                                     ),
                                   ),
@@ -210,9 +208,46 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
+  // Widget _statCard(String title, String value, IconData icon) {
+  //   return Container(
+  //     padding: const EdgeInsets.all(20),
+  //     decoration: BoxDecoration(
+  //       color: AppColors.grey.withOpacity(0.2),
+  //       borderRadius: BorderRadius.circular(15),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: AppColors.navyLight.withOpacity(0.1),
+  //           blurRadius: 8,
+  //           offset: const Offset(0, 4),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Column(
+  //       mainAxisAlignment: MainAxisAlignment.start,
+  //       children: [
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.start,
+  //           children: [
+  //             Icon(icon, color: AppColors.gold),
+  //             const SizedBox(width: 10),
+  //             Text(title, style: TextStyle(color: Colors.white)),
+  //           ],
+  //         ),
+  //         Text(
+  //           value,
+  //           style: TextStyle(
+  //             fontSize: 18,
+  //             fontWeight: FontWeight.bold,
+  //             color: Colors.white,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
   Widget _statCard(String title, String value, IconData icon) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.grey.withOpacity(0.2),
         borderRadius: BorderRadius.circular(15),
@@ -225,19 +260,35 @@ class _SellerHomeState extends State<SellerHome>
         ],
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min, 
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, 
             children: [
-              Icon(icon, color: AppColors.gold),
-              const SizedBox(width: 10),
-              Text(title, style: TextStyle(color: Colors.white)),
+              Icon(icon, color: AppColors.gold, size: 20),
+              const SizedBox(width: 8),
+
+             
+              Flexible(
+                fit: FlexFit.loose,
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                ),
+              ),
             ],
           ),
+
+          const SizedBox(height: 8),
+
           Text(
             value,
-            style: TextStyle(
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -327,126 +378,264 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
+  // Widget _listingCard(Map<String, dynamic> item) {
+  //   final status = item['status'] as String;
+  //   return Container(
+  //     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+  //     padding: const EdgeInsets.all(12),
+  //     decoration: BoxDecoration(
+  //       color: AppColors.white,
+  //       borderRadius: BorderRadius.circular(16),
+  //       border: Border.all(color: Colors.grey.shade100),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.black.withOpacity(0.03),
+  //           blurRadius: 10,
+  //           offset: const Offset(0, 4),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Row(
+  //       children: [
+  //         ClipRRect(
+  //           borderRadius: BorderRadius.circular(12),
+  //           child: SizedBox(
+  //             width: 80,
+  //             height: 80,
+  //             child: Image.asset(item['image'], fit: BoxFit.cover),
+  //           ),
+  //         ),
+  //         const SizedBox(width: 12),
+  //         Expanded(
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Text(
+  //                 item['title'],
+  //                 style: const TextStyle(
+  //                   fontWeight: FontWeight.bold,
+  //                   fontSize: 15,
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 6),
+  //               Text(
+  //                 item['location'],
+  //                 style: TextStyle(color: Colors.grey[600]),
+  //               ),
+  //               const SizedBox(height: 10),
+  //               Row(
+  //                 children: [
+  //                   const Icon(
+  //                     Icons.remove_red_eye,
+  //                     size: 16,
+  //                     color: Colors.grey,
+  //                   ),
+  //                   const SizedBox(width: 6),
+  //                   Text(
+  //                     '${item['views']}',
+  //                     style: const TextStyle(fontSize: 12, color: Colors.grey),
+  //                   ),
+  //                   const SizedBox(width: 12),
+  //                   const Icon(
+  //                     Icons.favorite_border,
+  //                     size: 16,
+  //                     color: Colors.grey,
+  //                   ),
+  //                   const SizedBox(width: 6),
+  //                   Text(
+  //                     '${item['likes']}',
+  //                     style: const TextStyle(fontSize: 12, color: Colors.grey),
+  //                   ),
+  //                   const SizedBox(width: 12),
+  //                   const Icon(
+  //                     Icons.chat_bubble_outline,
+  //                     size: 16,
+  //                     color: Colors.grey,
+  //                   ),
+  //                   const SizedBox(width: 6),
+  //                   Text(
+  //                     '${item['inquiries']}',
+  //                     style: const TextStyle(fontSize: 12, color: Colors.grey),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //         const SizedBox(width: 8),
+  //         Column(
+  //           crossAxisAlignment: CrossAxisAlignment.end,
+  //           children: [
+  //             Text(
+  //               item['price'],
+  //               style: const TextStyle(
+  //                 fontWeight: FontWeight.bold,
+  //                 color: AppColors.gold,
+  //               ),
+  //             ),
+  //             const SizedBox(height: 8),
+  //             Container(
+  //               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+  //               decoration: BoxDecoration(
+  //                 color: status == 'active'
+  //                     ? AppColors.gold.withOpacity(0.12)
+  //                     : Colors.grey.withOpacity(0.12),
+  //                 borderRadius: BorderRadius.circular(10),
+  //               ),
+  //               child: Text(
+  //                 status,
+  //                 style: TextStyle(
+  //                   color: status == 'active'
+  //                       ? AppColors.gold
+  //                       : Colors.grey[700],
+  //                   fontSize: 12,
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
   Widget _listingCard(Map<String, dynamic> item) {
-    final status = item['status'] as String;
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade100),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: SizedBox(
-              width: 80,
-              height: 80,
-              child: Image.asset(item['image'], fit: BoxFit.cover),
+  final String status = item['status'] ?? '';
+
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      color: AppColors.white,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: Colors.grey.shade100),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.03),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: SizedBox(
+            width: 72,
+            height: 72,
+            child: Image.asset(
+              item['image'],
+              fit: BoxFit.cover,
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item['title'],
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  item['location'],
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.remove_red_eye,
-                      size: 16,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      '${item['views']}',
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                    const SizedBox(width: 12),
-                    const Icon(
-                      Icons.favorite_border,
-                      size: 16,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      '${item['likes']}',
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                    const SizedBox(width: 12),
-                    const Icon(
-                      Icons.chat_bubble_outline,
-                      size: 16,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      '${item['inquiries']}',
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+        ),
+
+        const SizedBox(width: 12),
+
+        
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              
               Text(
-                item['price'],
+                item['title'],
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: AppColors.gold,
+                  fontSize: 15,
                 ),
               ),
+
+              const SizedBox(height: 4),
+
+              
+              Text(
+                item['location'],
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey[600],
+                ),
+              ),
+
               const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                decoration: BoxDecoration(
-                  color: status == 'active'
-                      ? AppColors.gold.withOpacity(0.12)
-                      : Colors.grey.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  status,
-                  style: TextStyle(
-                    color: status == 'active'
-                        ? AppColors.gold
-                        : Colors.grey[700],
-                    fontSize: 12,
-                  ),
-                ),
+
+              Wrap(
+                spacing: 12,
+                runSpacing: 6,
+                children: [
+                  _statItem(Icons.remove_red_eye, item['views']),
+                  _statItem(Icons.favorite_border, item['likes']),
+                  _statItem(Icons.chat_bubble_outline, item['inquiries']),
+                ],
               ),
             ],
           ),
-        ],
+        ),
+
+        const SizedBox(width: 8),
+
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              item['price'],
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.gold,
+                fontSize: 14,
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: status == 'active'
+                    ? AppColors.gold.withOpacity(0.12)
+                    : Colors.grey.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                status,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: status == 'active'
+                      ? AppColors.gold
+                      : Colors.grey[700],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+Widget _statItem(IconData icon, dynamic value) {
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(icon, size: 14, color: Colors.grey),
+      const SizedBox(width: 4),
+      Text(
+        '$value',
+        style: const TextStyle(fontSize: 12, color: Colors.grey),
       ),
-    );
-  }
+    ],
+  );
+}
+
 
   Widget _overviewContent() {
     return Column(
@@ -533,7 +722,12 @@ class _SellerHomeState extends State<SellerHome>
                 "Add Property",
                 style: TextStyle(color: Colors.black),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  '/addproperty',
+                );
+              },
             ),
           ),
         ),

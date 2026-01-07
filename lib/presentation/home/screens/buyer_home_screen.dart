@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
 
@@ -100,7 +101,7 @@ class _BuyerHomeState extends State<BuyerHome> {
                   style: TextStyle(color: AppColors.gold, fontSize: 18),
                 ),
                 const Text(
-                  "John Doe",
+                  "Dr Mohammed",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 26,
@@ -377,6 +378,72 @@ class _BuyerHomeState extends State<BuyerHome> {
     );
   }
 
+  // Widget _propertyCard({
+  //   required IconData icon,
+  //   required String title,
+  //   required String count,
+  // }) {
+  //   final bool isActive = selectedCategory == title;
+
+  //   return InkWell(
+  //     borderRadius: BorderRadius.circular(16),
+
+  //     child: AnimatedContainer(
+  //       duration: const Duration(milliseconds: 250),
+  //       curve: Curves.easeInOut,
+  //       decoration: BoxDecoration(
+  //         color: isActive ? AppColors.primaryNavy : Colors.grey.shade100,
+  //         borderRadius: BorderRadius.circular(16),
+  //         boxShadow: isActive
+  //             ? [
+  //                 BoxShadow(
+  //                   color: AppColors.primaryNavy.withOpacity(0.3),
+  //                   blurRadius: 8,
+  //                   offset: const Offset(0, 4),
+  //                 ),
+  //               ]
+  //             : [],
+  //       ),
+  //       padding: const EdgeInsets.all(16),
+  //       child: SizedBox(
+  //         //
+  //         width: double.infinity,
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             Icon(
+  //               icon,
+  //               size: 32,
+  //               color: isActive ? AppColors.gold : AppColors.navyDark,
+  //             ),
+  //             const SizedBox(height: 12),
+  //             Text(
+  //               title,
+  //               maxLines: 2,
+  //               overflow: TextOverflow.ellipsis,
+  //               style: TextStyle(
+  //                 color: isActive ? Colors.white : AppColors.navyDark,
+  //                 fontSize: 16,
+  //                 fontWeight: FontWeight.w600,
+  //               ),
+  //             ),
+  //             const SizedBox(height: 4),
+  //             Text(
+  //               count,
+  //               maxLines: 1,
+  //               overflow: TextOverflow.ellipsis,
+  //               style: TextStyle(
+  //                 color: isActive ? AppColors.gold : Colors.grey,
+  //                 fontSize: 14,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
   Widget _propertyCard({
     required IconData icon,
     required String title,
@@ -385,60 +452,52 @@ class _BuyerHomeState extends State<BuyerHome> {
     final bool isActive = selectedCategory == title;
 
     return InkWell(
-      borderRadius: BorderRadius.circular(16),
-
+      borderRadius: BorderRadius.circular(16.r),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
         decoration: BoxDecoration(
           color: isActive ? AppColors.primaryNavy : Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: isActive
-              ? [
-                  BoxShadow(
-                    color: AppColors.primaryNavy.withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
-              : [],
+          borderRadius: BorderRadius.circular(16.r),
         ),
-        padding: const EdgeInsets.all(16),
-        child: SizedBox(
-          //
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 32,
-                color: isActive ? AppColors.gold : AppColors.navyDark,
-              ),
-              const SizedBox(height: 12),
-              Text(
+        padding: EdgeInsets.all(16.r),
+        child: Column(
+          mainAxisSize: MainAxisSize.min, 
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 32.sp,
+              color: isActive ? AppColors.gold : AppColors.navyDark,
+            ),
+
+            SizedBox(height: 10.h),
+
+            Flexible(
+              child: Text(
                 title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  color: isActive ? Colors.white : AppColors.navyDark,
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
+                  color: isActive ? Colors.white : AppColors.navyDark,
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(
-                count,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: isActive ? AppColors.gold : Colors.grey,
-                  fontSize: 14,
-                ),
+            ),
+
+            SizedBox(height: 4.h),
+            Text(
+              count,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: isActive ? AppColors.gold : Colors.grey,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'add_property_viewmodel.dart';
@@ -17,7 +16,6 @@ class AddPropertyScreen extends StatelessWidget {
     final vm = context.read<AddPropertyViewModel>();
     if (!vm.isFormValid) return;
 
-
     await showDialog(
       context: context,
       builder: (ctx) => SuccessDialog(
@@ -32,6 +30,9 @@ class AddPropertyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return ChangeNotifierProvider(
       create: (_) => AddPropertyViewModel(),
       builder: (context, _) {
@@ -91,12 +92,52 @@ class AddPropertyScreen extends StatelessWidget {
                   const PropertyTypeSelector(),
                   const SizedBox(height: 12),
                   if (!vm.isTypeSelected)
+                    // Container(
+                    //   margin: const EdgeInsets.symmetric(horizontal: 16),
+                    //   padding: const EdgeInsets.all(14),
+                    //   decoration: BoxDecoration(
+                    //     color: AppColors.white,
+                    //     borderRadius: BorderRadius.circular(14),
+                    //     boxShadow: [
+                    //       BoxShadow(
+                    //         color: Colors.black.withOpacity(0.04),
+                    //         blurRadius: 12,
+                    //       ),
+                    //     ],
+                    //   ),
+                    //   child: SizedBox(
+                    //     height: 140,
+                    //     child: Column(
+                    //       mainAxisAlignment: MainAxisAlignment.center,
+                    //       children: const [
+                    //         Icon(Icons.add, size: 36, color: AppColors.gold),
+                    //         SizedBox(height: 8),
+                    //         Text(
+                    //           'List Your Property',
+                    //           style: TextStyle(fontWeight: FontWeight.bold),
+                    //         ),
+                    //         SizedBox(height: 6),
+                    //         Text(
+                    //           '''Fill in the details about your property. All listings are reviewed by our admin team before being published to ensure quality and accuracy.''',
+                    //           textAlign: TextAlign.center,
+                    //           style: TextStyle(color: Colors.black54),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
                     Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                      padding: const EdgeInsets.all(14),
+                      margin: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.04,
+                      ), 
+                      padding: EdgeInsets.all(
+                        screenWidth * 0.035,
+                      ), 
                       decoration: BoxDecoration(
                         color: AppColors.white,
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(
+                          screenWidth * 0.035,
+                        ),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.04),
@@ -105,21 +146,32 @@ class AddPropertyScreen extends StatelessWidget {
                         ],
                       ),
                       child: SizedBox(
-                        height: 140,
+                        height: screenHeight * 0.18, 
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.add, size: 36, color: AppColors.gold),
-                            SizedBox(height: 8),
+                          children: [
+                            Icon(
+                              Icons.add,
+                              size: screenWidth * 0.09,
+                              color: AppColors.gold,
+                            ), 
+                            SizedBox(height: screenHeight * 0.01),
                             Text(
                               'List Your Property',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    screenWidth * 0.045, 
+                              ),
                             ),
-                            SizedBox(height: 6),
+                            SizedBox(height: screenHeight * 0.008),
                             Text(
-                              '''Fill in the details about your property. All listings are reviewed by our admin team before being published to ensure quality and accuracy.''',
+                              'Fill in the details about your property. All listings are reviewed by our admin team before being published to ensure quality and accuracy.',
                               textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.black54),
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: screenWidth * 0.035,
+                              ),
                             ),
                           ],
                         ),
@@ -166,7 +218,7 @@ class AddPropertyScreen extends StatelessWidget {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: vm.isFormValid
                                     ? AppColors.gold
-                                    :Colors.grey.shade300,
+                                    : Colors.grey.shade300,
                                 foregroundColor: vm.isFormValid
                                     ? Colors.black
                                     : Colors.black38,
@@ -181,7 +233,7 @@ class AddPropertyScreen extends StatelessWidget {
                                   ? () => _onPreview(context)
                                   : null,
                               child: const Text(
-                                'Preview by Admin',
+                                'Send To Admin',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ),
