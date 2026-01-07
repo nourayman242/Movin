@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/controllers/property_details_controller.dart';
+import 'package:movin/presentation/home/inner_pages/rate_properties_page.dart';
 
 class AgentCard extends StatefulWidget {
   final PropertyDetailsController controller;
@@ -114,8 +115,15 @@ class _AgentCardState extends State<AgentCard> {
           _pressableOutlined(
             isPressed: isRatePressed,
             icon: Icons.star_border_outlined,
-            text: 'Rate Property',
-            onTap: () {},
+            text: 'Property Evaluation',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => RatePropertiesPage(),
+                ),
+              );
+            },
             onPressedChange: () {
               setState(() {
                 isRatePressed = !isRatePressed;
