@@ -109,9 +109,11 @@ class _SellerHomeState extends State<SellerHome>
                                       ),
                                       onPressed: () {
                                         Navigator.pushNamed(
-                                          context,
-                                          '/addproperty',
-                                        );
+
+
+
+                                            context, '/addproperty');
+
                                       },
                                     ),
                                   ),

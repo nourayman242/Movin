@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/data_injection/getIt/service_locator.dart';
+
 import 'package:movin/presentation/budget_calculator/screens/budget_calculator_screen.dart';
 import 'package:movin/presentation/home/inner_pages/rate_properties_page.dart';
-import 'package:movin/presentation/home/inner_pages/settings_page.dart';
+
 import 'package:movin/presentation/home/inner_pages/view_history_page.dart';
 import 'package:movin/presentation/home/widgets/drawer_header.dart';
 import 'package:movin/presentation/home/widgets/drawer_item.dart';
@@ -16,6 +16,8 @@ import 'package:movin/presentation/login/screens/login_screen.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
 import 'package:movin/presentation/settings/screens/settings_screen.dart';
+
+
 
 
 class CustomDrawer extends StatelessWidget {

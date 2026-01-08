@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
-import 'package:movin/presentation/login/screens/login_screen.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
-import 'package:movin/presentation/settings/managers/settings_bloc/settings_state.dart';
 import 'package:movin/presentation/settings/widgets/account_settings_card.dart';
 import 'package:movin/presentation/settings/widgets/language_card.dart';
 import 'package:movin/presentation/settings/widgets/logout_button.dart';
