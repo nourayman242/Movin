@@ -78,7 +78,7 @@ class CustomDrawer extends StatelessWidget {
                     SizedBox(height: 15),
                     DrawerItem(
                       icon: Icons.star_outline,
-                      text: 'Rate Properties',
+                      text: 'Property Evaluations',
                       iconColor: Colors.amber,
                       circleColor: Colors.amber.withOpacity(0.1),
                       color: AppColors.navyLight,
@@ -114,6 +114,7 @@ class CustomDrawer extends StatelessWidget {
                     DrawerItem(
                       icon: Icons.settings_outlined,
                       text: 'Settings',
+                      circleColor: AppColors.navyLight.withOpacity(0.1),
                       color: AppColors.navyLight,
                       onTap: () {
                         Navigator.push(
@@ -127,6 +128,8 @@ class CustomDrawer extends StatelessWidget {
                     SizedBox(height: 15),
                     DrawerItem(
                       icon: Icons.help_outline,
+                      iconColor: Colors.pinkAccent,
+                      circleColor: Colors.pinkAccent.withOpacity(0.1),
                       text: 'Help & Support',
                       color: AppColors.navyLight,
                       onTap: () {},

@@ -75,7 +75,7 @@ class TitleCard extends StatelessWidget {
             children: [
               _infoItem(Icons.bed_outlined, '4', 'Bedrooms'),
               _infoItem(Icons.bathtub_outlined, '3', 'Bathrooms'),
-              _infoItem(Icons.square_outlined, '3,500', 'Sq Ft'),
+              _infoItem(Icons.square_outlined, '3,500', 'M Sq'),
               _infoItem(
                 Icons.gavel_outlined,
                 'Mazad',

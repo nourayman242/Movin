@@ -15,7 +15,14 @@ class ViewMoreHome extends StatefulWidget {
 }
 
 class _ViewMoreHomeState extends State<ViewMoreHome> {
-  
+  String searchQuery = "";
+
+  void _onSearchChanged(String value) {
+    setState(() {
+      searchQuery = value.toLowerCase();
+    });
+  }
+
   // void toggleFavorite(PropertyModel property) {
   //   setState(() {
   //     property.isfavorite = !property.isfavorite;
@@ -33,11 +40,18 @@ class _ViewMoreHomeState extends State<ViewMoreHome> {
 
   @override
   Widget build(BuildContext context) {
-    final filtered = dummyProperties;
+    //final filtered = dummyProperties;
     // .where(
     //   (property) => property.tag.toLowerCase() == widget.type.toLowerCase(),
     // )
     // .toList();
+    final filtered = dummyProperties.where((property) {
+      final matchesSearch = property.location.toLowerCase().contains(
+        searchQuery,
+      );
+
+      return matchesSearch;
+    }).toList();
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -57,7 +71,7 @@ class _ViewMoreHomeState extends State<ViewMoreHome> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SearchHeader(),
+            SearchHeader(onSearchChanged: _onSearchChanged),
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -69,17 +83,24 @@ class _ViewMoreHomeState extends State<ViewMoreHome> {
 
             const SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                itemCount: filtered.length,
-                itemBuilder: (context, index) {
-                  final property = filtered[index];
-                  return BrowsePropertyCard(
-                    property: property,
-                    onTap: () => navigateToDetails(property),
-                   // onFavoriteToggle: () => toggleFavorite(property),
-                  );
-                },
-              ),
+              child: filtered.isEmpty
+                  ? const Center(
+                      child: Text(
+                        "No properties found",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: filtered.length,
+                      itemBuilder: (context, index) {
+                        final property = filtered[index];
+                        return BrowsePropertyCard(
+                          property: property,
+                          onTap: () => navigateToDetails(property),
+                          // onFavoriteToggle: () => toggleFavorite(property),
+                        );
+                      },
+                    ),
             ),
           ],
         ),

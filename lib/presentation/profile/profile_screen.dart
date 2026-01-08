@@ -16,12 +16,12 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   ProfileModel profile = ProfileModel(
-    name: "John Doe",
+    name: " Dr Mohammed",
     bio:
         "Passionate about real estate and finding the perfect home for my family.",
-    email: "john.doe@email.com",
+    email: "mohammed@gmail.com",
     phone: "+971 50 123 4567",
-    location: "Dubai, UAE",
+    location: "EGYPT, Cairo",
   );
 
   @override
