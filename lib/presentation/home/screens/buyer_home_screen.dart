@@ -24,10 +24,24 @@ class BuyerHome extends StatefulWidget {
 
 class _BuyerHomeState extends State<BuyerHome> {
   String selectedCategory = "For Sale";
+  String searchQuery = "";
+
+  void _onSearchChanged(String value) {
+    setState(() {
+      searchQuery = value.toLowerCase();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final filtered = dummyProperties;
+    //final filtered = dummyProperties;
+    final filtered = dummyProperties.where((property) {
+      final matchesSearch = property.location.toLowerCase().contains(
+        searchQuery,
+      );
+
+      return matchesSearch;
+    }).toList();
     return Scaffold(
       drawer: const CustomDrawer(),
       backgroundColor: AppColors.background,
@@ -128,8 +142,9 @@ class _BuyerHomeState extends State<BuyerHome> {
                     children: [
                       const Icon(Icons.search, color: Colors.grey),
                       const SizedBox(width: 10),
-                      const Expanded(
+                       Expanded(
                         child: TextField(
+                          onChanged: _onSearchChanged,
                           decoration: InputDecoration(
                             hintText: "Search by location...",
                             border: InputBorder.none,
@@ -291,7 +306,15 @@ class _BuyerHomeState extends State<BuyerHome> {
 
           SizedBox(
             height: 320,
-            child: ListView.separated(
+            child: filtered.isEmpty
+                  ? const Center(
+                      child: Text(
+                        "No properties found",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    )
+                  :
+             ListView.separated(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.only(left: 20),
               itemCount: filtered.length, //stat
@@ -350,7 +373,15 @@ class _BuyerHomeState extends State<BuyerHome> {
 
           SizedBox(
             height: 320,
-            child: ListView.separated(
+            child: filtered.isEmpty
+                  ? const Center(
+                      child: Text(
+                        "No properties found",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    )
+                  :
+             ListView.separated(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.only(left: 20),
               itemCount: filtered.length, //stat
@@ -473,6 +504,7 @@ class _BuyerHomeState extends State<BuyerHome> {
             ),
 
             SizedBox(height: 10.h),
+
 
             Flexible(
               child: Text(

@@ -28,7 +28,11 @@ class BrowsePropertyCard extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
-            BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 8,
+              offset: Offset(0, 4),
+            ),
           ],
         ),
         child: Column(
@@ -67,36 +71,35 @@ class BrowsePropertyCard extends StatelessWidget {
                     ),
                   ),
                 ),
-      
+
                 // Favorite Icon
                 Positioned(
                   top: 10,
                   right: 10,
-                  child:BlocBuilder<FavoriteBloc, FavoriteState>(
-  builder: (context, state) {
-    final isFav = state.isFavorite(property.id);
+                  child: BlocBuilder<FavoriteBloc, FavoriteState>(
+                    builder: (context, state) {
+                      final isFav = state.isFavorite(property.id);
 
-    return GestureDetector(
-      onTap: () {
-        context
-            .read<FavoriteBloc>()
-            .add(FavoriteToggle(property.id));
-      },
-      child: CircleAvatar(
-        backgroundColor: Colors.white,
-        child: Icon(
-          isFav ? Icons.favorite : Icons.favorite_border,
-          color: isFav ? Colors.red : AppColors.primaryNavy,
-        ),
-      ),
-    );
-  },
-),
-
+                      return GestureDetector(
+                        onTap: () {
+                          context.read<FavoriteBloc>().add(
+                            FavoriteToggle(property.id),
+                          );
+                        },
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: Icon(
+                            isFav ? Icons.favorite : Icons.favorite_border,
+                            color: isFav ? Colors.red : AppColors.primaryNavy,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
-      
+
             Padding(
               padding: const EdgeInsets.all(14.0),
               child: Column(
@@ -106,13 +109,17 @@ class BrowsePropertyCard extends StatelessWidget {
                   const SizedBox(height: 5),
                   Row(
                     children: [
-                      const Icon(Icons.location_on, size: 16, color: Colors.grey),
+                      const Icon(
+                        Icons.location_on,
+                        size: 16,
+                        color: Colors.grey,
+                      ),
                       const SizedBox(width: 4),
                       Text(property.location, style: AppTextStyles.smallText),
                     ],
                   ),
                   const SizedBox(height: 10),
-      
+
                   Text(
                     property.price,
                     style: const TextStyle(
@@ -120,9 +127,9 @@ class BrowsePropertyCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-      
+
                   const SizedBox(height: 10),
-      
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -158,7 +165,7 @@ class BrowsePropertyCard extends StatelessWidget {
       case "investment":
         return AppColors.gold;
       case "commercial":
-return AppColors.primaryNavy;
+        return AppColors.primaryNavy;
       default:
         return Colors.grey;
     }

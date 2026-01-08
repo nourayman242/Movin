@@ -1,43 +1,55 @@
+
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/home/screens/filter_screen.dart';
 
 class SearchHeader extends StatelessWidget {
-  //final VoidCallback? onFilterTap;
+  final ValueChanged<String> onSearchChanged;
 
-  const SearchHeader({//this.onFilterTap, 
-  super.key});
+  const SearchHeader({
+    required this.onSearchChanged,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(30),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 6,
             offset: Offset(0, 3),
-          )
+          ),
         ],
       ),
       child: Row(
         children: [
           const Icon(Icons.search, color: Colors.grey),
           const SizedBox(width: 10),
-          const Expanded(
+
+          /// SEARCH FIELD
+          Expanded(
             child: TextField(
-              decoration: InputDecoration(
+              onChanged: onSearchChanged,
+              decoration: const InputDecoration(
                 hintText: "Search by location...",
                 border: InputBorder.none,
               ),
             ),
           ),
+
           GestureDetector(
-            onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context) => FilterScreen()));},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => FilterScreen()),
+              );
+            },
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
@@ -52,3 +64,4 @@ class SearchHeader extends StatelessWidget {
     );
   }
 }
+
