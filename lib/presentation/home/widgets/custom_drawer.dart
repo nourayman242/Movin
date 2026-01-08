@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/presentation/budget_calculator/screens/budget_calculator_screen.dart';
 import 'package:movin/presentation/home/inner_pages/rate_properties_page.dart';
 import 'package:movin/presentation/home/inner_pages/settings_page.dart';
@@ -7,7 +9,14 @@ import 'package:movin/presentation/home/inner_pages/view_history_page.dart';
 import 'package:movin/presentation/home/widgets/drawer_header.dart';
 import 'package:movin/presentation/home/widgets/drawer_item.dart';
 import 'package:movin/presentation/home/widgets/mode_toggle_statement.dart';
+
 import 'package:movin/presentation/profile/profile_screen.dart';
+
+import 'package:movin/presentation/login/screens/login_screen.dart';
+import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc.dart';
+import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
+import 'package:movin/presentation/settings/screens/settings_screen.dart';
+
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -99,12 +108,19 @@ class CustomDrawer extends StatelessWidget {
                           _navigateTo(context, const ViewHistoryPage()),
                     ),
                     SizedBox(height: 15),
-
+                    ///////////////settings
                     DrawerItem(
                       icon: Icons.settings_outlined,
                       text: 'Settings',
                       color: AppColors.navyLight,
-                      onTap: () => _navigateTo(context, const SettingsPage()),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const SettingsScreen(),
+                          ),
+                        );
+                      },
                     ),
                     SizedBox(height: 15),
                     DrawerItem(
@@ -131,7 +147,12 @@ class CustomDrawer extends StatelessWidget {
               text: 'Logout',
               color: AppColors.error,
               onTap: () {
-                Navigator.pop(context);
+                //Navigator.pop(context);
+                context.read<SettingsBloc>().add(LogoutRequested());
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  (route) => false,
+                );
                 ScaffoldMessenger.of(
                   context,
                 ).showSnackBar(const SnackBar(content: Text('Logged out')));

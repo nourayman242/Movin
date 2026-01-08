@@ -18,26 +18,25 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
   List<PropertyModel> historyProperties = [
     PropertyModel(
       id: 1,
-      title: "Modern Apartment",
-      location: "Zamalek, Cairo",
+      title: "Modern Luxury Villa",
+      location: "Dubai Marina",
       image: "assets/images/villa3.jpg",
-      tag: "Rent",
-      price: "EGP 12,500",
-      beds: 3,
-      baths: 2,
-      sqft: 1450,
-      
+      tag: "sale",
+      price: "1,250,000 EGP",
+      beds: 4,
+      baths: 3,
+      sqft: 3500,
     ),
     PropertyModel(
       id: 2,
-      title: "Villa with Garden",
-      location: "Sheikh Zayed",
+      title: "Skyline Apartment",
+      location: "New York City",
       image: "assets/images/villa3.jpg",
-      tag: "Sale",
-      price: "EGP 5,200,000",
-      beds: 5,
-      baths: 4,
-      sqft: 4500,
+      tag: "rent",
+      price: "4,500 EGP / month",
+      beds: 3,
+      baths: 2,
+      sqft: 1800,
     ),
   ];
 
@@ -72,10 +71,11 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
           ),
           flexibleSpace: Padding(
-            padding: const EdgeInsets.only(top: 60, left: 16, right: 20),
-            child: Stack(
+            padding: const EdgeInsets.only(top: 60, left: 16, right: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ----------------  Title ----------------
+                // -------- Title Row --------
                 Row(
                   children: [
                     IconButton(
@@ -94,9 +94,11 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
                   ],
                 ),
 
-                // ---------------- Clear All Button ----------------
+                const Spacer(),
+
+                // -------- Clear All Button --------
                 Align(
-                  alignment: Alignment.bottomRight,
+                  alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: clearAllHistory,
                     child: const Text(
@@ -139,7 +141,8 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PropertyDetailsScreen(propertyId: property.id,),
+                          builder: (context) =>
+                              PropertyDetailsScreen(propertyId: property.id),
                         ),
                       );
                     },

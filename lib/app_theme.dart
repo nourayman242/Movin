@@ -14,6 +14,8 @@ class AppColors {
   static const Color navyDark = Color(0xFF0F172A);
   static const Color navyLight = Color(0xFF2D3748);
   static const Color error = Colors.redAccent;
+
+  static Color? get primary => null;
 }
 
 // TEXT STYLES
