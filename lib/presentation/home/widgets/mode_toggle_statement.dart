@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/home/managers/mode_service.dart';
 
 class ModeToggleStatement extends StatelessWidget {
   const ModeToggleStatement({super.key});
 
-  void _toggleMode(BuildContext context) async {
+  void _toggleModeAndNavigate(BuildContext context) async {
+    final safeContext = Navigator.of(context, rootNavigator: true).context;
+    Navigator.pop(context);
+    await Future.delayed(const Duration(milliseconds: 200));
     await ModeService.toggleMode();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          ModeService.isSellerNotifier.value
-              ? 'Switched to Seller mode'
-              : 'Switched to Buyer mode',
-        ),
-        duration: const Duration(seconds: 1),
-      ),
-    );
+    Navigator.pushReplacementNamed(safeContext, '/home');
   }
 
   @override
@@ -24,10 +19,17 @@ class ModeToggleStatement extends StatelessWidget {
       color: Colors.grey.shade200,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: GestureDetector(
-        onTap: () => _toggleMode(context),
+        onTap: () => _toggleModeAndNavigate(context),
         child: Row(
           children: [
-            const Icon(Icons.sync, color: Colors.green),
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Colors.green.withOpacity(0.15),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.sync, color: Colors.green, size: 18),
+            ),
             const SizedBox(width: 10),
             ValueListenableBuilder<bool>(
               valueListenable: ModeService.isSellerNotifier,
@@ -38,7 +40,7 @@ class ModeToggleStatement extends StatelessWidget {
                 return Text(
                   toggleText,
                   style: const TextStyle(
-                    color: Colors.green,
+                    color: AppColors.navyLight,
                     fontWeight: FontWeight.bold,
                   ),
                 );

@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/presentation/home/widgets/categoty_screen.dart';
+import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
+
+import 'package:movin/presentation/browse_property/screens/browse_properties.dart';
+import 'package:movin/presentation/browse_property/widgets/dummy_properties.dart';
+import 'package:movin/presentation/fav_screen/screens/fav_screen.dart';
+
+import 'package:movin/presentation/home/screens/filter_screen.dart';
 import 'package:movin/presentation/home/widgets/custom_drawer.dart';
 import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
+import 'package:movin/presentation/home/widgets/property_card.dart';
+import 'package:movin/presentation/notifications/screens/notifications_screen.dart';
+
+import 'package:movin/presentation/view_more_home/screens/view_more_home.dart';
 
 class BuyerHome extends StatefulWidget {
   const BuyerHome({super.key});
@@ -13,8 +23,10 @@ class BuyerHome extends StatefulWidget {
 
 class _BuyerHomeState extends State<BuyerHome> {
   String selectedCategory = "For Sale";
+
   @override
   Widget build(BuildContext context) {
+    final filtered = dummyProperties;
     return Scaffold(
       drawer: const CustomDrawer(),
       backgroundColor: AppColors.background,
@@ -40,8 +52,6 @@ class _BuyerHomeState extends State<BuyerHome> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ///////////menu
-                    // iconContainer(Icons.menu),
                     Builder(
                       builder: (context) => InkWell(
                         borderRadius: BorderRadius.circular(12),
@@ -51,12 +61,34 @@ class _BuyerHomeState extends State<BuyerHome> {
                     ),
                     Row(
                       children: [
-                        iconContainer(
-                          Icons.notifications_none_outlined,
-                          hasBadge: true,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const NotificationsScreen(),
+                              ),
+                            );
+                          },
+                          child: iconContainer(
+                            Icons.notifications_none_outlined,
+                            hasBadge: true,
+                          ),
                         ),
                         const SizedBox(width: 12),
-                        iconContainer(Icons.favorite_border),
+
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const FavScreen(),
+                              ),
+                            );
+                          },
+                          child: iconContainer(Icons.favorite_border),
+                        ),
                       ],
                     ),
                   ],
@@ -103,13 +135,23 @@ class _BuyerHomeState extends State<BuyerHome> {
                           ),
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryNavy,
-                          borderRadius: BorderRadius.circular(20),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const FilterScreen(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryNavy,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Icon(Icons.tune, color: Colors.white),
                         ),
-                        child: const Icon(Icons.tune, color: Colors.white),
                       ),
                     ],
                   ),
@@ -143,28 +185,191 @@ class _BuyerHomeState extends State<BuyerHome> {
                 mainAxisSpacing: 16,
                 childAspectRatio: 1.2,
                 children: [
-                  _propertyCard(
-                    icon: Icons.home_outlined,
-                    title: "For Sale",
-                    count: "2,453",
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              BrowsePropertiesScreen(type: 'sale'),
+                        ),
+                      );
+                    },
+                    child: _propertyCard(
+                      icon: Icons.home_outlined,
+                      title: "For Sale",
+                      count: "2,453",
+                    ),
                   ),
-                  _propertyCard(
-                    icon: Icons.key_outlined,
-                    title: "For Rent",
-                    count: "1,832",
+
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              BrowsePropertiesScreen(type: 'rent'),
+                        ),
+                      );
+                    },
+                    child: _propertyCard(
+                      icon: Icons.key_outlined,
+                      title: "For Rent",
+                      count: "1,832",
+                    ),
                   ),
-                  _propertyCard(
-                    icon: Icons.apartment_outlined,
-                    title: "Commercial",
-                    count: "567",
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              BrowsePropertiesScreen(type: 'Commercial'),
+                        ),
+                      );
+                    },
+                    child: _propertyCard(
+                      icon: Icons.apartment_outlined,
+                      title: "Commercial",
+                      count: "567",
+                    ),
                   ),
-                  _propertyCard(
-                    icon: Icons.show_chart_outlined,
-                    title: "Investments",
-                    count: "342",
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              BrowsePropertiesScreen(type: 'Investment'),
+                        ),
+                      );
+                    },
+                    child: _propertyCard(
+                      icon: Icons.show_chart_outlined,
+                      title: "Investments",
+                      count: "342",
+                    ),
                   ),
                 ],
               ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Recommended",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.navyDark,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ViewMoreHome()),
+                  ),
+                  child: const Text(
+                    "View More",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.primaryNavy,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          SizedBox(
+            height: 320,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.only(left: 20),
+              itemCount: filtered.length, //stat
+              separatorBuilder: (_, __) => const SizedBox(width: 16),
+              itemBuilder: (context, index) {
+                final property = filtered[index];
+                return PropertyCard(
+                  property: property,
+                  /////////////////////////////////////////
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            PropertyDetailsScreen(propertyId: property.id),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 25),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Recent Listings",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.navyDark,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ViewMoreHome()),
+                  ),
+                  child: const Text(
+                    "View More",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.primaryNavy,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          SizedBox(
+            height: 320,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.only(left: 20),
+              itemCount: filtered.length, //stat
+              separatorBuilder: (_, __) => const SizedBox(width: 16),
+              itemBuilder: (context, index) {
+                final property = filtered[index];
+                return PropertyCard(
+                  property: property,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PropertyDetailsScreen(
+                          propertyId: property.id,
+                        ), //////////////
+                      ),
+                    );
+                  },
+                );
+              },
             ),
           ),
         ],
@@ -181,16 +386,16 @@ class _BuyerHomeState extends State<BuyerHome> {
 
     return InkWell(
       borderRadius: BorderRadius.circular(16),
-      onTap: () {
-        setState(() => selectedCategory = title);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                CategoryScreen(categoryTitle: title, propertyCount: count),
-          ),
-        );
-      },
+      // onTap: () {
+      //   setState(() => selectedCategory = title);
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) =>
+      //           CategoryScreen(categoryTitle: title, propertyCount: count),
+      //     ),
+      //   );
+      // },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
