@@ -345,12 +345,10 @@ Widget propertyTypeCard({
           ),
         ],
 
-        /// ---------------------------
         /// BUILT-UP AREA FIELD
-        /// ---------------------------
         const SizedBox(height: 8),
         const Text(
-          "Built-Up Area (sqft)",
+          "Built-Up Area (m²)",
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 8),
@@ -562,6 +560,7 @@ Widget sortByCard({
     ),
   );
 }
+
 Widget applyFilterButton({
   required VoidCallback onPressed,
   required Color navy,
@@ -576,11 +575,7 @@ Widget applyFilterButton({
         color: navy,
         borderRadius: BorderRadius.circular(14),
         boxShadow: const [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 8,
-            offset: Offset(0, 4),
-          ),
+          BoxShadow(color: Colors.black26, blurRadius: 8, offset: Offset(0, 4)),
         ],
       ),
       child: const Center(

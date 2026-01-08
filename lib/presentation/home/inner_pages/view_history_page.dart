@@ -71,10 +71,11 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
           ),
           flexibleSpace: Padding(
-            padding: const EdgeInsets.only(top: 60, left: 16, right: 20),
-            child: Stack(
+            padding: const EdgeInsets.only(top: 60, left: 16, right: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ----------------  Title ----------------
+                // -------- Title Row --------
                 Row(
                   children: [
                     IconButton(
@@ -93,9 +94,11 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
                   ],
                 ),
 
-                // ---------------- Clear All Button ----------------
+                const Spacer(),
+
+                // -------- Clear All Button --------
                 Align(
-                  alignment: Alignment.bottomRight,
+                  alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: clearAllHistory,
                     child: const Text(
