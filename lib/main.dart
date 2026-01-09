@@ -9,13 +9,10 @@ import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 
 import 'package:movin/presentation/add_property/add_property_screen.dart';
 
-import 'package:movin/presentation/add_property/add_property_screen.dart';
-
 import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
 import 'package:movin/presentation/home/screens/home.dart';
-import 'package:movin/presentation/profile/model/profile_model.dart';
-import 'package:movin/presentation/seller%20home/seller_home_screen.dart';
+import 'package:movin/presentation/seller home/seller_home_screen.dart';
 import 'package:movin/presentation/login/screens/forgot_password_page.dart';
 import 'package:movin/presentation/login/screens/login_screen.dart';
 import 'package:movin/presentation/onboarding/screens/onboarding.dart';
