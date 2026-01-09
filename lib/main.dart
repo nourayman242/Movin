@@ -7,14 +7,7 @@ import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 
-
-
-
-
-
 import 'package:movin/presentation/add_property/add_property_screen.dart';
-
-
 
 import 'package:movin/presentation/add_property/add_property_screen.dart';
 
@@ -49,11 +42,10 @@ void main() async {
 
 class Movin extends StatelessWidget {
   //final ProfileModel? currentProfile;
-  const Movin({super.key, });
+  const Movin({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     // return MaterialApp(
     //   debugShowCheckedModeBanner: false,
     //   home: const Splash(),
@@ -67,7 +59,6 @@ class Movin extends StatelessWidget {
 
     //     '/addproperty': (_) => const AddPropertyScreen(),
     //     '/home':(_)=> const HomePage(),
-
 
     return ScreenUtilInit(
       designSize: const Size(375, 812),
@@ -85,8 +76,7 @@ class Movin extends StatelessWidget {
             '/sellerhome': (_) => const SellerHome(),
             '/forgotpassword': (_) => const ForgotPasswordPage(),
 
-
-            '/home': (_) =>  HomePage(),
+            '/home': (_) => const HomePage(),
             '/addproperty': (_) => const AddPropertyScreen(),
           },
         );
