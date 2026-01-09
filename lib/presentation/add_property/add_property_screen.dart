@@ -129,10 +129,8 @@ class AddPropertyScreen extends StatelessWidget {
                     Container(
                       margin: EdgeInsets.symmetric(
                         horizontal: screenWidth * 0.04,
-                      ), 
-                      padding: EdgeInsets.all(
-                        screenWidth * 0.035,
-                      ), 
+                      ),
+                      padding: EdgeInsets.all(screenWidth * 0.035),
                       decoration: BoxDecoration(
                         color: AppColors.white,
                         borderRadius: BorderRadius.circular(
@@ -146,7 +144,7 @@ class AddPropertyScreen extends StatelessWidget {
                         ],
                       ),
                       child: SizedBox(
-                        height: screenHeight * 0.18, 
+                        height: screenHeight * 0.18,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -154,14 +152,13 @@ class AddPropertyScreen extends StatelessWidget {
                               Icons.add,
                               size: screenWidth * 0.09,
                               color: AppColors.gold,
-                            ), 
+                            ),
                             SizedBox(height: screenHeight * 0.01),
                             Text(
                               'List Your Property',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize:
-                                    screenWidth * 0.045, 
+                                fontSize: screenWidth * 0.045,
                               ),
                             ),
                             SizedBox(height: screenHeight * 0.008),
