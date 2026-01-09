@@ -66,7 +66,7 @@ class TitleCard extends StatelessWidget {
                 color: AppColors.grey,
               ),
               SizedBox(width: 4.w),
-              Text('Nisr City', style: TextStyle(color: AppColors.grey)),
+              Text('Zamalek', style: TextStyle(color: AppColors.grey)),
             ],
           ),
           SizedBox(height: 20.h),
@@ -75,7 +75,7 @@ class TitleCard extends StatelessWidget {
             children: [
               _infoItem(Icons.bed_outlined, '4', 'Bedrooms'),
               _infoItem(Icons.bathtub_outlined, '3', 'Bathrooms'),
-              _infoItem(Icons.square_outlined, '3,500', 'M Sq'),
+              _infoItem(Icons.square_outlined, '3,500', 'm²'),
               _infoItem(
                 Icons.gavel_outlined,
                 'Mazad',

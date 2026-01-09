@@ -142,7 +142,7 @@ class BrowsePropertyCard extends StatelessWidget {
                         style: AppTextStyles.smallText,
                       ),
                       Text(
-                        "${property.sqft} sqft",
+                        "${property.sqft} m²",
                         style: AppTextStyles.smallText,
                       ),
                     ],

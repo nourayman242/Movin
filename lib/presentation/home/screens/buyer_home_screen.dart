@@ -12,10 +12,13 @@ import 'package:movin/presentation/home/widgets/custom_drawer.dart';
 import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
 import 'package:movin/presentation/home/widgets/property_card.dart';
 import 'package:movin/presentation/notifications/screens/notifications_screen.dart';
+import 'package:movin/presentation/profile/model/profile_model.dart';
 
 import 'package:movin/presentation/view_more_home/screens/view_more_home.dart';
 
 class BuyerHome extends StatefulWidget {
+  //final ProfileModel currentProfile;
+
   const BuyerHome({super.key});
 
   @override
@@ -142,7 +145,7 @@ class _BuyerHomeState extends State<BuyerHome> {
                     children: [
                       const Icon(Icons.search, color: Colors.grey),
                       const SizedBox(width: 10),
-                       Expanded(
+                      Expanded(
                         child: TextField(
                           onChanged: _onSearchChanged,
                           decoration: InputDecoration(
@@ -307,35 +310,35 @@ class _BuyerHomeState extends State<BuyerHome> {
           SizedBox(
             height: 320,
             child: filtered.isEmpty
-                  ? const Center(
-                      child: Text(
-                        "No properties found",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    )
-                  :
-             ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.only(left: 20),
-              itemCount: filtered.length, //stat
-              separatorBuilder: (_, __) => const SizedBox(width: 16),
-              itemBuilder: (context, index) {
-                final property = filtered[index];
-                return PropertyCard(
-                  property: property,
-                  /////////////////////////////////////////
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            PropertyDetailsScreen(propertyId: property.id),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+                ? const Center(
+                    child: Text(
+                      "No properties found",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  )
+                : ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.only(left: 20),
+                    itemCount: filtered.length, //stat
+                    separatorBuilder: (_, __) => const SizedBox(width: 16),
+                    itemBuilder: (context, index) {
+                      final property = filtered[index];
+                      return PropertyCard(
+                        property: property,
+                        /////////////////////////////////////////
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PropertyDetailsScreen(
+                                propertyId: property.id,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
           ),
           const SizedBox(height: 25),
           Padding(
@@ -374,35 +377,34 @@ class _BuyerHomeState extends State<BuyerHome> {
           SizedBox(
             height: 320,
             child: filtered.isEmpty
-                  ? const Center(
-                      child: Text(
-                        "No properties found",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    )
-                  :
-             ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.only(left: 20),
-              itemCount: filtered.length, //stat
-              separatorBuilder: (_, __) => const SizedBox(width: 16),
-              itemBuilder: (context, index) {
-                final property = filtered[index];
-                return PropertyCard(
-                  property: property,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PropertyDetailsScreen(
-                          propertyId: property.id,
-                        ), //////////////
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+                ? const Center(
+                    child: Text(
+                      "No properties found",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  )
+                : ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.only(left: 20),
+                    itemCount: filtered.length, //stat
+                    separatorBuilder: (_, __) => const SizedBox(width: 16),
+                    itemBuilder: (context, index) {
+                      final property = filtered[index];
+                      return PropertyCard(
+                        property: property,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PropertyDetailsScreen(
+                                propertyId: property.id,
+                              ), //////////////
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -493,7 +495,7 @@ class _BuyerHomeState extends State<BuyerHome> {
         ),
         padding: EdgeInsets.all(16.r),
         child: Column(
-          mainAxisSize: MainAxisSize.min, 
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -504,7 +506,6 @@ class _BuyerHomeState extends State<BuyerHome> {
             ),
 
             SizedBox(height: 10.h),
-
 
             Flexible(
               child: Text(

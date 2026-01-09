@@ -21,7 +21,8 @@ import 'package:movin/presentation/add_property/add_property_screen.dart';
 import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
 import 'package:movin/presentation/home/screens/home.dart';
-import 'package:movin/presentation/saller%20home/seller_home_screen.dart';
+import 'package:movin/presentation/profile/model/profile_model.dart';
+import 'package:movin/presentation/seller%20home/seller_home_screen.dart';
 import 'package:movin/presentation/login/screens/forgot_password_page.dart';
 import 'package:movin/presentation/login/screens/login_screen.dart';
 import 'package:movin/presentation/onboarding/screens/onboarding.dart';
@@ -47,7 +48,8 @@ void main() async {
 }
 
 class Movin extends StatelessWidget {
-  const Movin({super.key});
+  //final ProfileModel? currentProfile;
+  const Movin({super.key, });
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +86,7 @@ class Movin extends StatelessWidget {
             '/forgotpassword': (_) => const ForgotPasswordPage(),
 
 
-            '/home': (_) => const HomePage(),
+            '/home': (_) =>  HomePage(),
             '/addproperty': (_) => const AddPropertyScreen(),
           },
         );

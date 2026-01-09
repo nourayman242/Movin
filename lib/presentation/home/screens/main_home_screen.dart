@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/home/screens/home.dart';
 import 'package:movin/presentation/home/widgets/for_sale_screen.dart';
+import 'package:movin/presentation/profile/model/profile_model.dart';
 
 class MainHomeScreen extends StatefulWidget {
-  const MainHomeScreen({super.key});
+  //final ProfileModel currentProfile;  
+  const MainHomeScreen({super.key, });
 
   @override
   State<MainHomeScreen> createState() => _MainHomeScreenState();

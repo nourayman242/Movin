@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/presentation/profile/edit_profile_screen.dart';
+import 'package:movin/presentation/profile/model/profile_model.dart';
 
 class AccountSettingsCard extends StatelessWidget {
-  const AccountSettingsCard({super.key});
+  //final ProfileModel profile;
+  const AccountSettingsCard({super.key, });
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +13,7 @@ class AccountSettingsCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       color: AppColors.white,
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.medium+4),
+        padding: const EdgeInsets.all(AppSpacing.medium + 4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -19,12 +22,12 @@ class AccountSettingsCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFE5F1), 
+                    color: const Color(0xFFFFE5F1),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
                     Icons.person_outline,
-                    color: Color(0xFFD81B60), 
+                    color: Color(0xFFD81B60),
                     size: 28,
                   ),
                 ),
@@ -57,21 +60,19 @@ class AccountSettingsCard extends StatelessWidget {
               title: const Text('Edit Profile'),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () {
-    //             Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (_) => const EditProfileScreen(),
-    //   ),
-    // );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (_) => EditProfileScreen(profile: profile),
+                //   ),
+                // );
               },
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: const Text('Change Password'),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                
-              },
+              onTap: () {},
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,

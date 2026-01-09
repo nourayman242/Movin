@@ -5,7 +5,8 @@ import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
 import 'package:movin/presentation/notifications/screens/notifications_screen.dart';
 
 class SellerHome extends StatefulWidget {
-  const SellerHome({super.key});
+  //final ProfileModel currentProfile;
+  const SellerHome({super.key, });
 
   @override
   State<SellerHome> createState() => _SellerHomeState();
@@ -53,7 +54,7 @@ class _SellerHomeState extends State<SellerHome>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      drawer: const CustomDrawer(),
+      drawer:  const CustomDrawer(),
       body: DefaultTabController(
         length: 3,
         child: NestedScrollView(

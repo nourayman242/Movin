@@ -11,12 +11,7 @@ class PropertyCard extends StatelessWidget {
   final VoidCallback? onTap;
   //final VoidCallback? onFavoriteToggle;
 
-  const PropertyCard({
-    super.key,
-    required this.property,
-    required this.onTap,
-    
-  });
+  const PropertyCard({super.key, required this.property, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -79,35 +74,34 @@ class PropertyCard extends StatelessWidget {
                   ),
                   //3
                   Positioned(
-  right: 8,
-  top: 8,
-  child: BlocBuilder<FavoriteBloc, FavoriteState>(
-    builder: (context, state) {
-      final isFav = state.isFavorite(property.id);
+                    right: 8,
+                    top: 8,
+                    child: BlocBuilder<FavoriteBloc, FavoriteState>(
+                      builder: (context, state) {
+                        final isFav = state.isFavorite(property.id);
 
-      return GestureDetector(
-        onTap: () {
-          context
-              .read<FavoriteBloc>()
-              .add(FavoriteToggle(property.id));
-        },
-        child: Container(
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.9),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            isFav ? Icons.favorite : Icons.favorite_border,
-            size: 18,
-            color: isFav ? Colors.red : AppColors.primaryNavy, 
-          ),
-        ),
-      );
-    },
-  ),
-),
-
+                        return GestureDetector(
+                          onTap: () {
+                            context.read<FavoriteBloc>().add(
+                              FavoriteToggle(property.id),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.9),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              isFav ? Icons.favorite : Icons.favorite_border,
+                              size: 18,
+                              color: isFav ? Colors.red : AppColors.primaryNavy,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -161,7 +155,7 @@ class PropertyCard extends StatelessWidget {
                       _verticalDivider(),
                       _attrItem('${property.baths}', 'baths'),
                       _verticalDivider(),
-                      _attrItem('${property.sqft}', 'sqft'),
+                      _attrItem('${property.sqft}', 'm²'),
                     ],
                   ),
                 ],

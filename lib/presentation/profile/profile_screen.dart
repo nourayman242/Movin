@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
 import 'edit_profile_screen.dart';
@@ -20,7 +19,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     bio:
         "Passionate about real estate and finding the perfect home for my family.",
     email: "mohammed@gmail.com",
-    phone: "+971 50 123 4567",
+    phone: "+20 112 345 6789",
     location: "EGYPT, Cairo",
   );
 
@@ -52,7 +51,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             EditableContactInfoCard(
               emailController: TextEditingController(text: profile.email),
               phoneController: TextEditingController(text: profile.phone),
-              locationController: TextEditingController(text: profile.location), profile: profile,
+              locationController: TextEditingController(text: profile.location),
+              profile: profile,
             ),
             const SizedBox(height: 40),
           ],
@@ -61,4 +61,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-
