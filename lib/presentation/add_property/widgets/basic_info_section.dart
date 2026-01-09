@@ -87,7 +87,7 @@ class BasicInfoSection extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              'Built-up Area (sqft) *',
+              'Built-up Area (m²) *',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: Colors.grey.shade700,
