@@ -110,7 +110,7 @@ class _RatePropertiesPageState extends State<RatePropertiesPage> {
       backgroundColor: offWhite,
       appBar: AppBar(
         backgroundColor: offWhite,
-        title: const Text("Rate Property"),
+        title: const Text("Property Evaluation"),
         foregroundColor: navy,
         elevation: 0,
       ),
