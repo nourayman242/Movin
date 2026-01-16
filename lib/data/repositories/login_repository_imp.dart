@@ -14,24 +14,45 @@ class LoginRepositoryImpl implements LoginRepository {
 
   LoginRepositoryImpl(this.api);
 
+  // @override
+  // Future<LoginResponse> loginUser(LoginEntity user) async {
+  //   final dto = LoginDto.fromEntity(user);
+  //   print('Login DTO: ${dto.toJson()}');
+
+  //   try {
+  //     final response = await api.loginUser(dto);
+  //     print("LOGIN SUCCESS: ${response.toJson()}");
+
+  //     return response;
+
+  //   } on DioException catch (e) {
+  //     final msg = e.response?.data?['message'] ?? e.message;
+  //     print("LOGIN ERROR: $msg");
+  //     throw Exception(msg);
+
+  //   } catch (e) {
+  //     throw Exception('Unexpected error: $e');
+  //   }
+  // }
   @override
-  Future<LoginResponse> loginUser(LoginEntity user) async {
-    final dto = LoginDto.fromEntity(user);
-    print('Login DTO: ${dto.toJson()}');
+Future<LoginResponse> loginUser(LoginEntity user) async {
+  final dto = LoginDto.fromEntity(user);
 
-    try {
-      final response = await api.loginUser(dto);
-      print("LOGIN SUCCESS: ${response.toJson()}");
+  try {
+    final response = await api.loginUser(dto);
 
-      return response;
-
-    } on DioException catch (e) {
-      final msg = e.response?.data?['message'] ?? e.message;
-      print("LOGIN ERROR: $msg");
-      throw Exception(msg);
-
-    } catch (e) {
-      throw Exception('Unexpected error: $e');
+    if (response.token.isEmpty) {
+      throw Exception(response.message.isNotEmpty
+          ? response.message
+          : 'Invalid email or password');
     }
+
+    return response;
+
+  } on DioException catch (e) {
+    final msg = e.response?.data?['message'] ?? 'Login failed';
+    throw Exception(msg);
   }
+}
+
 }

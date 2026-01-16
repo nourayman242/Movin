@@ -94,46 +94,88 @@ class _LoginScreenState extends State<LoginScreen> {
                 AppWidgets.verticalSpace(AppSpacing.medium),
 
                 ///////////linking
+                // ElevatedButton(
+                //   style: AppButtons.primary,
+                //   onPressed: () async {
+                //     if (_formKey.currentState!.validate()) {
+                //       Navigator.pushReplacementNamed(context, '/role');
+                //         final email = userValue.text.trim();
+                //         final password = passValue.text.trim();
+
+                //         final entity = LoginEntity(
+                //           email: email,
+                //           password: password,
+                //         );
+
+                //         try {
+                //           final response = await repo.loginUser(entity);
+
+                //           await SharedHelper.saveToken(response.token);
+                //           await SharedHelper.setLoggedIn(true);
+
+                //           if (!context.mounted) return;
+                //            ScaffoldMessenger.of(context).showSnackBar(
+                //           SnackBar(content: Text('Login successfully')),
+                //         );
+
+                //           Navigator.pushReplacementNamed(context, '/role').then((
+                //             _,
+                //           ) {
+                //             userValue.clear();
+                //             passValue.clear();
+                //           });
+                //         } catch (e) {
+                //           if (!context.mounted) return;
+
+                //           ScaffoldMessenger.of(context).showSnackBar(
+                //             SnackBar(
+
+                //               content: Text(e.toString()),
+                //             ),
+                //           );
+                //         }
+                //     }
+                //   },
+                //   child: const Text(
+                //     'Login',
+                //     style: TextStyle(color: Colors.white),
+                //   ),
+                // ),
                 ElevatedButton(
                   style: AppButtons.primary,
                   onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
+                    if (!_formKey.currentState!.validate()) return;
+
+                    final email = userValue.text.trim();
+                    final password = passValue.text.trim();
+
+                    final entity = LoginEntity(
+                      email: email,
+                      password: password,
+                    );
+
+                    try {
+                      final response = await repo.loginUser(entity);
+
+                      await SharedHelper.saveToken(response.token);
+                      await SharedHelper.setLoggedIn(true);
+
+                      if (!context.mounted) return;
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Login successful')),
+                      );
+
                       Navigator.pushReplacementNamed(context, '/role');
-                        final email = userValue.text.trim();
-                        final password = passValue.text.trim();
 
-                        final entity = LoginEntity(
-                          email: email,
-                          password: password,
-                        );
+                      userValue.clear();
+                      passValue.clear();
+                    } catch (e) {
+                      if (!context.mounted) return;
 
-                        try {
-                          final response = await repo.loginUser(entity);
-
-                          await SharedHelper.saveToken(response.token);
-                          await SharedHelper.setLoggedIn(true);
-
-                          if (!context.mounted) return;
-                           ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Login successfully')),
-                        );
-
-                          Navigator.pushReplacementNamed(context, '/role').then((
-                            _,
-                          ) {
-                            userValue.clear();
-                            passValue.clear();
-                          });
-                        } catch (e) {
-                          if (!context.mounted) return;
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-
-                              content: Text(e.toString()),
-                            ),
-                          );
-                        }
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(e.toString())));
                     }
                   },
                   child: const Text(
