@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movin/presentation/add_property/add_property_screen.dart';
+import 'package:movin/presentation/seller_properties/add_property/add_property_screen.dart';
 
 class RatePropertiesPage extends StatefulWidget {
   const RatePropertiesPage({super.key});

@@ -5,15 +5,18 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
-import 'package:movin/presentation/add_property/add_property_screen.dart';
+
 import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
 import 'package:movin/presentation/home/screens/home.dart';
-import 'package:movin/presentation/saller%20home/seller_home_screen.dart';
+
 import 'package:movin/presentation/login/screens/forgot_password_page.dart';
 import 'package:movin/presentation/login/screens/login_screen.dart';
 import 'package:movin/presentation/onboarding/screens/onboarding.dart';
 import 'package:movin/presentation/role_selection/screens/role_selection.dart';
+import 'package:movin/presentation/seller_properties/add_property/add_property_screen.dart';
+import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/seller_home_screen.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
 import 'package:movin/presentation/splash_screen/screens/splash.dart';
@@ -56,7 +59,10 @@ class Movin extends StatelessWidget {
             '/forgotpassword': (_) => const ForgotPasswordPage(),
 
             '/home': (_) => const HomePage(),
-            '/addproperty': (_) => const AddPropertyScreen(),
+            '/addproperty': (_) => BlocProvider(
+              create: (_) => getIt<PropertyCubit>(),
+              child: const AddPropertyScreen(),
+            ),
           },
         );
       },

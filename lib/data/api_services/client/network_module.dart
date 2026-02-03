@@ -4,17 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:movin/data/api_services/forget_pass_services.dart';
 import 'package:movin/data/api_services/login_services.dart';
+import 'package:movin/data/api_services/property_services.dart';
 import 'package:movin/data/api_services/register_services.dart';
+import 'package:movin/data/api_services/upload_service.dart';
 import 'package:movin/data/repositories/forget_pass_repository_imp.dart';
+import 'package:movin/data/repositories/property_repository_impl.dart';
 import 'package:movin/domain/repositories/forget_pass_repository.dart';
+import 'package:movin/domain/repositories/property_repository.dart';
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
+import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
 @module
 abstract class NetworkServices {
   @lazySingleton
   Dio get dio {
     final base = 'https://movin-oipd650to-malakkhaled22s-projects.vercel.app';
-    
+
     // //'http://192.168.1.16:5000';
     // kIsWeb
     // ? 'http://localhost:5000' //chrome
@@ -36,21 +41,29 @@ abstract class NetworkServices {
   @lazySingleton
   LoginServices loginServices(Dio dio) => LoginServices(dio);
 
-    
   @lazySingleton
   ForgotPasswordService forgotPasswordService(Dio dio) {
     return ForgotPasswordService(dio);
   }
 
-  
   @lazySingleton
-  ForgotPasswordRepository forgotPasswordRepository(ForgotPasswordService service) {
+  ForgotPasswordRepository forgotPasswordRepository(
+    ForgotPasswordService service,
+  ) {
     return ForgotPasswordRepositoryImpl(service);
   }
 
-  
   @factory
   ForgotPasswordCubit forgotPasswordCubit(ForgotPasswordRepository repo) {
     return ForgotPasswordCubit(repo);
   }
+
+  @lazySingleton
+  PropertyService propertyService(Dio dio) => PropertyService(dio);
+
+  @lazySingleton
+  PropertyRepository propertyRepository(PropertyService service) =>
+      PropertyRepositoryImpl(service);
+  @factory
+  PropertyCubit propertyCubit(UploadService uploadService,PropertyService repo) => PropertyCubit(uploadService,repo);
 }

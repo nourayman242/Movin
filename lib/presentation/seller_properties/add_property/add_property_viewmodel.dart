@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:movin/domain/entities/property_entity.dart';
 
 enum PropertyType { apartment, villa, office, townhouse, penthouse }
 
@@ -158,4 +159,21 @@ class AddPropertyViewModel extends ChangeNotifier {
     descriptionController.dispose();
     super.dispose();
   }
+  PropertyEntity toEntity({
+  required List<String> imageUrls,
+}) {
+  return PropertyEntity(
+    location: locationController.text,
+    description: descriptionController.text,
+    price: int.parse(priceController.text),
+    type: selectedType!.name,
+    size: '${areaController.text} sqm',
+    bedrooms: int.tryParse(bedroomsController.text),
+    bathrooms: int.tryParse(bathroomsController.text),
+    availableFrom: DateTime.now(),
+    images: imageUrls,
+    paymentMethod: "Cash",
+  );
+}
+  
 }
