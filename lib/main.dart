@@ -23,6 +23,7 @@ import 'package:movin/presentation/splash_screen/screens/splash.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  initDependencies();
   await ModeService.loadUserMode();
   await Hive.initFlutter();
   await setUpServiceLocator();

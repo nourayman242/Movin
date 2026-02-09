@@ -1,4 +1,5 @@
 // import 'package:flutter/material.dart';
+// import 'package:movin/presentation/seller_properties/add_property/widgets/success_dialog.dart';
 // import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 // import 'package:provider/provider.dart';
 // import 'add_property_viewmodel.dart';
@@ -12,27 +13,27 @@
 // class AddPropertyScreen extends StatelessWidget {
 //   const AddPropertyScreen({super.key});
 
-//   // Future<void> _onPreview(BuildContext context) async {
-//   //   final vm = context.read<AddPropertyViewModel>();
-//   //   if (!vm.isFormValid) return;
-
-//   //   await showDialog(
-//   //     context: context,
-//   //     builder: (ctx) => SuccessDialog(
-//   //       onDone: () {
-//   //         Navigator.of(ctx).pop();
-//   //         // after dialog closes, reset form
-//   //         vm.reset();
-//   //       },
-//   //     ),
-//   //   );
-//   // }
 //   Future<void> _onPreview(BuildContext context) async {
 //     final vm = context.read<AddPropertyViewModel>();
-//     final cubit = context.read<PropertyCubit>();
+//     if (!vm.isFormValid) return;
 
-//     await cubit.addProperty(vm: vm);
+//     await showDialog(
+//       context: context,
+//       builder: (ctx) => SuccessDialog(
+//         onDone: () {
+//           Navigator.of(ctx).pop();
+//           // after dialog closes, reset form
+//           vm.reset();
+//         },
+//       ),
+//     );
 //   }
+//   // Future<void> _onPreview(BuildContext context) async {
+//   //   final vm = context.read<AddPropertyViewModel>();
+//   //   final cubit = context.read<PropertyCubit>();
+
+//   //   await cubit.addProperty(vm: vm);
+//   // }
 
 //   @override
 //   Widget build(BuildContext context) {
@@ -264,6 +265,7 @@
 //     );
 //   }
 // }
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -421,9 +423,22 @@ class AddPropertyScreen extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: OutlinedButton(
-                                      onPressed: vm.reset,
-                                      child: const Text('Cancel'),
-                                    ),
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: AppColors.white,
+                                side: const BorderSide(color: Colors.white70),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                              ),
+                              onPressed: () => vm.reset(),
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(color: Colors.black87),
+                              ),
+                            ),
                                   ),
                                   const SizedBox(width: 14),
                                   Expanded(
@@ -432,6 +447,17 @@ class AddPropertyScreen extends StatelessWidget {
                                         backgroundColor: vm.isFormValid
                                             ? AppColors.gold
                                             : Colors.grey.shade300,
+                                        foregroundColor: vm.isFormValid
+                                            ? Colors.black
+                                            : Colors.black38,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 14,
+                                        ),
                                       ),
                                       onPressed: vm.isFormValid
                                           ? () => _submit(context)
@@ -453,8 +479,6 @@ class AddPropertyScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-
-                  /// 🔄 Loading overlay
                   if (context.watch<PropertyCubit>().state is PropertyLoading)
                     Container(
                       color: Colors.black26,
