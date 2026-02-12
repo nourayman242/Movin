@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:injectable/injectable.dart';
+@lazySingleton
 
 class UploadService {
   final Dio dio;

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import 'package:injectable/injectable.dart';
+import 'package:movin/data/api_services/client/auth_interceptor.dart';
 import 'package:movin/data/api_services/forget_pass_services.dart';
 import 'package:movin/data/api_services/login_services.dart';
 import 'package:movin/data/api_services/property_services.dart';
@@ -17,20 +18,53 @@ import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 @module
 abstract class NetworkServices {
   @lazySingleton
-  Dio get dio {
-    final base = 'https://movin-oipd650to-malakkhaled22s-projects.vercel.app';
+  // Dio get dio {
+  //   final base = 'https://movin-oipd650to-malakkhaled22s-projects.vercel.app';
 
-    // //'http://192.168.1.16:5000';
-    // kIsWeb
-    // ? 'http://localhost:5000' //chrome
-    // : 'http://10.0.2.2:5000'; //emulator
-    final options = BaseOptions(
-      baseUrl: base,
-      connectTimeout: const Duration(seconds: 15),
-      receiveTimeout: const Duration(seconds: 15),
-      headers: {'Content-Type': 'application/json'},
+  //   // //'http://192.168.1.16:5000';
+  //   // kIsWeb
+  //   // ? 'http://localhost:5000' //chrome
+  //   // : 'http://10.0.2.2:5000'; //emulator
+  //   final options = BaseOptions(
+  //     baseUrl: base,
+  //     connectTimeout: const Duration(seconds: 15),
+  //     receiveTimeout: const Duration(seconds: 15),
+  //     headers: {'Content-Type': 'application/json'},
+  //   );
+  //   dio.interceptors.add(AuthInterceptor());
+
+  //   // Optional (recommended)
+  //   dio.interceptors.add(
+  //     LogInterceptor(
+  //       requestBody: true,
+  //       responseBody: true,
+  //     ),
+  //   );
+  //   return Dio(options);
+  // }
+  @lazySingleton
+  Dio provideDio() {
+    const base =
+        'https://movin-oipd650to-malakkhaled22s-projects.vercel.app';
+
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: base,
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 15),
+      ),
     );
-    return Dio(options);
+
+    dio.interceptors.add(AuthInterceptor());
+
+    dio.interceptors.add(
+      LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+      ),
+    );
+
+    return dio;
   }
 
   @lazySingleton
@@ -65,5 +99,5 @@ abstract class NetworkServices {
   PropertyRepository propertyRepository(PropertyService service) =>
       PropertyRepositoryImpl(service);
   @factory
-  PropertyCubit propertyCubit(UploadService uploadService,PropertyService repo) => PropertyCubit(uploadService,repo);
+  PropertyCubit propertyCubit(UploadService uploadService,PropertyRepository repo) => PropertyCubit(uploadService,repo);
 }

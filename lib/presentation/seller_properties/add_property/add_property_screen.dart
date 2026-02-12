@@ -289,7 +289,7 @@ class AddPropertyScreen extends StatelessWidget {
 
     if (!vm.isFormValid) return;
 
-    context.read<PropertyCubit>().addProperty(vm: vm);
+    context.read<PropertyCubit>().addProperty(vm);
   }
 
   @override

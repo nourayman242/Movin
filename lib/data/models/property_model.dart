@@ -43,4 +43,5 @@ class PropertyModel {
       status: json['status'],
     );
   }
+   
 }

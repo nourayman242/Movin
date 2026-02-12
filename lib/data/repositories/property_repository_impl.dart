@@ -34,24 +34,57 @@
 //   }
 // }
 
+// import 'package:movin/data/api_services/property_services.dart';
+
+// import '../../domain/entities/property_entity.dart';
+// import '../../domain/repositories/property_repository.dart';
+
+
+// class PropertyRepositoryImpl implements PropertyRepository {
+//   final PropertyService service;
+//   PropertyRepositoryImpl(this.service);
+
+//   @override
+//   Future<void> create(PropertyEntity property) {
+//     return service.createProperty(property.toJson() as PropertyEntity);
+//   }
+
+//   @override
+//   Future<void> update(String id, PropertyEntity property) {
+//     return service.updateProperty(id, property.toJson());
+//   }
+
+//   @override
+//   Future<void> delete(String id) {
+//     return service.deleteProperty(id);
+//   }
+// }
 import 'package:movin/data/api_services/property_services.dart';
+import 'package:movin/domain/entities/property_entity.dart';
+import 'package:movin/data/models/property_model.dart';
 
-import '../../domain/entities/property_entity.dart';
-import '../../domain/repositories/property_repository.dart';
-
+import 'package:movin/domain/repositories/property_repository.dart';
 
 class PropertyRepositoryImpl implements PropertyRepository {
   final PropertyService service;
   PropertyRepositoryImpl(this.service);
 
   @override
+  Future<List<PropertyModel>> getAll()async {
+    return await service.getAllSellerProperties();
+    //  final models = await service.getAllSellerProperties();
+
+    // return models.map((m) => m.toEntity()).toList();
+  }
+
+  @override
   Future<void> create(PropertyEntity property) {
-    return service.createProperty(property.toJson() as PropertyEntity);
+    return service.createProperty(property);
   }
 
   @override
   Future<void> update(String id, PropertyEntity property) {
-    return service.updateProperty(id, property.toJson());
+    return service.updateProperty(id, property);
   }
 
   @override

@@ -12,14 +12,11 @@ class _OtpServices implements OtpServices {
   _OtpServices(
     this._dio, {
     this.baseUrl,
-    this.errorLogger,
   });
 
   final Dio _dio;
 
   String? baseUrl;
-
-  final ParseErrorLogger? errorLogger;
 
   @override
   Future<void> verifyOtp(OtpDto dto) async {
@@ -28,7 +25,7 @@ class _OtpServices implements OtpServices {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(dto.toJson());
-    final _options = _setStreamType<void>(Options(
+    await _dio.fetch<void>(_setStreamType<void>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -43,8 +40,7 @@ class _OtpServices implements OtpServices {
             baseUrl: _combineBaseUrls(
           _dio.options.baseUrl,
           baseUrl,
-        )));
-    await _dio.fetch<void>(_options);
+        ))));
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

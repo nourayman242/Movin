@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:movin/domain/entities/property_entity.dart';
+import 'package:movin/data/models/property_model.dart';
+
 // class PropertyServices {
 //   final Dio dio;
 
@@ -48,40 +50,34 @@ import 'package:movin/domain/entities/property_entity.dart';
 // }
 
 
+
+
 class PropertyService {
   final Dio dio;
   PropertyService(this.dio);
 
-  // Future<void> createProperty(Map<String, dynamic> data) async {
-  //   await dio.post(
-  //     '/api/seller/properties/create',
-  //     data: data,
-  //   );
-  // }
   Future<void> createProperty(PropertyEntity entity) async {
-    await dio.post(
-      '/api/seller/properties/create',
-      data: entity.toJson(),
-    );
+    await dio.post('/api/properties', data: entity.toJson());
   }
 
-  Future<List<dynamic>> getAllProperties() async {
-    final res = await dio.get(
-      '/api/seller/properties/getAll',
-    );
-    return res.data['products'];
+ Future<List<PropertyModel>> getAllSellerProperties() async {
+  final response = await dio.get('/api/seller/properties/getAll');
+
+  if (response.data == null || response.data['products'] == null) {
+    return [];
   }
 
-  Future<void> updateProperty(String id, Map<String, dynamic> data) async {
-    await dio.patch(
-      '/api/seller/properties/$id',
-      data: data,
-    );
+  return (response.data['products'] as List)
+      .map((e) => PropertyModel.fromJson(e))
+      .toList();
+}
+
+
+  Future<void> updateProperty(String id, PropertyEntity entity) async {
+    await dio.put('/api/properties/$id', data: entity.toJson());
   }
 
   Future<void> deleteProperty(String id) async {
-    await dio.delete(
-      '/api/seller/properties/$id',
-    );
+    await dio.delete('/api/properties/$id');
   }
 }

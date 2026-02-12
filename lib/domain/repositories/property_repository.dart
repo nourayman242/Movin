@@ -10,8 +10,10 @@
 //   Future<void> deleteProperty(String id);
 // }
 import '../entities/property_entity.dart';
+import '../../data/models/property_model.dart';
 
 abstract class PropertyRepository {
+  Future<List<PropertyModel>> getAll();
   Future<void> create(PropertyEntity property);
   Future<void> update(String id, PropertyEntity property);
   Future<void> delete(String id);
