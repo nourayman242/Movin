@@ -57,7 +57,7 @@ class PropertyService {
   PropertyService(this.dio);
 
   Future<void> createProperty(PropertyEntity entity) async {
-    await dio.post('/api/properties', data: entity.toJson());
+    await dio.post('/api/seller/properties/create', data: entity.toJson());
   }
 
  Future<List<PropertyModel>> getAllSellerProperties() async {
@@ -74,10 +74,10 @@ class PropertyService {
 
 
   Future<void> updateProperty(String id, PropertyEntity entity) async {
-    await dio.put('/api/properties/$id', data: entity.toJson());
+    await dio.put('/api/seller/properties/$id', data: entity.toJson());
   }
 
   Future<void> deleteProperty(String id) async {
-    await dio.delete('/api/properties/$id');
+    await dio.delete('/api/seller/properties/$id');
   }
 }
