@@ -28,20 +28,40 @@ class PropertyModel {
   });
 
   factory PropertyModel.fromJson(Map<String, dynamic> json) {
+    List<String> parsedImages = [];
+
+    if (json['images'] != null && json['images'] is List) {
+      final rawImages = json['images'] as List;
+
+      parsedImages = rawImages
+          .map<String>((img) {
+            if (img is String) {
+              return img;
+            } else if (img is Map<String, dynamic>) {
+              return img['url']?.toString() ?? '';
+            }
+            return '';
+          })
+          .where((e) => e.isNotEmpty)
+          .toList();
+    }
+
     return PropertyModel(
-      id: json['_id'],
-      location: json['location'],
-      description: json['description'],
-      price: json['price'],
-      type: json['type'],
-      size: json['size'],
-      bedrooms: json['bedrooms'],
-      bathrooms: json['bathrooms'],
-      availableFrom: DateTime.parse(json['available_from']),
-      images: List<String>.from(json['images']),
-      paymentMethod: json['payment_method'],
-      status: json['status'],
+      id: json['_id']?.toString() ?? '',
+      location: json['location'] ?? '',
+      description: json['description'] ?? '',
+      price: json['price'] is int
+          ? json['price']
+          : int.tryParse(json['price'].toString()) ?? 0,
+      type: json['type'] ?? '',
+      size: json['size'] ?? '',
+      bedrooms: json['bedrooms'] ?? 0,
+      bathrooms: json['bathrooms'] ?? 0,
+      availableFrom:
+          DateTime.tryParse(json['available_from'] ?? '') ?? DateTime.now(),
+      images: parsedImages,
+      paymentMethod: json['payment_method'] ?? '',
+      status: json['status'] ?? '',
     );
   }
-   
 }

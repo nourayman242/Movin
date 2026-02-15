@@ -40,6 +40,24 @@ class AddPropertyViewModel extends ChangeNotifier {
   // Images (XFile objects returned by image_picker)
   List<XFile> images = [];
 
+
+// BASIC INFO
+String get location => locationController.text.trim();
+String get description => descriptionController.text.trim();
+int get price => int.parse(priceController.text.trim());
+String get size => '${areaController.text.trim()} sqm';
+
+// TYPE
+String get type => selectedType!.name;
+
+// DETAILS
+int? get bedrooms => int.tryParse(bedroomsController.text.trim());
+int? get bathrooms => int.tryParse(bathroomsController.text.trim());
+
+// DATE & PAYMENT
+DateTime get availableFrom => DateTime.now();
+String get paymentMethod => "Cash";
+
   // Setters that call notifyListeners()
   void selectType(PropertyType? t) {
     selectedType = t;

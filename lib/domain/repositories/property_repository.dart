@@ -1,20 +1,11 @@
-// import 'package:movin/data/models/property_request_dto.dart';
+import 'package:movin/presentation/seller_properties/add_property/add_property_viewmodel.dart';
 
-// import '../../data/models/property_model.dart';
-
-
-// abstract class PropertyRepository {
-//   Future<PropertyModel> createProperty(PropertyRequest request);
-//   Future<List<PropertyModel>> getAllProperties();
-//   Future<PropertyModel> updateProperty(String id, Map<String, dynamic> data);
-//   Future<void> deleteProperty(String id);
-// }
 import '../entities/property_entity.dart';
 import '../../data/models/property_model.dart';
 
 abstract class PropertyRepository {
   Future<List<PropertyModel>> getAll();
-  Future<void> create(PropertyEntity property);
+  Future<void> create(AddPropertyViewModel vm, String token);
   Future<void> update(String id, PropertyEntity property);
   Future<void> delete(String id);
 }

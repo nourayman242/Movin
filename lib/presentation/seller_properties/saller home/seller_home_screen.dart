@@ -206,7 +206,7 @@ class _SellerHomeState extends State<SellerHome>
             controller: _tabController,
             children: [
               SingleChildScrollView(child: _overviewContent()),
-              SingleChildScrollView(child: _myListingsContent()),
+              SingleChildScrollView(child: _myListingsContent(context)),
               SingleChildScrollView(child: _newsContent()),
             ],
           ),
@@ -516,11 +516,11 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
-  Widget _myListingsContent() {
+  Widget _myListingsContent(BuildContext context) {
     return BlocBuilder<PropertyCubit, PropertyState>(
       builder: (context, state) {
         if (state is PropertyLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator(color:AppColors.gold,));
         }
 
         if (state is PropertyError) {
@@ -534,7 +534,7 @@ class _SellerHomeState extends State<SellerHome>
 
           return Column(
             children: state.properties
-                .map((property) => _fullListingCardFromModel(property))
+                .map((property) => _fullListingCardFromModel(context, property))
                 .toList(),
           );
         }
@@ -544,8 +544,92 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
-  Widget _fullListingCardFromModel(PropertyModel property) {
+  // Widget _fullListingCardFromModel(PropertyModel property) {
+  //   final status = property.status;
+  //   print('property.images: ${property.images}');
+  //      const String imageBaseUrl =
+  //    "https://res.cloudinary.com/djknoinbe/image/upload/v1771009719/movin/properties/";
+
+  //   return Container(
+  //     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  //     decoration: BoxDecoration(
+  //       color: AppColors.white,
+  //       borderRadius: BorderRadius.circular(18),
+  //       boxShadow: [
+  //         BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 12),
+  //       ],
+  //     ),
+  //     child: Column(
+  //       children: [
+  //         Stack(
+  //           children: [
+  //             ClipRRect(
+  //               borderRadius: const BorderRadius.vertical(
+  //                 top: Radius.circular(18),
+  //               ),
+  //               child:
+  //                   // Image.network(
+  //                   //   property.images.isNotEmpty &&
+  //                   //           property.images.first.startsWith('http')
+  //                   //       ? property.images.first
+  //                   //       : 'https://via.placeholder.com/150',
+  //                   //   fit: BoxFit.cover,
+  //                   // ),
+  //                   Image.network(
+  //                     property.images.isNotEmpty
+  //                         ? imageBaseUrl + property.images.first
+  //                         : 'https://via.placeholder.com/150',
+  //                     height: 180,
+  //                     width: double.infinity,
+  //                     fit: BoxFit.cover,
+  //                   ),
+  //             ),
+  //             positionedBadge(status),
+  //             Positioned(top: 12, right: 12, child: _popupMenu(property)),
+  //           ],
+  //         ),
+  //         Padding(
+  //           padding: const EdgeInsets.all(16),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Text(
+  //                 property.type,
+  //                 style: const TextStyle(
+  //                   fontWeight: FontWeight.bold,
+  //                   fontSize: 16,
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 4),
+  //               Text(property.location),
+  //               const SizedBox(height: 8),
+  //               Text(
+  //                 "${property.price} EGP",
+  //                 style: const TextStyle(
+  //                   fontSize: 18,
+  //                   fontWeight: FontWeight.bold,
+  //                   color: AppColors.gold,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  Widget _fullListingCardFromModel(
+    BuildContext context,
+    PropertyModel property,
+  ) {
     final status = property.status;
+   // print('property.images: ${property.images}');
+
+    // Get the first image URL if available
+    String? imageUrl = property.images.isNotEmpty
+        ? property.images.first
+        : null;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -557,6 +641,7 @@ class _SellerHomeState extends State<SellerHome>
         ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Stack(
             children: [
@@ -564,28 +649,35 @@ class _SellerHomeState extends State<SellerHome>
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(18),
                 ),
-                child: Image.network(
-                  property.images.isNotEmpty
-                      ? property.images.first
-                      : 'https://via.placeholder.com/400',
-                  height: 180,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-
-                //                 const String imageBaseUrl = "https://your-api-domain.com/uploads/";
-
-                // Image.network(
-                //   property.images.isNotEmpty
-                //       ? imageBaseUrl + property.images.first
-                //       : 'https://via.placeholder.com/400',
-                //   height: 180,
-                //   width: double.infinity,
-                //   fit: BoxFit.cover,yyy
-                // )
+                child: imageUrl != null
+                    ? Image.network(
+                        imageUrl,
+                        height: 180,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          // Use local placeholder if network image fails
+                          return Image.asset(
+                            'assets/images/placeholder.webp',
+                            height: 180,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      )
+                    : Image.asset(
+                        'assets/images/placeholder.webp',
+                        height: 180,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
               ),
               positionedBadge(status),
-              Positioned(top: 12, right: 12, child: _popupMenu(property)),
+              Positioned(
+                top: 12,
+                right: 12,
+                child: _popupMenu(context, property),
+              ),
             ],
           ),
           Padding(
@@ -619,22 +711,85 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
-  Widget _popupMenu(PropertyModel property) {
+  Widget _popupMenu(BuildContext context, PropertyModel property) {
     return PopupMenuButton<String>(
+      elevation: 4,
+      color: AppColors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       onSelected: (value) {
         if (value == 'edit') {
           Navigator.pushNamed(context, '/edit-property', arguments: property);
         } else if (value == 'delete') {
-          context.read<PropertyCubit>().deleteProperty(property.id);
+          _confirmDelete(context, property.id);
         }
       },
-      itemBuilder: (_) => const [
-        PopupMenuItem(value: 'edit', child: Text('Edit')),
+      itemBuilder: (_) => [
+        PopupMenuItem(
+          value: 'edit',
+          padding: EdgeInsets.zero,
+          child: InkWell(
+            splashColor: AppColors.gold,
+            highlightColor: AppColors.gold,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: const [
+                  Icon(Icons.edit, size: 20, color: AppColors.navyDark),
+                  SizedBox(width: 10),
+                  Text("Edit"),
+                ],
+              ),
+            ),
+          ),
+        ),
         PopupMenuItem(
           value: 'delete',
-          child: Text('Delete', style: TextStyle(color: Colors.red)),
+          padding: EdgeInsets.zero,
+          child: InkWell(
+            splashColor: AppColors.gold,
+            highlightColor: AppColors.gold,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: const [
+                  Icon(Icons.delete_outline, size: 20, color: Colors.red),
+                  SizedBox(width: 10),
+                  Text("Delete"),
+                ],
+              ),
+            ),
+          ),
         ),
       ],
+    );
+  }
+
+  void _confirmDelete(BuildContext context, String id) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: AppColors.background,
+        title: const Text('Delete Property'),
+        content: const Text('Are you sure you want to delete this property?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: AppColors.gold),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.read<PropertyCubit>().deleteProperty(id);
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
   }
 
