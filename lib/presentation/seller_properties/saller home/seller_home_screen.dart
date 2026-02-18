@@ -44,7 +44,7 @@ class _SellerHomeState extends State<SellerHome>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    //context.read<PropertyCubit>().getAllSellerProperties();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<PropertyCubit>().getAllSellerProperties();
     });
@@ -516,11 +516,40 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
+  // Widget _myListingsContent(BuildContext context) {
+  //   return BlocBuilder<PropertyCubit, PropertyState>(
+  //     builder: (context, state) {
+  //       if (state is PropertyLoading) {
+  //         return const Center(child: CircularProgressIndicator(color:AppColors.gold,));
+  //       }
+
+  //       if (state is PropertyError) {
+  //         return Center(child: Text(state.message));
+  //       }
+
+  //       if (state is PropertyLoaded) {
+  //         if (state.properties.isEmpty) {
+  //           return const Center(child: Text("No properties yet"));
+  //         }
+
+  //         return Column(
+  //           children: state.properties
+  //               .map((property) => _fullListingCardFromModel(context, property))
+  //               .toList(),
+  //         );
+  //       }
+
+  //       return const SizedBox();
+  //     },
+  //   );
+  // }
   Widget _myListingsContent(BuildContext context) {
     return BlocBuilder<PropertyCubit, PropertyState>(
       builder: (context, state) {
         if (state is PropertyLoading) {
-          return const Center(child: CircularProgressIndicator(color:AppColors.gold,));
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.gold),
+          );
         }
 
         if (state is PropertyError) {
@@ -529,13 +558,61 @@ class _SellerHomeState extends State<SellerHome>
 
         if (state is PropertyLoaded) {
           if (state.properties.isEmpty) {
-            return const Center(child: Text("No properties yet"));
+            return Column(
+              children: [
+                const Center(child: Text("No properties yet")),
+                Center(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    icon: const Icon(Icons.add, color: Colors.black),
+                    label: const Text(
+                      "Add Property",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/addproperty');
+                    },
+                  ),
+                ),
+              ],
+            );
           }
 
-          return Column(
-            children: state.properties
-                .map((property) => _fullListingCardFromModel(context, property))
-                .toList(),
+          return SingleChildScrollView(
+
+           child: Column(
+            children: [
+              ...state.properties.map(
+                (property) => _fullListingCardFromModel(context, property),
+              ),
+
+              const SizedBox(height: 16),
+
+              Center(
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  icon: const Icon(Icons.add, color: Colors.black),
+                  label: const Text(
+                    "Add Property",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/addproperty');
+                  },
+                ),
+              ),
+            ],
+          )
           );
         }
 
@@ -544,92 +621,18 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
-  // Widget _fullListingCardFromModel(PropertyModel property) {
-  //   final status = property.status;
-  //   print('property.images: ${property.images}');
-  //      const String imageBaseUrl =
-  //    "https://res.cloudinary.com/djknoinbe/image/upload/v1771009719/movin/properties/";
-
-  //   return Container(
-  //     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-  //     decoration: BoxDecoration(
-  //       color: AppColors.white,
-  //       borderRadius: BorderRadius.circular(18),
-  //       boxShadow: [
-  //         BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 12),
-  //       ],
-  //     ),
-  //     child: Column(
-  //       children: [
-  //         Stack(
-  //           children: [
-  //             ClipRRect(
-  //               borderRadius: const BorderRadius.vertical(
-  //                 top: Radius.circular(18),
-  //               ),
-  //               child:
-  //                   // Image.network(
-  //                   //   property.images.isNotEmpty &&
-  //                   //           property.images.first.startsWith('http')
-  //                   //       ? property.images.first
-  //                   //       : 'https://via.placeholder.com/150',
-  //                   //   fit: BoxFit.cover,
-  //                   // ),
-  //                   Image.network(
-  //                     property.images.isNotEmpty
-  //                         ? imageBaseUrl + property.images.first
-  //                         : 'https://via.placeholder.com/150',
-  //                     height: 180,
-  //                     width: double.infinity,
-  //                     fit: BoxFit.cover,
-  //                   ),
-  //             ),
-  //             positionedBadge(status),
-  //             Positioned(top: 12, right: 12, child: _popupMenu(property)),
-  //           ],
-  //         ),
-  //         Padding(
-  //           padding: const EdgeInsets.all(16),
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Text(
-  //                 property.type,
-  //                 style: const TextStyle(
-  //                   fontWeight: FontWeight.bold,
-  //                   fontSize: 16,
-  //                 ),
-  //               ),
-  //               const SizedBox(height: 4),
-  //               Text(property.location),
-  //               const SizedBox(height: 8),
-  //               Text(
-  //                 "${property.price} EGP",
-  //                 style: const TextStyle(
-  //                   fontSize: 18,
-  //                   fontWeight: FontWeight.bold,
-  //                   color: AppColors.gold,
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _fullListingCardFromModel(
     BuildContext context,
     PropertyModel property,
   ) {
     final status = property.status;
-   // print('property.images: ${property.images}');
+    // print('property.images: ${property.images}');
 
     // Get the first image URL if available
     String? imageUrl = property.images.isNotEmpty
         ? property.images.first
         : null;
+        print("IMAGE URL FROM MODEL: $imageUrl");
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -709,6 +712,7 @@ class _SellerHomeState extends State<SellerHome>
         ],
       ),
     );
+    
   }
 
   Widget _popupMenu(BuildContext context, PropertyModel property) {

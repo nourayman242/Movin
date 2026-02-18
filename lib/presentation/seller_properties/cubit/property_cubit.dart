@@ -20,7 +20,7 @@ class PropertyCubit extends Cubit<PropertyState> {
     emit(PropertyLoading());
     try {
       final properties = await repository.getAll();
-      emit(PropertyLoaded(properties.cast<PropertyModel>()));
+      emit(PropertyLoaded(properties));
     } catch (e) {
       emit(PropertyError(e.toString()));
     }

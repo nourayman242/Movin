@@ -159,16 +159,32 @@ class PropertyService {
     );
   }
 
-  Future<List<PropertyModel>> getAllSellerProperties() async {
-    final response = await dio.get('/api/seller/properties/getAll');
-    if (response.data == null || response.data['products'] == null) {
-      return [];
-    }
+  // Future<List<PropertyModel>> getAllSellerProperties() async {
+  //   final response = await dio.get('/api/seller/properties/getAll');
+  //   if (response.data == null || response.data['products'] == null) {
+  //     return [];
+  //   }
 
-    return (response.data['products'] as List)
-        .map((e) => PropertyModel.fromJson(e))
-        .toList();
+  //   return (response.data['products'] as List)
+  //       .map((e) => PropertyModel.fromJson(e))
+  //       .toList();
+  // }
+  Future<List<PropertyModel>> getAllSellerProperties() async {
+  final response = await dio.get('/api/seller/properties/getAll');
+
+  print("FULL RESPONSE DATA:");
+  print(response.data);
+  print("TYPE: ${response.data.runtimeType}");
+
+  if (response.data == null || response.data['products'] == null) {
+    return [];
   }
+
+  return (response.data['products'] as List)
+      .map((e) => PropertyModel.fromJson(e))
+      .toList();
+}
+
 
   Future<void> updateProperty(String id, PropertyEntity entity) async {
     await dio.patch('/api/seller/properties/$id', data: entity.toJson());
