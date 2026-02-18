@@ -38,8 +38,10 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
     bedroomsController = TextEditingController(text: p.bedrooms.toString());
     bathroomsController = TextEditingController(text: p.bathrooms.toString());
 
-    selectedType = p.type;
+    
+    selectedType = p.type.toLowerCase();
     selectedStatus = p.status;
+
   }
 
   @override
@@ -59,7 +61,10 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         foregroundColor: AppColors.white,
-        title: const Text("Edit Property",style: TextStyle(color: AppColors.white),),
+        title: const Text(
+          "Edit Property",
+          style: TextStyle(color: AppColors.white),
+        ),
         backgroundColor: AppColors.primaryNavy,
       ),
       body: SingleChildScrollView(
@@ -111,11 +116,13 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
 
             _label("Property Type"),
             DropdownButtonFormField<String>(
+              dropdownColor: AppColors.background,
               value: selectedType,
               items: const [
                 DropdownMenuItem(value: "villa", child: Text("Villa")),
-                DropdownMenuItem(value: "Penthouse", child: Text("Penthouse")),
-                DropdownMenuItem(value: "Apartment", child: Text("Apartment")),
+                DropdownMenuItem(value: "penthouse", child: Text("Penthouse")),
+                DropdownMenuItem(value: "apartment", child: Text("Apartment")),
+                DropdownMenuItem(value: "office", child: Text("Office")),
               ],
               onChanged: (v) => setState(() => selectedType = v!),
               decoration: _decoration(),
@@ -123,6 +130,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
 
             _label("Status"),
             DropdownButtonFormField<String>(
+              dropdownColor: AppColors.background,
               value: selectedStatus,
               items: const [
                 DropdownMenuItem(value: "active", child: Text("Active")),
@@ -189,45 +197,43 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
   //   Navigator.pop(context);
   // }
   void _onSave() async {
-  final updatedEntity = PropertyEntity(
-    location: locationController.text,
-    description: descriptionController.text,
-    price: int.parse(priceController.text),
-    type: selectedType,
-    size: sizeController.text,
-    bedrooms: int.tryParse(bedroomsController.text),
-    bathrooms: int.tryParse(bathroomsController.text),
-    availableFrom: widget.property.availableFrom,
-    images: widget.property.images,
-    paymentMethod: widget.property.paymentMethod,
-  );
-
-  final cubit = context.read<PropertyCubit>();
-
-  try {
-    // 1. Call backend to update
-    await cubit.updateProperty(id: widget.property.id, entity: updatedEntity);
-
-    // 2. Refresh the listing after update
-    await cubit.getAllSellerProperties();
-
-    // 3. Navigate back to listing screen
-    if (mounted) Navigator.pop(context);
-
-    // Optional: show a success message
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Property updated successfully!')),
+    final updatedEntity = PropertyEntity(
+      location: locationController.text,
+      description: descriptionController.text,
+      price: int.parse(priceController.text),
+      type: selectedType,
+      size: sizeController.text,
+      bedrooms: int.tryParse(bedroomsController.text),
+      bathrooms: int.tryParse(bathroomsController.text),
+      availableFrom: widget.property.availableFrom,
+      images: widget.property.images,
+      paymentMethod: widget.property.paymentMethod,
     );
-  } catch (e) {
-    // Handle error
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Failed to update property: $e')),
-    );
+
+    final cubit = context.read<PropertyCubit>();
+
+    try {
+      // 1. Call backend to update
+      await cubit.updateProperty(id: widget.property.id, entity: updatedEntity);
+
+      // 2. Refresh the listing after update
+      await cubit.getAllSellerProperties();
+
+      // 3. Navigate back to listing screen
+      if (mounted) Navigator.pop(context);
+
+      // Optional: show a success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Property updated successfully!')),
+      );
+    } catch (e) {
+      // Handle error
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to update property: $e')));
+    }
   }
-}
 
-
-  
   Widget _imagesPreview(List<String> images) {
     return SizedBox(
       height: 90,
