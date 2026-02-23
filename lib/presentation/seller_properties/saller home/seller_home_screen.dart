@@ -114,11 +114,18 @@ class _SellerHomeState extends State<SellerHome>
                                         "Add Property",
                                         style: TextStyle(color: Colors.black),
                                       ),
-                                      onPressed: () {
-                                        Navigator.pushNamed(
+
+                                      onPressed: () async {
+                                        await Navigator.pushNamed(
                                           context,
                                           '/addproperty',
                                         );
+
+                                        if (mounted) {
+                                          context
+                                              .read<PropertyCubit>()
+                                              .getAllSellerProperties();
+                                        }
                                       },
                                     ),
                                   ),
@@ -516,33 +523,6 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
-  // Widget _myListingsContent(BuildContext context) {
-  //   return BlocBuilder<PropertyCubit, PropertyState>(
-  //     builder: (context, state) {
-  //       if (state is PropertyLoading) {
-  //         return const Center(child: CircularProgressIndicator(color:AppColors.gold,));
-  //       }
-
-  //       if (state is PropertyError) {
-  //         return Center(child: Text(state.message));
-  //       }
-
-  //       if (state is PropertyLoaded) {
-  //         if (state.properties.isEmpty) {
-  //           return const Center(child: Text("No properties yet"));
-  //         }
-
-  //         return Column(
-  //           children: state.properties
-  //               .map((property) => _fullListingCardFromModel(context, property))
-  //               .toList(),
-  //         );
-  //       }
-
-  //       return const SizedBox();
-  //     },
-  //   );
-  // }
   Widget _myListingsContent(BuildContext context) {
     return BlocBuilder<PropertyCubit, PropertyState>(
       builder: (context, state) {
@@ -574,8 +554,12 @@ class _SellerHomeState extends State<SellerHome>
                       "Add Property",
                       style: TextStyle(color: Colors.black),
                     ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/addproperty');
+                    onPressed: () async {
+                      await Navigator.pushNamed(context, '/addproperty');
+
+                      // if (mounted) {
+                      //   context.read<PropertyCubit>().getAllSellerProperties();
+                      // }
                     },
                   ),
                 ),
@@ -584,35 +568,37 @@ class _SellerHomeState extends State<SellerHome>
           }
 
           return SingleChildScrollView(
-
-           child: Column(
-            children: [
-              ...state.properties.map(
-                (property) => _fullListingCardFromModel(context, property),
-              ),
-
-              const SizedBox(height: 16),
-
-              Center(
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  icon: const Icon(Icons.add, color: Colors.black),
-                  label: const Text(
-                    "Add Property",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/addproperty');
-                  },
+            child: Column(
+              children: [
+                ...state.properties.map(
+                  (property) => _fullListingCardFromModel(context, property),
                 ),
-              ),
-            ],
-          )
+
+                const SizedBox(height: 16),
+
+                Center(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    icon: const Icon(Icons.add, color: Colors.black),
+                    label: const Text(
+                      "Add Property",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/addproperty');
+                      if (mounted) {
+                        context.read<PropertyCubit>().getAllSellerProperties();
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
           );
         }
 
@@ -626,13 +612,10 @@ class _SellerHomeState extends State<SellerHome>
     PropertyModel property,
   ) {
     final status = property.status;
-    // print('property.images: ${property.images}');
-
-    // Get the first image URL if available
     String? imageUrl = property.images.isNotEmpty
         ? property.images.first
         : null;
-        print("IMAGE URL FROM MODEL: $imageUrl");
+    print("IMAGE URL FROM MODEL: $imageUrl");
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -712,7 +695,6 @@ class _SellerHomeState extends State<SellerHome>
         ],
       ),
     );
-    
   }
 
   Widget _popupMenu(BuildContext context, PropertyModel property) {
@@ -720,9 +702,17 @@ class _SellerHomeState extends State<SellerHome>
       elevation: 4,
       color: AppColors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      onSelected: (value) {
+      onSelected: (value) async {
         if (value == 'edit') {
-          Navigator.pushNamed(context, '/edit-property', arguments: property);
+          await Navigator.pushNamed(
+            context,
+            '/edit-property',
+            arguments: property,
+          );
+
+          if (mounted) {
+            context.read<PropertyCubit>().getAllSellerProperties();
+          }
         } else if (value == 'delete') {
           _confirmDelete(context, property.id);
         }
@@ -1160,282 +1150,3 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 }
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:movin/app_theme.dart';
-// import 'package:movin/domain/entities/property_model.dart';
-// import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
-
-
-// class SellerHomeScreen extends StatefulWidget {
-//   const SellerHomeScreen({super.key});
-
-//   @override
-//   State<SellerHomeScreen> createState() => _SellerHomeScreenState();
-// }
-
-// class _SellerHomeScreenState extends State<SellerHomeScreen>
-//     with SingleTickerProviderStateMixin {
-//   late TabController _tabController;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _tabController = TabController(length: 3, vsync: this);
-
-//     // 🔥 Fetch properties from backend
-//     context.read<PropertyCubit>().getAllSellerProperties();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: AppColors.background,
-//       appBar: AppBar(
-//         elevation: 0,
-//         backgroundColor: AppColors.white,
-//         title: const Text(
-//           'Seller Dashboard',
-//           style: TextStyle(color: Colors.black),
-//         ),
-//         bottom: TabBar(
-//           controller: _tabController,
-//           labelColor: AppColors.gold,
-//           unselectedLabelColor: Colors.grey,
-//           tabs: const [
-//             Tab(text: 'My Listings'),
-//             Tab(text: 'Pending'),
-//             Tab(text: 'Sold'),
-//           ],
-//         ),
-//       ),
-//       body: TabBarView(
-//         controller: _tabController,
-//         children: [
-//           _myListingsTab(),
-//           const Center(child: Text('Pending properties')),
-//           const Center(child: Text('Sold properties')),
-//         ],
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         backgroundColor: AppColors.gold,
-//         child: const Icon(Icons.add, color: Colors.black),
-//         onPressed: () {
-//           Navigator.pushNamed(context, '/addproperty');
-//         },
-//       ),
-//     );
-//   }
-
-//   // =========================
-//   // My Listings Tab
-//   // =========================
-//   Widget _myListingsTab() {
-//     return BlocBuilder<PropertyCubit, PropertyState>(
-//       builder: (context, state) {
-//         if (state is PropertyLoading) {
-//           return const Center(child: CircularProgressIndicator());
-//         }
-
-//         if (state is PropertyError) {
-//           return Center(
-//             child: Text(
-//               state.message,
-//               style: const TextStyle(color: Colors.red),
-//             ),
-//           );
-//         }
-
-//         if (state is PropertyLoaded) {
-//           if (state.properties.isEmpty) {
-//             return const Center(
-//               child: Text('No properties added yet'),
-//             );
-//           }
-
-//           return ListView.builder(
-//             padding: const EdgeInsets.only(bottom: 80),
-//             itemCount: state.properties.length,
-//             itemBuilder: (context, index) {
-//               return _propertyCard(context, state.properties[index]);
-//             },
-//           );
-//         }
-
-//         return const SizedBox();
-//       },
-//     );
-//   }
-
-//   // =========================
-//   // Property Card
-//   // =========================
-//   Widget _propertyCard(BuildContext context, PropertyModel property) {
-//     return Container(
-//       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-//       decoration: BoxDecoration(
-//         color: AppColors.white,
-//         borderRadius: BorderRadius.circular(18),
-//         boxShadow: [
-//           BoxShadow(
-//             color: Colors.black.withOpacity(0.05),
-//             blurRadius: 10,
-//             offset: const Offset(0, 4),
-//           ),
-//         ],
-//       ),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Stack(
-//             children: [
-//               ClipRRect(
-//                 borderRadius: const BorderRadius.vertical(
-//                   top: Radius.circular(18),
-//                 ),
-//                 child: Image.network(
-//                   property.images.isNotEmpty
-//                       ? property.images.first
-//                       : 'https://via.placeholder.com/400',
-//                   height: 180,
-//                   width: double.infinity,
-//                   fit: BoxFit.cover,
-//                 ),
-//               ),
-//               _statusBadge(property.status),
-//               Positioned(
-//                 top: 12,
-//                 right: 12,
-//                 child: _propertyMenu(context, property),
-//               ),
-//             ],
-//           ),
-//           Padding(
-//             padding: const EdgeInsets.all(16),
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 Text(
-//                   property.type.toUpperCase(),
-//                   style: const TextStyle(
-//                     fontWeight: FontWeight.bold,
-//                     fontSize: 16,
-//                   ),
-//                 ),
-//                 const SizedBox(height: 4),
-//                 Text(
-//                   property.location,
-//                   style: const TextStyle(color: Colors.grey),
-//                 ),
-//                 const SizedBox(height: 10),
-//                 Text(
-//                   '${property.price} EGP',
-//                   style: const TextStyle(
-//                     fontWeight: FontWeight.bold,
-//                     fontSize: 18,
-//                     color: AppColors.gold,
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   // =========================
-//   // Status Badge
-//   // =========================
-//   Widget _statusBadge(String status) {
-//     final color = status == 'active'
-//         ? AppColors.gold
-//         : status == 'pending'
-//             ? Colors.orange
-//             : Colors.grey;
-
-//     return Positioned(
-//       top: 14,
-//       left: 14,
-//       child: Container(
-//         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-//         decoration: BoxDecoration(
-//           color: color.withOpacity(0.15),
-//           borderRadius: BorderRadius.circular(8),
-//         ),
-//         child: Text(
-//           status.toUpperCase(),
-//           style: TextStyle(
-//             color: color,
-//             fontWeight: FontWeight.bold,
-//             fontSize: 12,
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   // =========================
-//   // Edit / Delete Menu
-//   // =========================
-//   Widget _propertyMenu(BuildContext context, PropertyModel property) {
-//     return PopupMenuButton<String>(
-//       onSelected: (value) {
-//         if (value == 'edit') {
-//           Navigator.pushNamed(
-//             context,
-//             '/edit-property',
-//             arguments: property,
-//           );
-//         } else if (value == 'delete') {
-//           _confirmDelete(context, property.id);
-//         }
-//       },
-//       itemBuilder: (_) => const [
-//         PopupMenuItem(value: 'edit', child: Text('Edit')),
-//         PopupMenuItem(
-//           value: 'delete',
-//           child: Text(
-//             'Delete',
-//             style: TextStyle(color: Colors.red),
-//           ),
-//         ),
-//       ],
-//       child: const CircleAvatar(
-//         backgroundColor: Colors.white,
-//         child: Icon(Icons.more_vert, color: Colors.black),
-//       ),
-//     );
-//   }
-
-//   // =========================
-//   // Confirm Delete Dialog
-//   // =========================
-//   void _confirmDelete(BuildContext context, String id) {
-//     showDialog(
-//       context: context,
-//       builder: (_) => AlertDialog(
-//         title: const Text('Delete Property'),
-//         content: const Text('Are you sure you want to delete this property?'),
-//         actions: [
-//           TextButton(
-//             onPressed: () => Navigator.pop(context),
-//             child: const Text('Cancel'),
-//           ),
-//           TextButton(
-//             onPressed: () {
-//               Navigator.pop(context);
-//               context.read<PropertyCubit>().deleteProperty(id);
-//             },
-//             child: const Text(
-//               'Delete',
-//               style: TextStyle(color: Colors.red),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-

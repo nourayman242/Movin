@@ -1,13 +1,19 @@
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:movin/domain/entities/property_entity.dart';
 
 enum PropertyType { apartment, villa, office, townhouse, penthouse }
 
+enum ListingType { rent, sale }
+
 class AddPropertyViewModel extends ChangeNotifier {
   // Selected property type
   PropertyType? selectedType;
+
+  ListingType? selectedListingType;
+  AddPropertyViewModel() {
+    selectedListingType = ListingType.sale; // default
+  }
 
   // Text controllers (shared across sections)
   final priceController = TextEditingController();
@@ -26,12 +32,12 @@ class AddPropertyViewModel extends ChangeNotifier {
   bool garden = false;
   bool parking = false;
 
-  // Office 
+  // Office
   final officeSizeController = TextEditingController();
   final workroomsController = TextEditingController();
   final meetingroomsController = TextEditingController();
   final officParkingController = TextEditingController();
-// penthouse specific
+  // penthouse specific
   final terraceController = TextEditingController();
 
   // Description
@@ -40,25 +46,26 @@ class AddPropertyViewModel extends ChangeNotifier {
   // Images (XFile objects returned by image_picker)
   List<XFile> images = [];
 
+  // BASIC INFO
+  String get location => locationController.text.trim();
+  String get description => descriptionController.text.trim();
+  int get price => int.parse(priceController.text.trim());
+  String get size => '${areaController.text.trim()} sqm';
 
-// BASIC INFO
-String get location => locationController.text.trim();
-String get description => descriptionController.text.trim();
-int get price => int.parse(priceController.text.trim());
-String get size => '${areaController.text.trim()} sqm';
+  // TYPE
+  String get type => selectedType!.name;
+  String get listingType => selectedListingType!.name;
 
-// TYPE
-String get type => selectedType!.name;
-
-// DETAILS
-int? get bedrooms => int.tryParse(bedroomsController.text.trim());
-int? get bathrooms => int.tryParse(bathroomsController.text.trim());
-
-// DATE & PAYMENT
-DateTime get availableFrom => DateTime.now();
-String get paymentMethod => "Cash";
+  // DETAILS
+  int? get bedrooms => int.tryParse(bedroomsController.text.trim());
+  int? get bathrooms => int.tryParse(bathroomsController.text.trim());
 
   // Setters that call notifyListeners()
+  void selectListingType(ListingType? t) {
+    selectedListingType = t;
+    notifyListeners();
+  }
+
   void selectType(PropertyType? t) {
     selectedType = t;
     notifyListeners();
@@ -97,6 +104,45 @@ String get paymentMethod => "Cash";
     }
   }
 
+  Map<String, dynamic> get details {
+    if (selectedType == null) return {};
+
+    switch (selectedType!) {
+      case PropertyType.apartment:
+      case PropertyType.townhouse:
+        return {
+          "bedrooms": bedroomsController.text.trim(),
+          "bathrooms": bathroomsController.text.trim(),
+          "floor": floorController.text.trim(),
+          "elevator": elevator,
+        };
+
+      case PropertyType.villa:
+        return {
+          "bedrooms": bedroomsController.text.trim(),
+          "bathrooms": bathroomsController.text.trim(),
+          "land_area": landAreaController.text.trim(),
+          "floors": numOfFloorController.text.trim(),
+          "garden": garden,
+          "parking": parking,
+        };
+
+      case PropertyType.office:
+        return {
+          "work_rooms": workroomsController.text.trim(),
+          "meeting_rooms": meetingroomsController.text.trim(),
+          "parking": officParkingController.text.trim(),
+          "size": officeSizeController.text.trim(),
+        };
+
+      case PropertyType.penthouse:
+        return {
+          "bedrooms": bedroomsController.text.trim(),
+          "bathrooms": bathroomsController.text.trim(),
+          "terrace": terraceController.text.trim(),
+        };
+    }
+  }
 
   bool get isTypeSelected => selectedType != null;
 
@@ -133,7 +179,12 @@ String get paymentMethod => "Cash";
         bathroomsController.text.trim().isNotEmpty;
   }
 
-  bool get isFormValid => isTypeSelected && isBasicValid && isTypeSpecificValid;
+  //bool get isFormValid => isTypeSelected && isBasicValid && isTypeSpecificValid;
+  bool get isFormValid =>
+      selectedType != null &&
+      selectedListingType != null &&
+      isBasicValid &&
+      isTypeSpecificValid;
 
   // Reset form
   void reset() {
@@ -177,21 +228,17 @@ String get paymentMethod => "Cash";
     descriptionController.dispose();
     super.dispose();
   }
-  PropertyEntity toEntity({
-  required List<String> imageUrls,
-}) {
-  return PropertyEntity(
-    location: locationController.text,
-    description: descriptionController.text,
-    price: int.parse(priceController.text),
-    type: selectedType!.name,
-    size: '${areaController.text} sqm',
-    bedrooms: int.tryParse(bedroomsController.text),
-    bathrooms: int.tryParse(bathroomsController.text),
-    availableFrom: DateTime.now(),
-    images: imageUrls,
-    paymentMethod: "Cash",
-  );
-}
-  
+
+  PropertyEntity toEntity({required List<String> imageUrls}) {
+    return PropertyEntity(
+      location: locationController.text.trim(),
+      description: descriptionController.text.trim(),
+      price: int.parse(priceController.text.trim()),
+      listingType: listingType,
+      type: selectedType!.name,
+      size: '${areaController.text.trim()} sqm',
+      images: imageUrls,
+      details: details,
+    );
+  }
 }

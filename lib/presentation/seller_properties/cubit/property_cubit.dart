@@ -13,7 +13,6 @@ class PropertyCubit extends Cubit<PropertyState> {
 
   PropertyCubit(this.repository) : super(PropertyInitial());
 
-
   // GET ALL SELLER PROPERTIES
 
   Future<void> getAllSellerProperties() async {
@@ -29,35 +28,38 @@ class PropertyCubit extends Cubit<PropertyState> {
   // ADD PROPERTY
 
   Future<void> addProperty(AddPropertyViewModel vm) async {
-    emit(PropertyLoading());
     try {
+      emit(PropertyLoading());
+
       final token = await SharedHelper.getToken();
 
       await repository.create(vm, token!);
 
-      await getAllSellerProperties();
+      final properties = await repository.getAll();
 
-      emit(PropertySuccess());
-     } 
-    //  catch (e) {
-    //   emit(PropertyError(e.toString()));
-    // }
-    catch (e) {
+      emit(PropertyLoaded(properties));
+    } catch (e) {
       if (e is DioException) {
-        emit(
-          PropertyError(
-            e.response?.data['message'] ?? e.message ?? 'Server error',
-          ),
-        );
+        final responseData = e.response?.data;
+
+        String errorMessage = 'Server error';
+
+        if (responseData is Map<String, dynamic>) {
+          errorMessage = responseData['message'] ?? errorMessage;
+        } else if (responseData is String) {
+          errorMessage = responseData;
+        } else {
+          errorMessage = e.message ?? errorMessage;
+        }
+
+        emit(PropertyError(errorMessage));
       } else {
         emit(PropertyError(e.toString()));
       }
     }
   }
-
-
   // DELETE PROPERTY
- 
+
   Future<void> deleteProperty(String id) async {
     try {
       await repository.delete(id);
@@ -67,16 +69,31 @@ class PropertyCubit extends Cubit<PropertyState> {
     }
   }
 
-
   // UPDATE PROPERTY
 
+  // Future<void> updateProperty({
+  //   required String id,
+  //   required PropertyEntity entity,
+  // }) async {
+  //   try {
+  //     await repository.update(id, entity);
+  //     await getAllSellerProperties();
+  //   } catch (e) {
+  //     emit(PropertyError(e.toString()));
+  //   }
+  // }
   Future<void> updateProperty({
     required String id,
     required PropertyEntity entity,
   }) async {
     try {
+      emit(PropertyLoading());
+
       await repository.update(id, entity);
-      await getAllSellerProperties();
+
+      final properties = await repository.getAll();
+
+      emit(PropertyLoaded(properties));
     } catch (e) {
       emit(PropertyError(e.toString()));
     }

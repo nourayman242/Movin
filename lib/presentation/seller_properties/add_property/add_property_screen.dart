@@ -19,13 +19,16 @@ class AddPropertyScreen extends StatelessWidget {
   void _submit(BuildContext context) {
     final vm = context.read<AddPropertyViewModel>();
 
-    if (!vm.isFormValid) return;
+   if (!vm.isFormValid) return;
 
-    context.read<PropertyCubit>().addProperty(vm);
-    ////
-    if (vm.images.isEmpty) {
-      throw Exception("No images selected");
-    }
+  if (vm.images.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Please select at least one image")),
+    );
+    return;
+  }
+
+  context.read<PropertyCubit>().addProperty(vm);
     debugPrint('''
 location: ${vm.location}
 description: ${vm.description}
@@ -34,11 +37,9 @@ type: ${vm.type}
 size: ${vm.size}
 bedrooms: ${vm.bedrooms}
 bathrooms: ${vm.bathrooms}
-available_from: ${vm.availableFrom}
-payment_method: ${vm.paymentMethod}
+
 images: ${vm.images.length}
 ''');
-
   }
 
   @override
@@ -50,7 +51,7 @@ images: ${vm.images.length}
       create: (_) => AddPropertyViewModel(),
       child: BlocListener<PropertyCubit, PropertyState>(
         listener: (context, state) {
-          if (state is PropertySuccess) {
+          if (state is PropertyLoaded) {
             showDialog(
               context: context,
               barrierDismissible: false,
@@ -235,7 +236,7 @@ images: ${vm.images.length}
                   if (context.watch<PropertyCubit>().state is PropertyLoading)
                     Container(
                       color: Colors.black26,
-                      child: const Center(child: CircularProgressIndicator()),
+                      child: const Center(child: CircularProgressIndicator(color: AppColors.gold,)),
                     ),
                 ],
               ),

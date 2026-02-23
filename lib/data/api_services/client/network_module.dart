@@ -20,7 +20,8 @@ abstract class NetworkServices {
   @lazySingleton
   Dio provideDio() {
     const base =
-        'https://movin-oipd650to-malakkhaled22s-projects.vercel.app';
+        //'https://movin-oipd650to-malakkhaled22s-projects.vercel.app';
+        'https://movin-app.vercel.app';
 
     final dio = Dio(
       BaseOptions(
@@ -32,12 +33,7 @@ abstract class NetworkServices {
 
     dio.interceptors.add(AuthInterceptor());
 
-    dio.interceptors.add(
-      LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-      ),
-    );
+    dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
 
     return dio;
   }
