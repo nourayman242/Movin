@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
+import 'package:movin/presentation/login/cubit/otp_cubit.dart';
 
 import '../../../app_theme.dart';
 import '../../login/cubit/forget_pass_cubit.dart';
@@ -19,37 +20,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return BlocProvider<ForgotPasswordCubit>(
-      create: (_) => getIt<ForgotPasswordCubit>(),
-      child: _ForgotPasswordView(
-        emailController: _emailController,
-        formKey: _formKey,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-      ),
-    );
-  }
-}
-
-class _ForgotPasswordView extends StatelessWidget {
-  final TextEditingController emailController;
-  final GlobalKey<FormState> formKey;
-  final double screenWidth;
-  final double screenHeight;
-
-  const _ForgotPasswordView({
-    required this.emailController,
-    required this.formKey,
-    required this.screenWidth,
-    required this.screenHeight,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+    // ← no BlocProvider here, it comes from the route in main.dart
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -59,8 +40,12 @@ class _ForgotPasswordView extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) =>
-                      OTPVerificationPage(email: emailController.text.trim()),
+                  builder: (_) => BlocProvider(
+                    create: (_) => getIt<OtpCubit>(),
+                    child: OTPVerificationPage(
+                      email: _emailController.text.trim(),
+                    ),
+                  ),
                 ),
               );
             }
@@ -80,7 +65,7 @@ class _ForgotPasswordView extends StatelessWidget {
                       vertical: screenHeight * 0.04,
                     ),
                     child: Form(
-                      key: formKey,
+                      key: _formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -99,7 +84,7 @@ class _ForgotPasswordView extends StatelessWidget {
                           ),
                           SizedBox(height: screenHeight * 0.05),
                           TextFormField(
-                            controller: emailController,
+                            controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             decoration: AppInputDecoration.rounded(
                               hintText: "Enter your email",
@@ -136,9 +121,9 @@ class _ForgotPasswordView extends StatelessWidget {
                       onPressed: state is ForgotPasswordLoading
                           ? null
                           : () {
-                              if (formKey.currentState!.validate()) {
+                              if (_formKey.currentState!.validate()) {
                                 context.read<ForgotPasswordCubit>().sendOtp(
-                                  emailController.text.trim(),
+                                  _emailController.text.trim(),
                                 );
                               }
                             },

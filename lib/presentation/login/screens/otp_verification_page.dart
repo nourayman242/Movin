@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/presentation/login/cubit/otp_cubit.dart';
 import 'package:movin/presentation/login/cubit/otp_state.dart';
 import '../../../app_theme.dart';
@@ -20,39 +19,19 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
 
   String get _otp => _otpControllers.map((c) => c.text).join().trim();
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider<OtpCubit>(
-      create: (_) => getIt<OtpCubit>(),
-      child: _OTPVerificationView(
-        email: widget.email,
-        otpControllers: _otpControllers,
-        focusNodes: _focusNodes,
-        otp: _otp,
-      ),
-    );
-  }
-}
-
-class _OTPVerificationView extends StatelessWidget {
-  final String email;
-  final List<TextEditingController> otpControllers;
-  final List<FocusNode> focusNodes;
-  final String otp;
-
-  const _OTPVerificationView({
-    required this.email,
-    required this.otpControllers,
-    required this.focusNodes,
-    required this.otp,
-  });
-
   void _onChanged(String value, int index) {
     if (value.isNotEmpty && index < 5) {
-      focusNodes[index + 1].requestFocus();
+      _focusNodes[index + 1].requestFocus();
     } else if (value.isEmpty && index > 0) {
-      focusNodes[index - 1].requestFocus();
+      _focusNodes[index - 1].requestFocus();
     }
+  }
+
+  @override
+  void dispose() {
+    for (var c in _otpControllers) c.dispose();
+    for (var f in _focusNodes) f.dispose();
+    super.dispose();
   }
 
   @override
@@ -77,7 +56,7 @@ class _OTPVerificationView extends StatelessWidget {
             AppWidgets.heading("Verify OTP"),
             AppWidgets.verticalSpace(10),
             Text(
-              "Enter the 6-digit code sent to $email",
+              "Enter the 6-digit code sent to ${widget.email}",
               style: AppTextStyles.subHeading,
               textAlign: TextAlign.center,
             ),
@@ -86,11 +65,11 @@ class _OTPVerificationView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(6, (index) {
                 return SizedBox(
-                  width: boxSize,
+                  width: boxSize,   
                   height: boxSize * 1.2,
                   child: TextField(
-                    controller: otpControllers[index],
-                    focusNode: focusNodes[index],
+                    controller: _otpControllers[index],
+                    focusNode: _focusNodes[index],
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
                     maxLength: 1,
@@ -123,7 +102,7 @@ class _OTPVerificationView extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ResetPasswordPage(email: email),
+                      builder: (_) => ResetPasswordPage(email: widget.email),
                     ),
                   );
                 } else if (state is OtpFailure) {
@@ -142,10 +121,10 @@ class _OTPVerificationView extends StatelessWidget {
                   child: ElevatedButton(
                     style: AppButtons.primary,
                     onPressed: () {
-                      if (otp.length == 6) {
+                      if (_otp.length == 6) {
                         context.read<OtpCubit>().verifyOtp(
-                          email: email,
-                          otp: otp,
+                          email: widget.email,
+                          otp: _otp,
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
