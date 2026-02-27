@@ -8,13 +8,13 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
   ForgotPasswordCubit(this.repository)
       : super(ForgotPasswordInitial());
 
-  Future<void> sendOtp(String email) async {
-    emit(ForgotPasswordLoading());
-    try {
-      await repository.sendOtp(email: email);
-      emit(ForgotPasswordSuccess());
-    } catch (e) {
-      emit(ForgotPasswordFailure(e.toString()));
-    }
+ Future<void> sendOtp(String email) async {
+  emit(ForgotPasswordLoading());
+  try {
+    final message = await repository.sendOtp(email: email);
+    emit(ForgotPasswordSuccess(message: message)); // ← pass actual backend message
+  } catch (e) {
+    emit(ForgotPasswordFailure(e.toString()));
   }
+}
 }

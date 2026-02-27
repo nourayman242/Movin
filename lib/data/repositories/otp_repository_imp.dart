@@ -11,22 +11,15 @@ class OtpRepositoryImpl implements OtpRepository {
 
   OtpRepositoryImpl(this.api);
 
-  @override
-  Future<void> verifyOtp({
-    required String email,
-    required String otp,
-  }) async {
-    final entity = OtpEntity(email: email, otp: otp);
-    final dto = OtpDto.fromEntity(entity);
-
-    try {
-      await api.verifyOtp(dto); // Calls POST /api/auth/verify-otp
-      return;
-    } on DioError catch (e) {
-      final msg = e.response?.data?['message'] ?? e.message;
-      throw Exception(msg);
-    } catch (e) {
-      throw Exception("Unexpected error: $e");
-    }
+@override
+Future<String> verifyOtp({required String email, required String otp}) async {
+  final dto = OtpDto.fromEntity(OtpEntity(email: email, otp: otp));
+  try {
+    final response = await api.verifyOtp(dto);
+    return response.message ?? "OTP verified successfully";
+  } on DioException catch (e) {          // ← DioError is deprecated, use DioException
+    final msg = e.response?.data?['message'] ?? e.message;
+    throw Exception(msg);
   }
+}
 }

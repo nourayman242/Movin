@@ -10,6 +10,7 @@ import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
 import 'package:movin/presentation/home/screens/home.dart';
+import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
 
 import 'package:movin/presentation/login/screens/forgot_password_page.dart';
 import 'package:movin/presentation/login/screens/login_screen.dart';
@@ -23,20 +24,93 @@ import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
 import 'package:movin/presentation/splash_screen/screens/splash.dart';
 
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   //initDependencies();
+//   await ModeService.loadUserMode();
+//   await Hive.initFlutter();
+//   await setUpServiceLocator();
+//   runApp(
+//     MultiBlocProvider(
+//       providers: [
+//         //BlocProvider(create: (_) => getIt<PropertyCubit>()),
+//         BlocProvider(create: (_) => getIt<FavoriteBloc>()..add(FavoriteLoad())),
+//         BlocProvider(create: (_) => getIt<SettingsBloc>()..add(LoadSettings())),
+//       ],
+//       child: Movin(),
+//     ),
+//   );
+// }
+
+// class Movin extends StatelessWidget {
+//   const Movin({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return ScreenUtilInit(
+//       designSize: const Size(375, 812),
+//       minTextAdapt: true,
+//       splitScreenMode: true,
+//       builder: (_, __) {
+//         return MaterialApp(
+//           debugShowCheckedModeBanner: false,
+//           home: const Splash(),
+//           routes: {
+//             '/onboarding': (_) => const OnboardingScreen(),
+//             '/login': (_) => const LoginScreen(),
+//             '/role': (_) => const RoleSelection(),
+//             '/buyerhome': (_) => const BuyerHome(),
+//             '/sellerhome': (_) => BlocProvider(
+//               create: (_) => getIt<PropertyCubit>(),
+//               child: const SellerHome(),
+//             ),
+//             '/forgotpassword': (_) => const ForgotPasswordPage(),
+
+//             '/home': (_) => const HomePage(),
+//             '/addproperty': (_) => BlocProvider(
+//               create: (_) => getIt<PropertyCubit>(),
+//               child: const AddPropertyScreen(),
+//             ),
+//             //
+//             '/edit-property': (context) {
+//               final property =
+//                   ModalRoute.of(context)!.settings.arguments as PropertyModel;
+//               return BlocProvider(
+//                 create: (_) =>
+//                     getIt<
+//                       PropertyCubit
+//                     >(), // ← create its own instead of reading global
+//                 child: EditPropertyScreen(property: property),
+//               );
+//             },
+//           },
+//         );
+//       },
+//     );
+//   }
+// }
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //initDependencies();
   await ModeService.loadUserMode();
   await Hive.initFlutter();
   await setUpServiceLocator();
   runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => getIt<PropertyCubit>()),
-        BlocProvider(create: (_) => getIt<FavoriteBloc>()..add(FavoriteLoad())),
-        BlocProvider(create: (_) => getIt<SettingsBloc>()..add(LoadSettings())),
-      ],
-      child: Movin(),
+    ScreenUtilInit(
+      // ← move it here
+      designSize: const Size(375, 812),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (_, __) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => getIt<FavoriteBloc>()..add(FavoriteLoad()),
+          ),
+          BlocProvider(
+            create: (_) => getIt<SettingsBloc>()..add(LoadSettings()),
+          ),
+        ],
+        child: const Movin(),
+      ),
     ),
   );
 }
@@ -46,41 +120,36 @@ class Movin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(375, 812),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (_, __) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: const Splash(),
-          routes: {
-            '/onboarding': (_) => const OnboardingScreen(),
-            '/login': (_) => const LoginScreen(),
-            '/role': (_) => const RoleSelection(),
-            '/buyerhome': (_) => const BuyerHome(),
-            '/sellerhome': (_) => BlocProvider(
-              create: (_) => getIt<PropertyCubit>(),
-              child: const SellerHome(),
-            ),
-            '/forgotpassword': (_) => const ForgotPasswordPage(),
-
-            '/home': (_) => const HomePage(),
-            '/addproperty': (_) => BlocProvider(
-              create: (_) => getIt<PropertyCubit>(),
-              child: const AddPropertyScreen(),
-            ),
-            '/edit-property': (context) {
-              final property =
-                  ModalRoute.of(context)!.settings.arguments as PropertyModel;
-
-              return BlocProvider.value(
-                value: context.read<PropertyCubit>(),
-                child: EditPropertyScreen(property: property),
-              );
-            },
-          },
-        );
+    return MaterialApp(
+      // ← now MaterialApp is the direct root
+      debugShowCheckedModeBanner: false,
+      home: const Splash(),
+      routes: {
+        '/onboarding': (_) => const OnboardingScreen(),
+        '/login': (_) => const LoginScreen(),
+        '/role': (_) => const RoleSelection(),
+        '/buyerhome': (_) => const BuyerHome(),
+        '/sellerhome': (_) => BlocProvider(
+          create: (_) => getIt<PropertyCubit>(),
+          child: const SellerHome(),
+        ),
+        '/forgotpassword': (_) => BlocProvider(
+          create: (_) => getIt<ForgotPasswordCubit>(),
+          child: const ForgotPasswordPage(),
+        ),
+        '/home': (_) => const HomePage(),
+        '/addproperty': (_) => BlocProvider(
+          create: (_) => getIt<PropertyCubit>(),
+          child: const AddPropertyScreen(),
+        ),
+        '/edit-property': (context) {
+          final property =
+              ModalRoute.of(context)!.settings.arguments as PropertyModel;
+          return BlocProvider(
+            create: (_) => getIt<PropertyCubit>(),
+            child: EditPropertyScreen(property: property),
+          );
+        },
       },
     );
   }

@@ -1,3 +1,3 @@
 abstract class OtpRepository {
-  Future<void> verifyOtp({required String email, required String otp});
+  Future<String> verifyOtp({required String email, required String otp});
 }

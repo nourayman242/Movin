@@ -5,14 +5,19 @@ import 'package:injectable/injectable.dart';
 import 'package:movin/data/api_services/client/auth_interceptor.dart';
 import 'package:movin/data/api_services/forget_pass_services.dart';
 import 'package:movin/data/api_services/login_services.dart';
+import 'package:movin/data/api_services/otp_services.dart';
 import 'package:movin/data/api_services/property_services.dart';
 import 'package:movin/data/api_services/register_services.dart';
+import 'package:movin/data/api_services/reset_password_service.dart';
 
 import 'package:movin/data/repositories/forget_pass_repository_imp.dart';
+import 'package:movin/data/repositories/otp_repository_imp.dart';
 import 'package:movin/data/repositories/property_repository_impl.dart';
 import 'package:movin/domain/repositories/forget_pass_repository.dart';
+import 'package:movin/domain/repositories/otp_repository.dart';
 import 'package:movin/domain/repositories/property_repository.dart';
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
+import 'package:movin/presentation/login/cubit/otp_cubit.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
 @module
@@ -71,4 +76,15 @@ abstract class NetworkServices {
       PropertyRepositoryImpl(service);
   @factory
   PropertyCubit propertyCubit(PropertyRepository repo) => PropertyCubit(repo);
+
+  @lazySingleton
+OtpServices otpServices(Dio dio) => OtpServices(dio);
+
+// @lazySingleton
+// OtpRepository otpRepository(OtpServices service) => OtpRepositoryImpl(service);
+
+@factory
+OtpCubit otpCubit(OtpRepository repo) => OtpCubit(repo);
+@lazySingleton
+ResetPasswordService resetPasswordService(Dio dio) => ResetPasswordService(dio);
 }

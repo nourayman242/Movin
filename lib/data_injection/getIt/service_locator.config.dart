@@ -38,6 +38,7 @@ import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart'
     as _i841;
 import 'package:movin/presentation/fav_screen/manager/fav_hive.dart' as _i718;
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart' as _i493;
+import 'package:movin/presentation/login/cubit/otp_cubit.dart' as _i898;
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart'
     as _i267;
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc.dart'
@@ -62,8 +63,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i87.SettingsLocalService());
     gh.lazySingleton<_i718.FavoriteHiveService>(
         () => _i718.FavoriteHiveService());
-    gh.lazySingleton<_i332.ResetPasswordRepository>(() =>
-        _i684.ResetPasswordRepositoryImpl(gh<_i295.ResetPasswordService>()));
     gh.lazySingleton<_i232.RegisterServices>(
         () => networkServices.registerServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i633.LoginServices>(
@@ -72,10 +71,16 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkServices.forgotPasswordService(gh<_i361.Dio>()));
     gh.lazySingleton<_i634.PropertyService>(
         () => networkServices.propertyService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i97.OtpServices>(
+        () => networkServices.otpServices(gh<_i361.Dio>()));
+    gh.lazySingleton<_i295.ResetPasswordService>(
+        () => networkServices.resetPasswordService(gh<_i361.Dio>()));
     gh.lazySingleton<_i574.OtpRepository>(
         () => _i736.OtpRepositoryImpl(gh<_i97.OtpServices>()));
     gh.lazySingleton<_i772.LoginRepository>(
         () => _i107.LoginRepositoryImpl(gh<_i633.LoginServices>()));
+    gh.factory<_i898.OtpCubit>(
+        () => networkServices.otpCubit(gh<_i574.OtpRepository>()));
     gh.lazySingleton<_i686.ForgotPasswordRepository>(() => networkServices
         .forgotPasswordRepository(gh<_i753.ForgotPasswordService>()));
     gh.factory<_i617.SettingsBloc>(() => _i617.SettingsBloc(
@@ -90,6 +95,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i841.FavoriteBloc(gh<_i718.FavoriteHiveService>()));
     gh.lazySingleton<_i623.RegisterRepository>(
         () => _i666.RegisterRepositoryImpl(gh<_i232.RegisterServices>()));
+    gh.lazySingleton<_i332.ResetPasswordRepository>(() =>
+        _i684.ResetPasswordRepositoryImpl(gh<_i295.ResetPasswordService>()));
     gh.factory<_i267.PropertyCubit>(
         () => networkServices.propertyCubit(gh<_i770.PropertyRepository>()));
     return this;

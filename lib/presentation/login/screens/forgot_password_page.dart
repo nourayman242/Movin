@@ -25,124 +25,132 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
     return BlocProvider<ForgotPasswordCubit>(
       create: (_) => getIt<ForgotPasswordCubit>(),
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        body: SafeArea(
-          child: BlocConsumer<ForgotPasswordCubit, ForgotPasswordState>(
-            listener: (context, state) {
-              if (state is ForgotPasswordSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message)),
-                );
+      child: _ForgotPasswordView(
+        emailController: _emailController,
+        formKey: _formKey,
+        screenWidth: screenWidth,
+        screenHeight: screenHeight,
+      ),
+    );
+  }
+}
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => OTPVerificationPage(
-                      email: _emailController.text.trim(),
-                    ),
-                  ),
-                );
-              }
+class _ForgotPasswordView extends StatelessWidget {
+  final TextEditingController emailController;
+  final GlobalKey<FormState> formKey;
+  final double screenWidth;
+  final double screenHeight;
 
-              if (state is ForgotPasswordFailure) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.error)),
-                );
-              }
-            },
-            builder: (context, state) {
-              return Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: screenWidth * 0.08,
-                        vertical: screenHeight * 0.04,
-                      ),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(height: screenHeight * 0.05),
+  const _ForgotPasswordView({
+    required this.emailController,
+    required this.formKey,
+    required this.screenWidth,
+    required this.screenHeight,
+  });
 
-                            Center(
-                              child: AppWidgets.logo(
-                                LogoKeys.logoKey,
-                                size: screenHeight * 0.20,
-                              ),
-                            ),
-
-                            SizedBox(height: screenHeight * 0.04),
-
-                            AppWidgets.heading("Forgot Password"),
-                            AppWidgets.verticalSpace(screenHeight * 0.01),
-                            AppWidgets.subtitle(
-                              "Enter your email to receive an OTP",
-                            ),
-
-                            SizedBox(height: screenHeight * 0.05),
-
-                            TextFormField(
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: AppInputDecoration.rounded(
-                                hintText: "Enter your email",
-                                prefixIcon: Icons.email_outlined,
-                              ),
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return "Please enter your email address";
-                                }
-                                if (!RegExp(
-                                  r'^[^@]+@[^@]+\.[^@]+',
-                                ).hasMatch(value)) {
-                                  return "Please enter a valid email address";
-                                }
-                                return null;
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: screenWidth * 0.08,
-                      right: screenWidth * 0.08,
-                      bottom: screenHeight * 0.04,
-                    ),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: screenHeight * 0.065,
-                      child: ElevatedButton(
-                        style: AppButtons.primary,
-                        onPressed: state is ForgotPasswordLoading
-                            ? null
-                            : () {
-                                if (_formKey.currentState!.validate()) {
-                                  context
-                                      .read<ForgotPasswordCubit>()
-                                      .sendOtp(
-                                        _emailController.text.trim(),
-                                      );
-                                }
-                              },
-                        child: state is ForgotPasswordLoading
-                            ? const CircularProgressIndicator(
-                                color: Colors.white,
-                              )
-                            : const Text("Send OTP"),
-                      ),
-                    ),
-                  ),
-                ],
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: BlocConsumer<ForgotPasswordCubit, ForgotPasswordState>(
+          listener: (context, state) {
+            if (state is ForgotPasswordSuccess) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      OTPVerificationPage(email: emailController.text.trim()),
+                ),
               );
-            },
-          ),
+            }
+            if (state is ForgotPasswordFailure) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.error)));
+            }
+          },
+          builder: (context, state) {
+            return Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.08,
+                      vertical: screenHeight * 0.04,
+                    ),
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(height: screenHeight * 0.05),
+                          Center(
+                            child: AppWidgets.logo(
+                              LogoKeys.logoKey,
+                              size: screenHeight * 0.20,
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.04),
+                          AppWidgets.heading("Forgot Password"),
+                          AppWidgets.verticalSpace(screenHeight * 0.01),
+                          AppWidgets.subtitle(
+                            "Enter your email to receive an OTP",
+                          ),
+                          SizedBox(height: screenHeight * 0.05),
+                          TextFormField(
+                            controller: emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: AppInputDecoration.rounded(
+                              hintText: "Enter your email",
+                              prefixIcon: Icons.email_outlined,
+                            ),
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return "Please enter your email address";
+                              }
+                              if (!RegExp(
+                                r'^[^@]+@[^@]+\.[^@]+',
+                              ).hasMatch(value)) {
+                                return "Please enter a valid email address";
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: screenWidth * 0.08,
+                    right: screenWidth * 0.08,
+                    bottom: screenHeight * 0.04,
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: screenHeight * 0.065,
+                    child: ElevatedButton(
+                      style: AppButtons.primary,
+                      onPressed: state is ForgotPasswordLoading
+                          ? null
+                          : () {
+                              if (formKey.currentState!.validate()) {
+                                context.read<ForgotPasswordCubit>().sendOtp(
+                                  emailController.text.trim(),
+                                );
+                              }
+                            },
+                      child: state is ForgotPasswordLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text("Send OTP"),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
