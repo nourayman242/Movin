@@ -10,6 +10,7 @@ import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
 import 'package:movin/presentation/home/screens/home.dart';
+import 'package:movin/presentation/login/cubit/auth_cubit.dart';
 
 import 'package:movin/presentation/login/screens/forgot_password_page.dart';
 import 'package:movin/presentation/login/screens/login_screen.dart';
@@ -32,6 +33,7 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
+         BlocProvider(create: (_) => getIt<AuthCubit>()),
         BlocProvider(create: (_) => getIt<PropertyCubit>()),
         BlocProvider(create: (_) => getIt<FavoriteBloc>()..add(FavoriteLoad())),
         BlocProvider(create: (_) => getIt<SettingsBloc>()..add(LoadSettings())),
@@ -56,6 +58,10 @@ class Movin extends StatelessWidget {
           home: const Splash(),
           routes: {
             '/onboarding': (_) => const OnboardingScreen(),
+            // '/login': (_) => BlocProvider(
+            //   create: (_) => getIt<AuthCubit>(),
+            //   child: const LoginScreen(),
+            // ),
             '/login': (_) => const LoginScreen(),
             '/role': (_) => const RoleSelection(),
             '/buyerhome': (_) => const BuyerHome(),

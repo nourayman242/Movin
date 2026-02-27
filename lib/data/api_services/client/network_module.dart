@@ -12,8 +12,12 @@ import 'package:movin/data/repositories/forget_pass_repository_imp.dart';
 import 'package:movin/data/repositories/property_repository_impl.dart';
 import 'package:movin/domain/repositories/forget_pass_repository.dart';
 import 'package:movin/domain/repositories/property_repository.dart';
+import 'package:movin/presentation/login/cubit/auth_cubit.dart';
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
+import 'package:movin/data/api_services/google_auth_service.dart';
+import 'package:movin/data/repositories/auth_repository_impl.dart';
+import 'package:movin/domain/repositories/auth_repository.dart';
 
 @module
 abstract class NetworkServices {
@@ -71,4 +75,12 @@ abstract class NetworkServices {
       PropertyRepositoryImpl(service);
   @factory
   PropertyCubit propertyCubit(PropertyRepository repo) => PropertyCubit(repo);
+
+  @lazySingleton
+  GoogleAuthService googleAuthService() => GoogleAuthService();
+  @lazySingleton
+  AuthRepository authRepository(GoogleAuthService service) =>
+      AuthRepositoryImpl(service);
+  @factory
+  AuthCubit authCubit(AuthRepository repo) => AuthCubit(repo);
 }
