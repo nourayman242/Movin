@@ -12,11 +12,12 @@ class ResetPasswordRepositoryImpl implements ResetPasswordRepository {
   ResetPasswordRepositoryImpl(this.api);
 
   @override
-  Future<void> resetPassword(ResetPasswordEntity entity) async {
+  Future<String> resetPassword(ResetPasswordEntity entity) async {
     final dto = ResetPasswordDto.fromEntity(entity);
     try {
-      await api.resetPassword(dto);
-    } on DioException catch (e) {          // ← DioError → DioException
+      final response = await api.resetPassword(dto);
+      return response.message ?? "Password has been reset successfully";
+    } on DioException catch (e) {
       final msg = e.response?.data?['message'] ?? e.message;
       throw Exception(msg);
     } catch (e) {

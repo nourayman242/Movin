@@ -39,6 +39,7 @@ import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart'
 import 'package:movin/presentation/fav_screen/manager/fav_hive.dart' as _i718;
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart' as _i493;
 import 'package:movin/presentation/login/cubit/otp_cubit.dart' as _i898;
+import 'package:movin/presentation/login/cubit/reset_pass_cubit.dart' as _i896;
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart'
     as _i267;
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc.dart'
@@ -99,6 +100,8 @@ extension GetItInjectableX on _i174.GetIt {
         _i684.ResetPasswordRepositoryImpl(gh<_i295.ResetPasswordService>()));
     gh.factory<_i267.PropertyCubit>(
         () => networkServices.propertyCubit(gh<_i770.PropertyRepository>()));
+    gh.factory<_i896.ResetPasswordCubit>(() => networkServices
+        .resetPasswordCubit(gh<_i332.ResetPasswordRepository>()));
     return this;
   }
 }

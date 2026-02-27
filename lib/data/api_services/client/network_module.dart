@@ -16,8 +16,10 @@ import 'package:movin/data/repositories/property_repository_impl.dart';
 import 'package:movin/domain/repositories/forget_pass_repository.dart';
 import 'package:movin/domain/repositories/otp_repository.dart';
 import 'package:movin/domain/repositories/property_repository.dart';
+import 'package:movin/domain/repositories/reset_pass_repository.dart';
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
 import 'package:movin/presentation/login/cubit/otp_cubit.dart';
+import 'package:movin/presentation/login/cubit/reset_pass_cubit.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
 @module
@@ -87,4 +89,7 @@ OtpServices otpServices(Dio dio) => OtpServices(dio);
 OtpCubit otpCubit(OtpRepository repo) => OtpCubit(repo);
 @lazySingleton
 ResetPasswordService resetPasswordService(Dio dio) => ResetPasswordService(dio);
+
+@factory
+ResetPasswordCubit resetPasswordCubit(ResetPasswordRepository repo) => ResetPasswordCubit(repo);
 }

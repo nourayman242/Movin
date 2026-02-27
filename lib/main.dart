@@ -24,71 +24,6 @@ import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
 import 'package:movin/presentation/splash_screen/screens/splash.dart';
 
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   //initDependencies();
-//   await ModeService.loadUserMode();
-//   await Hive.initFlutter();
-//   await setUpServiceLocator();
-//   runApp(
-//     MultiBlocProvider(
-//       providers: [
-//         //BlocProvider(create: (_) => getIt<PropertyCubit>()),
-//         BlocProvider(create: (_) => getIt<FavoriteBloc>()..add(FavoriteLoad())),
-//         BlocProvider(create: (_) => getIt<SettingsBloc>()..add(LoadSettings())),
-//       ],
-//       child: Movin(),
-//     ),
-//   );
-// }
-
-// class Movin extends StatelessWidget {
-//   const Movin({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ScreenUtilInit(
-//       designSize: const Size(375, 812),
-//       minTextAdapt: true,
-//       splitScreenMode: true,
-//       builder: (_, __) {
-//         return MaterialApp(
-//           debugShowCheckedModeBanner: false,
-//           home: const Splash(),
-//           routes: {
-//             '/onboarding': (_) => const OnboardingScreen(),
-//             '/login': (_) => const LoginScreen(),
-//             '/role': (_) => const RoleSelection(),
-//             '/buyerhome': (_) => const BuyerHome(),
-//             '/sellerhome': (_) => BlocProvider(
-//               create: (_) => getIt<PropertyCubit>(),
-//               child: const SellerHome(),
-//             ),
-//             '/forgotpassword': (_) => const ForgotPasswordPage(),
-
-//             '/home': (_) => const HomePage(),
-//             '/addproperty': (_) => BlocProvider(
-//               create: (_) => getIt<PropertyCubit>(),
-//               child: const AddPropertyScreen(),
-//             ),
-//             //
-//             '/edit-property': (context) {
-//               final property =
-//                   ModalRoute.of(context)!.settings.arguments as PropertyModel;
-//               return BlocProvider(
-//                 create: (_) =>
-//                     getIt<
-//                       PropertyCubit
-//                     >(), // ← create its own instead of reading global
-//                 child: EditPropertyScreen(property: property),
-//               );
-//             },
-//           },
-//         );
-//       },
-//     );
-//   }
-// }
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ModeService.loadUserMode();
@@ -96,7 +31,6 @@ void main() async {
   await setUpServiceLocator();
   runApp(
     ScreenUtilInit(
-      // ← move it here
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,

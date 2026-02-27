@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/presentation/login/cubit/otp_cubit.dart';
 import 'package:movin/presentation/login/cubit/otp_state.dart';
+import 'package:movin/presentation/login/cubit/reset_pass_cubit.dart';
 import '../../../app_theme.dart';
 import 'reset_password_page.dart';
 
@@ -14,7 +16,10 @@ class OTPVerificationPage extends StatefulWidget {
 }
 
 class _OTPVerificationPageState extends State<OTPVerificationPage> {
-  final List<TextEditingController> _otpControllers = List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> _otpControllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
 
   String get _otp => _otpControllers.map((c) => c.text).join().trim();
@@ -65,7 +70,7 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(6, (index) {
                 return SizedBox(
-                  width: boxSize,   
+                  width: boxSize,
                   height: boxSize * 1.2,
                   child: TextField(
                     controller: _otpControllers[index],
@@ -83,11 +88,16 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                       contentPadding: const EdgeInsets.symmetric(vertical: 14),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: AppColors.navyLight),
+                        borderSide: const BorderSide(
+                          color: AppColors.navyLight,
+                        ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: AppColors.gold, width: 2),
+                        borderSide: const BorderSide(
+                          color: AppColors.gold,
+                          width: 2,
+                        ),
                       ),
                     ),
                     onChanged: (value) => _onChanged(value, index),
@@ -102,13 +112,16 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => ResetPasswordPage(email: widget.email),
+                      builder: (_) => BlocProvider(
+                        create: (_) => getIt<ResetPasswordCubit>(),
+                        child: ResetPasswordPage(email: widget.email),
+                      ),
                     ),
                   );
                 } else if (state is OtpFailure) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(state.message)),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.message)));
                 }
               },
               builder: (context, state) {
@@ -128,7 +141,9 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Please enter all 6 digits")),
+                          const SnackBar(
+                            content: Text("Please enter all 6 digits"),
+                          ),
                         );
                       }
                     },
