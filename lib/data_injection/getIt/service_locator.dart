@@ -11,22 +11,6 @@ import 'service_locator.config.dart';
 final getIt = GetIt.instance;
 
 @InjectableInit()
-// Future<void> setUpServiceLocator() async {
-//   getIt.init();
-
-//   // initi hive service
-//   final favHive = getIt<FavoriteHiveService>();
-//   await favHive.init();
-
-//  getIt.registerFactory<AuthCubit>(
-//   () => AuthCubit(getIt<AuthRepository>()),
-// );
-// getIt.registerLazySingleton<AuthRepository>(
-//   () => AuthRepositoryImpl(),
-// );
-
-// }
-@InjectableInit()
 Future<void> setUpServiceLocator() async {
   getIt.init();
 

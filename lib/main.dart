@@ -26,7 +26,6 @@ import 'package:movin/presentation/splash_screen/screens/splash.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //initDependencies();
   await ModeService.loadUserMode();
   await Hive.initFlutter();
   await setUpServiceLocator();
@@ -58,10 +57,6 @@ class Movin extends StatelessWidget {
           home: const Splash(),
           routes: {
             '/onboarding': (_) => const OnboardingScreen(),
-            // '/login': (_) => BlocProvider(
-            //   create: (_) => getIt<AuthCubit>(),
-            //   child: const LoginScreen(),
-            // ),
             '/login': (_) => const LoginScreen(),
             '/role': (_) => const RoleSelection(),
             '/buyerhome': (_) => const BuyerHome(),
