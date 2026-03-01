@@ -29,17 +29,6 @@ class AddPropertyScreen extends StatelessWidget {
   }
 
   context.read<PropertyCubit>().addProperty(vm);
-    debugPrint('''
-location: ${vm.location}
-description: ${vm.description}
-price: ${vm.price}
-type: ${vm.type}
-size: ${vm.size}
-bedrooms: ${vm.bedrooms}
-bathrooms: ${vm.bathrooms}
-
-images: ${vm.images.length}
-''');
   }
 
   @override

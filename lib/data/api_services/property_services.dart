@@ -45,9 +45,6 @@ class PropertyService {
   Future<List<PropertyModel>> getAllSellerProperties() async {
     final response = await dio.get('/api/seller/properties/getAll');
 
-    print("FULL RESPONSE DATA:");
-    print(response.data);
-    print("TYPE: ${response.data.runtimeType}");
 
     if (response.data == null || response.data['products'] == null) {
       return [];

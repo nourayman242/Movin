@@ -1007,7 +1007,7 @@ class _SellerHomeState extends State<SellerHome>
   }
 
   Widget positionedBadge(String status) {
-    final color = status == "active" ? AppColors.gold : Colors.orange;
+    final color = status == "approved" ? AppColors.gold : Colors.orange;
 
     return Positioned(
       top: 16,

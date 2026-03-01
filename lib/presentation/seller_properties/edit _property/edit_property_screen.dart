@@ -147,18 +147,18 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
               decoration: _decoration(),
             ),
 
-            _label("Status"),
-            DropdownButtonFormField<String>(
-              dropdownColor: AppColors.background,
-              value: selectedStatus,
-              items: const [
-                DropdownMenuItem(value: "active", child: Text("Active")),
-                DropdownMenuItem(value: "pending", child: Text("Pending")),
-                DropdownMenuItem(value: "sold", child: Text("Sold")),
-              ],
-              onChanged: (v) => setState(() => selectedStatus = v!),
-              decoration: _decoration(),
-            ),
+            // _label("Status"),
+            // DropdownButtonFormField<String>(
+            //   dropdownColor: AppColors.background,
+            //   value: selectedStatus,
+            //   items: const [
+            //     DropdownMenuItem(value: "active", child: Text("Active")),
+            //     DropdownMenuItem(value: "pending", child: Text("Pending")),
+            //     DropdownMenuItem(value: "sold", child: Text("Sold")),
+            //   ],
+            //   onChanged: (v) => setState(() => selectedStatus = v!),
+            //   decoration: _decoration(),
+            // ),
 
             const SizedBox(height: 20),
 
