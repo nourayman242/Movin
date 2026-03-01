@@ -615,7 +615,6 @@ class _SellerHomeState extends State<SellerHome>
     String? imageUrl = property.images.isNotEmpty
         ? property.images.first
         : null;
-    print("IMAGE URL FROM MODEL: $imageUrl");
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
