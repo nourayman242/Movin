@@ -58,7 +58,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                 SizedBox(height: 16.h),
                 PropertyTabs(controller: controller),
                 SizedBox(height: 16.h),
-                AuctionCard(),
+                AuctionCard(propertyId: widget.propertyId,),
                 SizedBox(height: 16.h),
                 AgentCard(controller: controller),
                 SizedBox(height: 40.h),

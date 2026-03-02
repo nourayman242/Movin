@@ -1,10 +1,13 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:movin/app_theme.dart';
+import 'package:movin/presentation/auction/screens/auction_screen.dart';
 
 class AuctionCard extends StatelessWidget {
-  const AuctionCard({super.key});
-
+  const AuctionCard({Key? key, required this.propertyId}) : super(key: key);
+  final int propertyId;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -77,7 +80,14 @@ class AuctionCard extends StatelessWidget {
           ),
           SizedBox(height: 20.h),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => AuctionScreen(propertyId: propertyId),
+                ),
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryNavy,
               minimumSize: Size(double.infinity, 48.h),
