@@ -39,25 +39,12 @@ void main() async {
 }
 
 class Movin extends StatelessWidget {
-  //final ProfileModel? currentProfile;
+  
   const Movin({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // return MaterialApp(
-    //   debugShowCheckedModeBanner: false,
-    //   home: const Splash(),
-    //   routes: {
-    //     '/onboarding': (_) => const OnboardingScreen(),
-    //     '/login': (_) => const LoginScreen(),
-    //     '/role': (_) => const RoleSelection(),
-    //     '/buyerhome': (_) => const BuyerHome(),
-    //     '/sellerhome': (_) => const SellerHome(),
-    //     '/forgotpassword': (_) => const ForgotPasswordPage(),
-
-    //     '/addproperty': (_) => const AddPropertyScreen(),
-    //     '/home':(_)=> const HomePage(),
-
+    
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,

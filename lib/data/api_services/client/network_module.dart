@@ -13,12 +13,9 @@ import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
 abstract class NetworkServices {
   @lazySingleton
   Dio get dio {
-    final base = 'https://movin-oipd650to-malakkhaled22s-projects.vercel.app';
+    final base = 'https://movin-app.vercel.app';
     
-    // //'http://192.168.1.16:5000';
-    // kIsWeb
-    // ? 'http://localhost:5000' //chrome
-    // : 'http://10.0.2.2:5000'; //emulator
+    
     final options = BaseOptions(
       baseUrl: base,
       connectTimeout: const Duration(seconds: 15),
