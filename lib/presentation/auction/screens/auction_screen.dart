@@ -46,7 +46,7 @@ class _AuctionScreenState extends State<AuctionScreen> {
               const SizedBox(height: 16),
               const PropertyHeaderSection(),
               const SizedBox(height: 16),
-              const CurrentBidCard(),
+              const TimeRemainingCard(),
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -70,7 +70,8 @@ class _AuctionScreenState extends State<AuctionScreen> {
               const SizedBox(height: 20),
               const BidHistorySection(),
               const SizedBox(height: 20),
-              const TimeRemainingCard(),
+              const CurrentBidCard(),
+
               const SizedBox(height: 20),
               const PlaceBidSection(),
               const SizedBox(height: 40),
