@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/presentation/auction/all%20proparties%20auctions/screens/property_auctions_screen.dart';
 import 'package:movin/presentation/home/widgets/custom_drawer.dart';
 import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
 import 'package:movin/presentation/notifications/screens/notifications_screen.dart';
@@ -142,6 +143,21 @@ class _SellerHomeState extends State<SellerHome>
                                     child: iconContainer(
                                       Icons.notifications_none_outlined,
                                       hasBadge: true,
+                                    ),
+                                  ),
+                                  SizedBox(width: 10,),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              const PropertyAuctionsScreen(),
+                                        ),
+                                      );
+                                    },
+                                    child: iconContainer(
+                                      Icons.gavel_outlined,
                                     ),
                                   ),
                                 ],

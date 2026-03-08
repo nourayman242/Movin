@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
+import 'package:movin/presentation/auction/all%20proparties%20auctions/screens/property_auctions_screen.dart';
 
 import 'package:movin/presentation/browse_property/screens/browse_properties.dart';
 import 'package:movin/presentation/browse_property/widgets/dummy_properties.dart';
@@ -103,6 +104,18 @@ class _BuyerHomeState extends State<BuyerHome> {
                             );
                           },
                           child: iconContainer(Icons.favorite_border),
+                        ),
+                         const SizedBox(width: 12),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const PropertyAuctionsScreen(),
+                              ),
+                            );
+                          },
+                          child: iconContainer(Icons.gavel_outlined),
                         ),
                       ],
                     ),
