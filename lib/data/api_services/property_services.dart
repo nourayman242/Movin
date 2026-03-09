@@ -45,7 +45,6 @@ class PropertyService {
   Future<List<PropertyModel>> getAllSellerProperties() async {
     final response = await dio.get('/api/seller/properties/getAll');
 
-
     if (response.data == null || response.data['products'] == null) {
       return [];
     }
@@ -71,9 +70,8 @@ class PropertyService {
       formData.fields.add(MapEntry("details[$key]", value.toString()));
     });
 
-    await dio.patch('/api/seller/properties/$id', data: formData,);
+    await dio.patch('/api/seller/properties/$id', data: formData);
   }
-
 
   Future<void> deleteProperty(String id) async {
     await dio.delete('/api/seller/properties/$id');
