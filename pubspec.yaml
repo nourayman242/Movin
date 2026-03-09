@@ -50,6 +50,7 @@ dependencies:
   retrofit: 4.4.1
   dio: ^5.4.0
   flutter_web_auth_2: ^5.0.1
+  url_launcher: ^6.3.2
   
 
 dev_dependencies:

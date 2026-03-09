@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/controllers/property_details_controller.dart';
 import 'package:movin/presentation/home/inner_pages/rate_properties_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AgentCard extends StatefulWidget {
   final PropertyDetailsController controller;
@@ -15,6 +16,35 @@ class AgentCard extends StatefulWidget {
 class _AgentCardState extends State<AgentCard> {
   bool isMessagePressed = false;
   bool isRatePressed = false;
+
+  Future<void> _callAgent() async {
+    final Uri phoneUri = Uri(scheme: 'tel', path: '+201141229586');
+
+    if (await canLaunchUrl(phoneUri)) {
+      await launchUrl(phoneUri);
+    } else {
+      throw 'Could not launch phone dialer';
+    }
+  }
+
+  Future<void> _openWhatsApp() async {
+    String phone = "201141229586";
+
+    String message =
+        "Hello, I saw your property on the Movin app and I'm interested. Can you provide more details?";
+        //String message ="Hello, I'm interested in property #${widget.controller.propertyId} on Movin app.";
+
+    final Uri whatsappUri = Uri.parse(
+      "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",
+    );
+
+    if (await canLaunchUrl(whatsappUri)) {
+      await launchUrl(whatsappUri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not open WhatsApp';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -63,7 +93,7 @@ class _AgentCardState extends State<AgentCard> {
             children: [
               Icon(Icons.phone, size: 18.sp),
               SizedBox(width: 6.w),
-              Text('+971 50 123 4567'),
+              Text('+201 114 122 9586'),
             ],
           ),
           SizedBox(height: 6.h),
@@ -77,7 +107,7 @@ class _AgentCardState extends State<AgentCard> {
           ),
           SizedBox(height: 20.h),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: _callAgent,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryNavy,
               minimumSize: Size(double.infinity, 48.h),
@@ -102,7 +132,7 @@ class _AgentCardState extends State<AgentCard> {
             isPressed: isMessagePressed,
             icon: Icons.message_outlined,
             text: 'Send Message',
-            onTap: () {},
+            onTap: _openWhatsApp,
             onPressedChange: () {
               setState(() {
                 isMessagePressed = !isMessagePressed;
@@ -119,9 +149,7 @@ class _AgentCardState extends State<AgentCard> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => RatePropertiesPage(),
-                ),
+                MaterialPageRoute(builder: (_) => RatePropertiesPage()),
               );
             },
             onPressedChange: () {
