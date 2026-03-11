@@ -76,4 +76,21 @@ class PropertyService {
   Future<void> deleteProperty(String id) async {
     await dio.delete('/api/seller/properties/$id');
   }
+
+  Future<List<PropertyModel>> searchProperties(String location) async {
+  final response = await dio.get(
+    '/api/seller/properties/search',
+    queryParameters: {
+      "location": location,
+    },
+  );
+
+  if (response.data == null || response.data['results'] == null) {
+    return [];
+  }
+
+  return (response.data['results'] as List)
+      .map((e) => PropertyModel.fromJson(e))
+      .toList();
+}
 }

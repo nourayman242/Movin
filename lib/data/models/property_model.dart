@@ -1,4 +1,6 @@
 
+import 'package:movin/domain/entities/property_entity.dart';
+
 class PropertyModel {
   final String id;
   final String location;
@@ -46,6 +48,20 @@ class PropertyModel {
       images: parsedImages,
       status: json['status'] ?? '',
       details: json['details'] ?? {},
+    );
+  }
+  PropertyEntity toEntity() {
+    return PropertyEntity(
+      id: id,
+      location: location,
+      description: description,
+      price: price,
+      listingType: listingType,
+      type: type,
+      size: size,
+      images: images,
+      status:status,
+      details: details,
     );
   }
 }

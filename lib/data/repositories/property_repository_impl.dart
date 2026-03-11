@@ -34,4 +34,11 @@ class PropertyRepositoryImpl implements PropertyRepository {
   Future<void> delete(String id) {
     return service.deleteProperty(id);
   }
+
+  @override
+Future<List<PropertyEntity>> searchProperties(String location) async {
+  final models = await service.searchProperties(location);
+
+  return models.map((e) => e.toEntity()).toList();
+}
 }

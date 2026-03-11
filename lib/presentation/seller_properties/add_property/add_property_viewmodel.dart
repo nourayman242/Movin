@@ -238,7 +238,7 @@ class AddPropertyViewModel extends ChangeNotifier {
       type: selectedType!.name,
       size: '${areaController.text.trim()} sqm',
       images: imageUrls,
-      details: details,
+      details: details, id: '', status: '',
     );
   }
 }
