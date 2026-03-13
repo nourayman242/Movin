@@ -2,9 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import 'package:injectable/injectable.dart';
+import 'package:movin/data/api_services/favorite_api_service.dart';
 import 'package:movin/data/api_services/forget_pass_services.dart';
 import 'package:movin/data/api_services/login_services.dart';
 import 'package:movin/data/api_services/register_services.dart';
+import 'package:movin/data/api_services/role_services.dart';
 import 'package:movin/data/repositories/forget_pass_repository_imp.dart';
 import 'package:movin/domain/repositories/forget_pass_repository.dart';
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
@@ -13,7 +15,7 @@ import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
 abstract class NetworkServices {
   @lazySingleton
   Dio get dio {
-    final base = 'https://movin-app.vercel.app';
+    const base = 'https://movin-app.vercel.app';
     
     
     final options = BaseOptions(
@@ -49,5 +51,15 @@ abstract class NetworkServices {
   @factory
   ForgotPasswordCubit forgotPasswordCubit(ForgotPasswordRepository repo) {
     return ForgotPasswordCubit(repo);
+  }
+
+  @lazySingleton
+FavoriteApiService favoriteApiService(Dio dio) {
+  return FavoriteApiService(dio);
+}
+
+@lazySingleton
+  RoleServices roleServices(Dio dio) {
+    return RoleServices(dio);
   }
 }

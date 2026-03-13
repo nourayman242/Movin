@@ -1,7 +1,9 @@
+import 'package:injectable/injectable.dart';
 import 'package:movin/data/api_services/role_services.dart';
 import 'package:movin/data/models/role_dto.dart';
 import 'package:movin/domain/repositories/role_repository.dart';
 
+@LazySingleton(as: RoleRepository)
 class RoleRepositoryImpl implements RoleRepository {
   final RoleServices service;
   RoleRepositoryImpl(this.service);

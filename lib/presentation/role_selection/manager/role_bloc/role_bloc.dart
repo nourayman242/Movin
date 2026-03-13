@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
 import 'package:movin/domain/repositories/role_repository.dart';
 import 'package:movin/presentation/role_selection/manager/role_bloc/role_event.dart';
 import 'package:movin/presentation/role_selection/manager/role_bloc/role_state.dart';
 
-@factory
+@injectable
 class RoleBloc extends Bloc<RoleEvent, RoleState> {
   final RoleRepository repo;
 
@@ -24,8 +25,12 @@ class RoleBloc extends Bloc<RoleEvent, RoleState> {
       await SharedHelper.setUserRole(event.role);
 
       emit(RoleSuccess(event.role));
+      // } catch (e) {
+      //   emit(RoleError('Failed to choose role'));
+      // }
     } catch (e) {
-      emit(RoleError('Failed to choose role'));
+      print('ROLE ERROR => $e');
+      emit(RoleError(e.toString()));
     }
   }
 }

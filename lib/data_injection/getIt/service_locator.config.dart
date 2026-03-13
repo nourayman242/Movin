@@ -12,30 +12,38 @@ import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:movin/data/api_services/client/network_module.dart' as _i324;
+import 'package:movin/data/api_services/favorite_api_service.dart' as _i362;
 import 'package:movin/data/api_services/forget_pass_services.dart' as _i753;
 import 'package:movin/data/api_services/login_services.dart' as _i633;
 import 'package:movin/data/api_services/otp_services.dart' as _i97;
 import 'package:movin/data/api_services/register_services.dart' as _i232;
 import 'package:movin/data/api_services/reset_password_service.dart' as _i295;
+import 'package:movin/data/api_services/role_services.dart' as _i515;
 import 'package:movin/data/data_source/local/auth_local_services.dart' as _i282;
 import 'package:movin/data/data_source/local/settings_local_services.dart'
     as _i87;
+import 'package:movin/data/repositories/fav_repository_imp.dart' as _i882;
 import 'package:movin/data/repositories/login_repository_imp.dart' as _i107;
 import 'package:movin/data/repositories/otp_repository_imp.dart' as _i736;
 import 'package:movin/data/repositories/register_repository_imp.dart' as _i666;
 import 'package:movin/data/repositories/reset_passwrod_repository_imp.dart'
     as _i684;
+import 'package:movin/data/repositories/role_repository_imp.dart' as _i55;
+import 'package:movin/domain/repositories/fav_repository.dart' as _i273;
 import 'package:movin/domain/repositories/forget_pass_repository.dart' as _i686;
 import 'package:movin/domain/repositories/login_repositories.dart' as _i772;
 import 'package:movin/domain/repositories/otp_repository.dart' as _i574;
 import 'package:movin/domain/repositories/register_repository.dart' as _i623;
 import 'package:movin/domain/repositories/reset_pass_repository.dart' as _i332;
+import 'package:movin/domain/repositories/role_repository.dart' as _i166;
 import 'package:movin/presentation/budget_calculator/managers/bc_bloc/loan_calc_bloc.dart'
     as _i872;
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart'
     as _i841;
 import 'package:movin/presentation/fav_screen/manager/fav_hive.dart' as _i718;
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart' as _i493;
+import 'package:movin/presentation/role_selection/manager/role_bloc/role_bloc.dart'
+    as _i571;
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc.dart'
     as _i617;
 
@@ -66,10 +74,23 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkServices.loginServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i753.ForgotPasswordService>(
         () => networkServices.forgotPasswordService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i362.FavoriteApiService>(
+        () => networkServices.favoriteApiService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i515.RoleServices>(
+        () => networkServices.roleServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i574.OtpRepository>(
         () => _i736.OtpRepositoryImpl(gh<_i97.OtpServices>()));
+    gh.lazySingleton<_i273.FavoriteRepository>(
+        () => _i882.FavoriteRepositoryImpl(
+              gh<_i362.FavoriteApiService>(),
+              gh<_i718.FavoriteHiveService>(),
+            ));
+    gh.lazySingleton<_i166.RoleRepository>(
+        () => _i55.RoleRepositoryImpl(gh<_i515.RoleServices>()));
     gh.lazySingleton<_i772.LoginRepository>(
         () => _i107.LoginRepositoryImpl(gh<_i633.LoginServices>()));
+    gh.factory<_i841.FavoriteBloc>(
+        () => _i841.FavoriteBloc(gh<_i273.FavoriteRepository>()));
     gh.lazySingleton<_i686.ForgotPasswordRepository>(() => networkServices
         .forgotPasswordRepository(gh<_i753.ForgotPasswordService>()));
     gh.factory<_i617.SettingsBloc>(() => _i617.SettingsBloc(
@@ -78,10 +99,10 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i493.ForgotPasswordCubit>(() => networkServices
         .forgotPasswordCubit(gh<_i686.ForgotPasswordRepository>()));
-    gh.factory<_i841.FavoriteBloc>(
-        () => _i841.FavoriteBloc(gh<_i718.FavoriteHiveService>()));
     gh.lazySingleton<_i623.RegisterRepository>(
         () => _i666.RegisterRepositoryImpl(gh<_i232.RegisterServices>()));
+    gh.factory<_i571.RoleBloc>(
+        () => _i571.RoleBloc(gh<_i166.RoleRepository>()));
     return this;
   }
 }
