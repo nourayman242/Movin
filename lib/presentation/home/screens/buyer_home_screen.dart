@@ -1,14 +1,18 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/data/api_services/property_services.dart';
 import 'package:movin/data/repositories/property_repository_impl.dart';
+import 'package:movin/data_injection/getIt/service_locator.dart';
+import 'package:movin/domain/repositories/property_repository.dart';
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
 import 'package:movin/presentation/auction/all%20proparties%20auctions/screens/property_auctions_screen.dart';
 
 import 'package:movin/presentation/browse_property/screens/browse_properties.dart';
-import 'package:movin/presentation/browse_property/widgets/dummy_properties.dart';
 import 'package:movin/presentation/browse_property/widgets/search_property_viewmodel.dart';
 import 'package:movin/presentation/browse_property/widgets/search_widget.dart';
 import 'package:movin/presentation/fav_screen/screens/fav_screen.dart';
@@ -17,8 +21,11 @@ import 'package:movin/presentation/home/widgets/custom_drawer.dart';
 import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
 import 'package:movin/presentation/home/widgets/property_card.dart';
 import 'package:movin/presentation/notifications/screens/notifications_screen.dart';
+import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
-import 'package:movin/presentation/view_more_home/screens/view_more_home.dart';
+import 'package:movin/presentation/view_more_home/screens/view_more_listing.dart';
+import 'package:movin/presentation/view_more_home/screens/view_more_recommendtion.dart';
+import 'package:provider/provider.dart';
 
 class BuyerHome extends StatefulWidget {
   const BuyerHome({super.key});
@@ -31,18 +38,39 @@ class _BuyerHomeState extends State<BuyerHome> {
   String selectedCategory = "For Sale";
   String searchQuery = "";
   late SearchPropertyViewModel vm;
+
   // void _onSearchChanged(String value) {
   //   setState(() {
   //     searchQuery = value.toLowerCase();
   //   });
   // }
+
+  Timer? _debounce;
+
+  // void _onSearchChanged(String value) {
+  //   if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+  //   _debounce = Timer(const Duration(milliseconds: 500), () {
+  //     vm.search(value);
+  //   });
+  // }
+
   void _onSearchChanged(String value) {
-    vm.search(value);
+    searchQuery = value;
+
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      vm.search(value);
+    });
   }
 
   @override
   void initState() {
     super.initState();
+    context.read<PropertyCubit>().loadRecentProperties();
+    context.read<PropertyCubit>().loadRecommendedProperties();
+
     vm = SearchPropertyViewModel(
       PropertyRepositoryImpl(PropertyService(Dio())),
     );
@@ -58,7 +86,7 @@ class _BuyerHomeState extends State<BuyerHome> {
 
     //   return matchesSearch;
     // }).toList();
-    final filtered = vm.properties;
+    //final filtered = vm.properties;
 
     return Scaffold(
       drawer: const CustomDrawer(),
@@ -252,11 +280,22 @@ class _BuyerHomeState extends State<BuyerHome> {
 
                   GestureDetector(
                     onTap: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) =>
+                      //         BrowsePropertiesScreen(type: 'rent'),
+                      //   ),
+                      // );
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              BrowsePropertiesScreen(type: 'rent'),
+                          builder: (_) => ChangeNotifierProvider(
+                            create: (_) => SearchPropertyViewModel(
+                              getIt<PropertyRepository>(),
+                            ),
+                            child: BrowsePropertiesScreen(type: "rent"),
+                          ),
                         ),
                       );
                     },
@@ -268,11 +307,22 @@ class _BuyerHomeState extends State<BuyerHome> {
                   ),
                   GestureDetector(
                     onTap: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) =>
+                      //         BrowsePropertiesScreen(type: 'Commercial'),
+                      //   ),
+                      // );
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              BrowsePropertiesScreen(type: 'Commercial'),
+                          builder: (_) => ChangeNotifierProvider(
+                            create: (_) => SearchPropertyViewModel(
+                              getIt<PropertyRepository>(),
+                            ),
+                            child: BrowsePropertiesScreen(type: "Commercial"),
+                          ),
                         ),
                       );
                     },
@@ -284,11 +334,22 @@ class _BuyerHomeState extends State<BuyerHome> {
                   ),
                   GestureDetector(
                     onTap: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) =>
+                      //         BrowsePropertiesScreen(type: 'Investment'),
+                      //   ),
+                      // );
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              BrowsePropertiesScreen(type: 'Investment'),
+                          builder: (_) => ChangeNotifierProvider(
+                            create: (_) => SearchPropertyViewModel(
+                              getIt<PropertyRepository>(),
+                            ),
+                            child: BrowsePropertiesScreen(type: "Investment"),
+                          ),
                         ),
                       );
                     },
@@ -319,7 +380,7 @@ class _BuyerHomeState extends State<BuyerHome> {
                 GestureDetector(
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ViewMoreHome()),
+                    MaterialPageRoute(builder: (context) => ViewMoreRecommendtion()),
                   ),
                   child: const Text(
                     "View More",
@@ -369,43 +430,270 @@ class _BuyerHomeState extends State<BuyerHome> {
           //           },
           //         ),
           // ),
-          AnimatedBuilder(
-            animation: vm,
-            builder: (context, _) {
-              final filtered = vm.properties;
+          // AnimatedBuilder(
+          //   animation: vm,
+          //   builder: (context, _) {
+          //     final filtered = vm.properties;
 
-              if (vm.isLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
+          //     if (vm.isLoading) {
+          //       return const Center(child: CircularProgressIndicator());
+          //     }
 
-              if (filtered.isEmpty) {
-                return const Center(child: Text("No properties found"));
-              }
+          //     if (filtered.isEmpty) {
+          //       return const Center(child: Text("No properties found"));
+          //     }
 
-              return ListView.separated(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.only(left: 20),
-                itemCount: filtered.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 16),
-                itemBuilder: (context, index) {
-                  final property = filtered[index];
-                  return PropertyCard(
-                    property: property,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => PropertyDetailsScreen(
-                            propertyId: int.parse(property.id),
-                          ),
-                        ),
-                      );
-                    },
+          //     return ListView.separated(
+          //       scrollDirection: Axis.horizontal,
+          //       padding: const EdgeInsets.only(left: 20),
+          //       itemCount: filtered.length,
+          //       separatorBuilder: (_, __) => const SizedBox(width: 16),
+          //       itemBuilder: (context, index) {
+          //         final property = filtered[index];
+          //         return PropertyCard(
+          //           property: property,
+          //           onTap: () {
+          //             Navigator.push(
+          //               context,
+          //               MaterialPageRoute(
+          //                 builder: (_) =>
+          //                     PropertyDetailsScreen(propertyId: property.id),
+          //               ),
+          //             );
+          //           },
+          //         );
+          //       },
+          //     );
+          //   },
+          // ),
+
+          // BlocBuilder<PropertyCubit, PropertyState>(
+          //   builder: (context, state) {
+          //     final cubit = context.read<PropertyCubit>();
+
+          //     if (cubit.loadingRecommended) {
+          //       return const Center(
+          //         child: CircularProgressIndicator(color: AppColors.navyDark),
+          //       );
+          //     }
+
+          //     final properties = cubit.recommendedProperties;
+
+          //     if (properties.isEmpty) {
+          //       return const Center(child: Text("No recommendations found"));
+          //     }
+
+          //     return AnimatedBuilder(
+          //       animation: vm,
+          //       builder: (context, _) {
+          //         final properties = vm.properties;
+
+          //         if (vm.isLoading) {
+          //           return const Center(
+          //             child: CircularProgressIndicator(
+          //               color: AppColors.navyDark,
+          //             ),
+          //           );
+          //         }
+
+          //         if (properties.isEmpty) {
+          //           return const Center(child: Text("No properties found"));
+          //         }
+          //         return SizedBox(
+          //           height: 320,
+          //           child: ListView.separated(
+          //             scrollDirection: Axis.horizontal,
+          //             padding: const EdgeInsets.only(left: 20),
+          //             itemCount: 5,
+          //             //properties.length,
+          //             separatorBuilder: (_, __) => const SizedBox(width: 16),
+          //             itemBuilder: (context, index) {
+          //               final property = properties[index];
+
+          //               return PropertyCard(
+          //                 property: property,
+          //                 onTap: () {
+          //                   Navigator.push(
+          //                     context,
+          //                     MaterialPageRoute(
+          //                       builder: (_) => PropertyDetailsScreen(
+          //                         propertyId: property.id,
+          //                       ),
+          //                     ),
+          //                   );
+          //                 },
+          //               );
+          //             },
+          //           ),
+          //         );
+          //       },
+          //     );
+          //   },
+          // ),
+          // BlocBuilder<PropertyCubit, PropertyState>(
+          //   builder: (context, state) {
+          //     final cubit = context.read<PropertyCubit>();
+
+          //     return AnimatedBuilder(
+          //       animation: vm,
+          //       builder: (context, _) {
+          //         /// if search results exist → show them
+          //         final bool isSearching = vm.properties.isNotEmpty;
+
+          //         final properties = isSearching
+          //             ? vm.properties
+          //             : cubit.recommendedProperties;
+
+          //         if (vm.isLoading || cubit.loadingRecommended) {
+          //           return const Center(
+          //             child: CircularProgressIndicator(
+          //               color: AppColors.navyDark,
+          //             ),
+          //           );
+          //         }
+
+          //         if (properties.isEmpty) {
+          //           return const Center(child: Text("No properties found"));
+          //         }
+
+          //         return SizedBox(
+          //           height: 320,
+          //           child: ListView.separated(
+          //             scrollDirection: Axis.horizontal,
+          //             padding: const EdgeInsets.only(left: 20),
+          //             itemCount: properties.length,
+          //             separatorBuilder: (_, __) => const SizedBox(width: 16),
+          //             itemBuilder: (context, index) {
+          //               final property = properties[index];
+
+          //               return PropertyCard(
+          //                 property: property,
+          //                 onTap: () {
+          //                   Navigator.push(
+          //                     context,
+          //                     MaterialPageRoute(
+          //                       builder: (_) => PropertyDetailsScreen(
+          //                         propertyId: property.id,
+          //                       ),
+          //                     ),
+          //                   );
+          //                 },
+          //               );
+          //             },
+          //           ),
+          //         );
+          //       },
+          //     );
+          //   },
+          // ),
+          BlocBuilder<PropertyCubit, PropertyState>(
+            builder: (context, state) {
+              final cubit = context.read<PropertyCubit>();
+
+              return AnimatedBuilder(
+                animation: vm,
+                builder: (context, _) {
+                  final bool isSearching = searchQuery.isNotEmpty;
+
+                  final properties = isSearching
+                      ? vm.properties
+                      : cubit.recommendedProperties;
+
+                  if (vm.isLoading || cubit.loadingRecommended) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.navyDark,
+                      ),
+                    );
+                  }
+
+                  if (properties.isEmpty) {
+                    return const Center(child: Text("No properties found"));
+                  }
+
+                  return SizedBox(
+                    height: 320,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.only(left: 20),
+                      itemCount: properties.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 16),
+                      itemBuilder: (context, index) {
+                        final property = properties[index];
+
+                        return PropertyCard(
+                          property: property,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => PropertyDetailsScreen(
+                                  propertyId: property.id,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
                   );
                 },
               );
             },
           ),
+
+          // BlocBuilder<PropertyCubit, PropertyState>(
+          //   builder: (context, state) {
+          //     final cubit = context.read<PropertyCubit>();
+
+          //     if (cubit.loadingRecommended) {
+          //       return const Center(
+          //         child: CircularProgressIndicator(color: AppColors.navyDark),
+          //       );
+          //     }
+
+          //     final allProperties = cubit.recommendedProperties;
+
+          //     /// filter by location
+          //     final filteredProperties = searchQuery.isEmpty
+          //         ? allProperties
+          //         : allProperties.where((property) {
+          //             return property.location.toLowerCase().contains(
+          //               searchQuery,
+          //             );
+          //           }).toList();
+
+          //     if (filteredProperties.isEmpty) {
+          //       return const Center(child: Text("No properties found"));
+          //     }
+
+          //     return SizedBox(
+          //       height: 320,
+          //       child: ListView.separated(
+          //         scrollDirection: Axis.horizontal,
+          //         padding: const EdgeInsets.only(left: 20),
+          //         itemCount: filteredProperties.length,
+          //         separatorBuilder: (_, __) => const SizedBox(width: 16),
+          //         itemBuilder: (context, index) {
+          //           final property = filteredProperties[index];
+
+          //           return PropertyCard(
+          //             property: property,
+          //             onTap: () {
+          //               Navigator.push(
+          //                 context,
+          //                 MaterialPageRoute(
+          //                   builder: (_) =>
+          //                       PropertyDetailsScreen(propertyId: property.id),
+          //                 ),
+          //               );
+          //             },
+          //           );
+          //         },
+          //       ),
+          //     );
+          //   },
+          // ),
           const SizedBox(height: 25),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -423,7 +711,7 @@ class _BuyerHomeState extends State<BuyerHome> {
                 GestureDetector(
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ViewMoreHome()),
+                    MaterialPageRoute(builder: (context) => ViewMoreListing()),
                   ),
                   child: const Text(
                     "View More",
@@ -440,37 +728,100 @@ class _BuyerHomeState extends State<BuyerHome> {
 
           const SizedBox(height: 12),
 
-          SizedBox(
-            height: 320,
-            child: filtered.isEmpty
-                ? const Center(
-                    child: Text(
-                      "No properties found",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  )
-                : ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.only(left: 20),
-                    itemCount: filtered.length, //stat
-                    separatorBuilder: (_, __) => const SizedBox(width: 16),
-                    itemBuilder: (context, index) {
-                      final property = filtered[index];
-                      return PropertyCard(
-                        property: property,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PropertyDetailsScreen(
-                                propertyId: int.parse(property.id),
-                              ), //////////////
-                            ),
-                          );
-                        },
+          // BlocBuilder<PropertyCubit, PropertyState>(
+          //   builder: (context, state) {
+          //     final cubit = context.read<PropertyCubit>();
+
+          //     if (cubit.loadingRecent) {
+          //       return const Center(
+          //         child: CircularProgressIndicator(color: AppColors.navyDark),
+          //       );
+          //     }
+
+          //     final properties = cubit.recentProperties;
+
+          //     if (properties.isEmpty) {
+          //       return const Center(child: Text("No properties found"));
+          //     }
+
+          //     return SizedBox(
+          //       height: 320,
+          //       child: ListView.separated(
+          //         scrollDirection: Axis.horizontal,
+          //         padding: const EdgeInsets.only(left: 20),
+          //         itemCount: 5,
+          //         separatorBuilder: (_, __) => const SizedBox(width: 16),
+          //         itemBuilder: (context, index) {
+          //           final property = properties[index];
+
+          //           return PropertyCard(
+          //             property: property,
+          //             onTap: () {
+          //               Navigator.push(
+          //                 context,
+          //                 MaterialPageRoute(
+          //                   builder: (_) =>
+          //                       PropertyDetailsScreen(propertyId: property.id),
+          //                 ),
+          //               );
+          //             },
+          //           );
+          //         },
+          //       ),
+          //     );
+          //   },
+          // ),
+          BlocBuilder<PropertyCubit, PropertyState>(
+            builder: (context, state) {
+              final cubit = context.read<PropertyCubit>();
+
+              if (cubit.loadingRecent) {
+                return const Center(
+                  child: CircularProgressIndicator(color: AppColors.navyDark),
+                );
+              }
+
+              final allProperties = cubit.recentProperties;
+
+              /// filter by location
+              final filteredProperties = searchQuery.isEmpty
+                  ? allProperties
+                  : allProperties.where((property) {
+                      return property.location.toLowerCase().contains(
+                        searchQuery,
                       );
-                    },
-                  ),
+                    }).toList();
+
+              if (filteredProperties.isEmpty) {
+                return const Center(child: Text("No properties found"));
+              }
+
+              return SizedBox(
+                height: 320,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.only(left: 20),
+                  itemCount: filteredProperties.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 16),
+                  itemBuilder: (context, index) {
+                    final property = filteredProperties[index];
+
+                    return PropertyCard(
+                      property: property,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                PropertyDetailsScreen(propertyId: property.id),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              );
+            },
           ),
         ],
       ),

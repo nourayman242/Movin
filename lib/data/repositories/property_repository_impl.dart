@@ -36,9 +36,22 @@ class PropertyRepositoryImpl implements PropertyRepository {
   }
 
   @override
-Future<List<PropertyEntity>> searchProperties(String location) async {
-  final models = await service.searchProperties(location);
+  Future<List<PropertyEntity>> searchProperties(String location) async {
+    final models = await service.searchProperties(location);
 
-  return models.map((e) => e.toEntity()).toList();
-}
+    return models.map((e) => e.toEntity()).toList();
+  }
+
+  @override
+  Future<List<PropertyEntity>> getRecentProperties() async {
+    final models = await service.getRecentProperties();
+
+    return models.map((e) => e.toEntity()).toList();
+  }
+
+  @override
+  Future<List<PropertyEntity>> getRecommendedProperties() async {
+    final models = await service.getRecommendedProperties();
+    return models.map((e) => e.toEntity()).toList();
+  }
 }

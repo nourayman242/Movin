@@ -1,5 +1,5 @@
 class PropertyModel {
-  final int id;
+  final String id;
   final String title;
   final String location;
   final String image;

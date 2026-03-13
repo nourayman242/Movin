@@ -86,12 +86,12 @@ class ViewHistoryCard extends StatelessWidget {
                         top: 8,
                         child: BlocBuilder<FavoriteBloc, FavoriteState>(
                           builder: (context, state) {
-                            final isFav = state.isFavorite(property.id);
+                            final isFav = state.isFavorite(property.id.toString());
 
                             return GestureDetector(
                               onTap: () {
                                 context.read<FavoriteBloc>().add(
-                                  FavoriteToggle(property.id),
+                                  FavoriteToggle(property.id.toString()),
                                 );
                               },
                               child: Container(

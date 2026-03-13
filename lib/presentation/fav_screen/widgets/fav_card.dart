@@ -146,7 +146,7 @@ class FavCard extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (_) =>
-                                PropertyDetailsScreen(propertyId: property.id),
+                                PropertyDetailsScreen(propertyId: property.id.toString()),
                           ),
                         );
                       },

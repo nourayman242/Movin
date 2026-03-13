@@ -9,7 +9,7 @@ import 'package:movin/presentation/home/widgets/property/tabs/property_tabs.dart
 import 'package:movin/presentation/home/widgets/property/title_card.dart';
 
 class PropertyDetailsScreen extends StatefulWidget {
-  final int propertyId; 
+  final String propertyId; 
 
   const PropertyDetailsScreen({
     super.key,
@@ -51,7 +51,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
               children: [
                 PropertyImageSlider(
                   controller: controller.pageController,
-                   propertyId: widget.propertyId,
+                   propertyId:widget.propertyId
                 ),
                 SizedBox(height: 16.h),
                 TitleCard(controller: controller),

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class FavoriteState extends Equatable {
-  final Set<int> favorites;
+  final Set<String> favorites;
   final bool loaded;
 
   const FavoriteState({
@@ -9,10 +9,10 @@ class FavoriteState extends Equatable {
     this.loaded = false,
   });
 
-  bool isFavorite(int id) => favorites.contains(id);
+  bool isFavorite(String id) => favorites.contains(id);
 
   FavoriteState copyWith({
-    Set<int>? favorites,
+    Set<String>? favorites,
     bool? loaded,
   }) {
     return FavoriteState(

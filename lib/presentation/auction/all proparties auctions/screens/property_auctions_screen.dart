@@ -60,7 +60,7 @@ class PropertyAuctionsScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => AuctionScreen(propertyId: 122525555),
+                        builder: (_) => AuctionScreen(propertyId: "hsdudshsh58765"),
                       ),
                     );
                   },

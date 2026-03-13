@@ -10,7 +10,7 @@ import 'package:movin/presentation/controllers/property_details_controller.dart'
 import 'package:movin/presentation/home/widgets/property/tabs/description_tab.dart';
 
 class AuctionScreen extends StatefulWidget {
-  final int propertyId;
+  final String propertyId;
 
   const AuctionScreen({super.key, required this.propertyId});
 

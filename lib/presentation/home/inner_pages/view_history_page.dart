@@ -17,7 +17,7 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
 
   List<PropertyModel> historyProperties = [
     PropertyModel(
-      id: 1,
+      id: "1",
       title: "Modern Luxury Villa",
       location: "Dubai Marina",
       image: "assets/images/villa3.jpg",
@@ -28,7 +28,7 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
       sqft: 3500,
     ),
     PropertyModel(
-      id: 2,
+      id: "1",
       title: "Skyline Apartment",
       location: "New York City",
       image: "assets/images/villa3.jpg",
@@ -142,7 +142,7 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              PropertyDetailsScreen(propertyId: property.id),
+                              PropertyDetailsScreen(propertyId: property.id.toString()),
                         ),
                       );
                     },

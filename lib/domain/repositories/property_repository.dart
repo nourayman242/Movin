@@ -9,4 +9,6 @@ abstract class PropertyRepository {
   Future<void> update(String id, PropertyEntity property);
   Future<void> delete(String id);
   Future<List<PropertyEntity>> searchProperties(String location);
+  Future<List<PropertyEntity>> getRecentProperties();
+  Future<List<PropertyEntity>> getRecommendedProperties();
 }

@@ -43,12 +43,26 @@ class PropertyCard extends StatelessWidget {
               child: Stack(
                 children: [
                   //1 image
+                  // SizedBox(
+                  //   width: cardWidth,
+                  //   height: imageHeight,
+                  //   child: Image.network(
+                  //     property.images.first,
+                  //     fit: BoxFit.cover,
+                  //   ),
+                  // ),
                   SizedBox(
                     width: cardWidth,
                     height: imageHeight,
-                    child: Image.asset(
-                      property.images.first,
+                    child: Image.network(
+                      property.images.isNotEmpty ? property.images.first : "",
                       fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) {
+                        return Container(
+                          color: Colors.grey.shade200,
+                          child: const Icon(Icons.image_not_supported),
+                        );
+                      },
                     ),
                   ),
                   //2
@@ -84,12 +98,12 @@ class PropertyCard extends StatelessWidget {
                     top: 8,
                     child: BlocBuilder<FavoriteBloc, FavoriteState>(
                       builder: (context, state) {
-                        final isFav = state.isFavorite(int.parse(property.id));
+                        final isFav = state.isFavorite(property.id);
 
                         return GestureDetector(
                           onTap: () {
                             context.read<FavoriteBloc>().add(
-                              FavoriteToggle(int.parse(property.id)),
+                              FavoriteToggle(property.id),
                             );
                           },
                           child: Container(
@@ -157,11 +171,24 @@ class PropertyCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _attrItem('${property.details["bedrooms"]}', 'beds'),
+                      // _attrItem('${property.details["bedrooms"]}', 'beds'),
+                      // _verticalDivider(),
+                      // _attrItem('${property.details["bathrooms"]}', 'baths'),
+                      _attrItem(
+                        '${property.details["bedrooms"] ?? "-"}',
+                        'beds',
+                      ),
                       _verticalDivider(),
-                      _attrItem('${property.details["bathrooms"]}', 'baths'),
+                      _attrItem(
+                        '${property.details["bathrooms"] ?? "-"}',
+                        'baths',
+                      ),
                       _verticalDivider(),
-                      _attrItem(property.size, 'sqft'),
+                      //_attrItem(property.size, 'sqft'),
+                      _attrItem(
+                        property.size.isNotEmpty ? property.size : '-',
+                        'sqft',
+                      ),
                     ],
                   ),
                 ],
