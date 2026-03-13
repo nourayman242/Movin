@@ -58,13 +58,21 @@ class SharedHelper {
     final prefs = await SharedPreferences.getInstance();
     //may remove onboarding
     await prefs.remove(_onboardingKey);
-    await prefs.remove(_isLoggedInKey);
-    await prefs.remove(_userRoleKey);
+    // await prefs.remove(_isLoggedInKey);
+    // await prefs.remove(_userRoleKey);
+     await prefs.remove('token');          
+     await prefs.setBool(_isLoggedInKey, false);
   }
+
   // saved token after login
   static Future<void> saveToken(String token) async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setString('token', token);
-}
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
+  }
 
+  //get token for authenticated requests
+  static Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+  }
 }
