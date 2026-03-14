@@ -124,7 +124,7 @@ class _BrowsePropertiesScreenState extends State<BrowsePropertiesScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => PropertyDetailsScreen(propertyId: property.id),
+        builder: (_) => PropertyDetailsScreen(property: property),
       ),
     );
   }

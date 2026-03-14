@@ -43,14 +43,6 @@ class PropertyCard extends StatelessWidget {
               child: Stack(
                 children: [
                   //1 image
-                  // SizedBox(
-                  //   width: cardWidth,
-                  //   height: imageHeight,
-                  //   child: Image.network(
-                  //     property.images.first,
-                  //     fit: BoxFit.cover,
-                  //   ),
-                  // ),
                   SizedBox(
                     width: cardWidth,
                     height: imageHeight,
@@ -171,9 +163,6 @@ class PropertyCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // _attrItem('${property.details["bedrooms"]}', 'beds'),
-                      // _verticalDivider(),
-                      // _attrItem('${property.details["bathrooms"]}', 'baths'),
                       _attrItem(
                         '${property.details["bedrooms"] ?? "-"}',
                         'beds',
@@ -184,7 +173,7 @@ class PropertyCard extends StatelessWidget {
                         'baths',
                       ),
                       _verticalDivider(),
-                      //_attrItem(property.size, 'sqft'),
+                     
                       _attrItem(
                         property.size.isNotEmpty ? property.size : '-',
                         'sqft',

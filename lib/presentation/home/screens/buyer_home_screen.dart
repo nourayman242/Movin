@@ -368,7 +368,7 @@ class _BuyerHomeState extends State<BuyerHome> {
                               context,
                               MaterialPageRoute(
                                 builder: (_) => PropertyDetailsScreen(
-                                  propertyId: property.id,
+                                  property: property,
                                 ),
                               ),
                             );
@@ -457,7 +457,7 @@ class _BuyerHomeState extends State<BuyerHome> {
                               context,
                               MaterialPageRoute(
                                 builder: (_) =>
-                                    PropertyDetailsScreen(propertyId: property.id),
+                                    PropertyDetailsScreen(property: property),
                               ),
                             );
                           },

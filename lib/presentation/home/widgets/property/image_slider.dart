@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_state.dart';
@@ -9,12 +10,12 @@ import 'package:movin/presentation/home/widgets/shared/circle_button.dart';
 
 class PropertyImageSlider extends StatelessWidget {
   final PageController controller;
- final String propertyId;
+ final PropertyEntity property;
 
   const PropertyImageSlider({
     super.key,
     required this.controller,
-    required this.propertyId,
+    required this.property,
   });
 
   @override
@@ -26,9 +27,10 @@ class PropertyImageSlider extends StatelessWidget {
           width: double.infinity,
           child: PageView(
             controller: controller,
-            children: const [
+            children:  [
               Image(
-                image: AssetImage('assets/images/villa1.jpg'),
+                image: NetworkImage(property.images.first),
+                //AssetImage('assets/images/villa2.webp')
                 fit: BoxFit.cover,
               ),
               Image(
@@ -61,7 +63,7 @@ class PropertyImageSlider extends StatelessWidget {
 
                BlocBuilder<FavoriteBloc, FavoriteState>(
                 builder: (context, state) {
-                  final isFav = state.isFavorite(propertyId);
+                  final isFav = state.isFavorite(property.id);
 
                   return CircleButton(
                     icon: isFav ? Icons.favorite : Icons.favorite_border,
@@ -69,7 +71,7 @@ class PropertyImageSlider extends StatelessWidget {
                     onTap: () {
                       context
                           .read<FavoriteBloc>()
-                          .add(FavoriteToggle(propertyId));
+                          .add(FavoriteToggle(property.id));
                     },
                   );
                 },

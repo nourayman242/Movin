@@ -153,7 +153,7 @@ class _ViewMoreListingState extends State<ViewMoreListing> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => PropertyDetailsScreen(propertyId: property.id),
+        builder: (_) => PropertyDetailsScreen(property: property),
       ),
     );
   }

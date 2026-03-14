@@ -42,7 +42,7 @@ class _ViewMoreRecommendtionState extends State<ViewMoreRecommendtion> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => PropertyDetailsScreen(propertyId: property.id),
+        builder: (_) => PropertyDetailsScreen(property: property),
       ),
     );
   }

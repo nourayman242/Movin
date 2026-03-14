@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/presentation/controllers/property_details_controller.dart';
 import 'package:movin/presentation/home/widgets/property/agent_card.dart';
 import 'package:movin/presentation/home/widgets/property/auction_card.dart';
@@ -9,11 +10,11 @@ import 'package:movin/presentation/home/widgets/property/tabs/property_tabs.dart
 import 'package:movin/presentation/home/widgets/property/title_card.dart';
 
 class PropertyDetailsScreen extends StatefulWidget {
-  final String propertyId; 
+  final PropertyEntity property; 
 
   const PropertyDetailsScreen({
     super.key,
-    required this.propertyId,
+    required this.property,
   });
   
 
@@ -51,14 +52,14 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
               children: [
                 PropertyImageSlider(
                   controller: controller.pageController,
-                   propertyId:widget.propertyId
+                   property:widget.property
                 ),
                 SizedBox(height: 16.h),
-                TitleCard(controller: controller),
+                TitleCard(controller: controller,property:widget.property,),
                 SizedBox(height: 16.h),
                 PropertyTabs(controller: controller),
                 SizedBox(height: 16.h),
-                AuctionCard(propertyId: widget.propertyId,),
+                AuctionCard(propertyId: widget.property.id,),
                 SizedBox(height: 16.h),
                 AgentCard(controller: controller),
                 SizedBox(height: 40.h),
