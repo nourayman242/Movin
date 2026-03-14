@@ -20,7 +20,6 @@ class _FilterScreenState extends State<FilterScreen> {
   final TextEditingController priceMinController = TextEditingController();
   final TextEditingController priceMaxController = TextEditingController();
 
-  // Property type selection
   String? selectedPropertyType;
   String? selectedBedrooms;
   String? selectedBathrooms;
@@ -46,10 +45,10 @@ class _FilterScreenState extends State<FilterScreen> {
   void _updateSliderFromText() {
     double start =
         double.tryParse(priceMinController.text.replaceAll(',', '')) ??
-        _minPrice;
+            _minPrice;
     double end =
         double.tryParse(priceMaxController.text.replaceAll(',', '')) ??
-        _maxPrice;
+            _maxPrice;
 
     start = start.clamp(_minPrice, _maxPrice);
     end = end.clamp(_minPrice, _maxPrice);
@@ -92,7 +91,6 @@ class _FilterScreenState extends State<FilterScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // Price Range Card
                 priceRangeCard(
                   priceMinController: priceMinController,
                   priceMaxController: priceMaxController,
@@ -106,7 +104,6 @@ class _FilterScreenState extends State<FilterScreen> {
 
                 const SizedBox(height: 20),
 
-                // Property Type Card with sub-options
                 propertyTypeCard(
                   navy: navy,
                   selectedType: selectedPropertyType,
@@ -117,68 +114,56 @@ class _FilterScreenState extends State<FilterScreen> {
                       selectedBathrooms = null;
                     });
                   },
-
                   selectedBedrooms: selectedBedrooms,
                   onBedroomSelected: (bed) {
                     setState(() => selectedBedrooms = bed);
                   },
-
                   selectedBathrooms: selectedBathrooms,
                   onBathroomSelected: (bath) {
                     setState(() => selectedBathrooms = bath);
                   },
-
                   builtUpArea: builtUpArea,
                   onBuiltUpAreaChanged: (val) {
                     setState(() => builtUpArea = val);
                   },
-
                   isFurnished: isFurnished,
                   onFurnishedChanged: (val) {
                     setState(() => isFurnished = val);
                   },
                   hasPool: hasPoolValue,
                   onPoolChanged: (value) {
-                    setState(() {
-                      hasPoolValue = value;
-                    });
+                    setState(() => hasPoolValue = value);
                   },
                 ),
-                SizedBox(height: 20),
+
+                const SizedBox(height: 20),
+
                 sortByCard(
                   selectedSort: selectedSort,
                   onSortChanged: (value) {
-                    setState(() {
-                      selectedSort = value;
-                    });
+                    setState(() => selectedSort = value);
                   },
                   navy: navy,
                 ),
+
                 applyFilterButton(
                   navy: navy,
                   onPressed: () {
+                    // Sync text fields → slider values before navigating
+                    _updateSliderFromText();
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (_) => ResultsPage(
                           navy: navy,
-                          filters: {
-                            "Property Type": selectedPropertyType ?? "None",
-                            "Bedrooms": selectedBedrooms ?? "Any",
-                            "Bathrooms": selectedBathrooms ?? "Any",
-                            "Built-Up Area": builtUpArea ?? "Any",
-                            "Furnished": isFurnished == null
-                                ? "Any"
-                                : isFurnished!
-                                ? "Yes"
-                                : "No",
-                            "Pool": hasPoolValue == null
-                                ? "Any"
-                                : hasPoolValue!
-                                ? "Yes"
-                                : "No",
-                            "Sort By": selectedSort ?? "None",
-                          },
+                          propertyType: selectedPropertyType,
+                          bedrooms: selectedBedrooms,
+                          bathrooms: selectedBathrooms,
+                          hasPool: hasPoolValue,
+                          minPrice: _priceRange.start,
+                          maxPrice: _priceRange.end,
+                          sortLabel: selectedSort,
                         ),
                       ),
                     );
