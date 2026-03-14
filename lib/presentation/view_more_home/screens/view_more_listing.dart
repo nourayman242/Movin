@@ -108,12 +108,18 @@
 //     );
 //   }
 // }
+import 'dart:async';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/data/api_services/property_services.dart';
+import 'package:movin/data/repositories/property_repository_impl.dart';
 import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
 import 'package:movin/presentation/browse_property/widgets/browse_property_card.dart';
+import 'package:movin/presentation/browse_property/widgets/search_property_viewmodel.dart';
 import 'package:movin/presentation/browse_property/widgets/search_widget.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
@@ -127,9 +133,19 @@ class ViewMoreListing extends StatefulWidget {
 class _ViewMoreListingState extends State<ViewMoreListing> {
   String searchQuery = "";
 
+  late SearchPropertyViewModel vm;
+
+  Timer? _debounce;
+
   void _onSearchChanged(String value) {
     setState(() {
       searchQuery = value.toLowerCase();
+    });
+
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      vm.search(value);
     });
   }
 
@@ -143,9 +159,18 @@ class _ViewMoreListingState extends State<ViewMoreListing> {
   }
 
   @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     context.read<PropertyCubit>().loadRecentProperties();
+    vm = SearchPropertyViewModel(
+      PropertyRepositoryImpl(PropertyService(Dio())),
+    );
   }
 
   @override
@@ -171,59 +196,74 @@ class _ViewMoreListingState extends State<ViewMoreListing> {
               builder: (context, state) {
                 final cubit = context.read<PropertyCubit>();
 
-                if (cubit.loadingRecent) {
-                  return const Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.navyDark,
-                      ),
-                    ),
-                  );
-                }
+                // if (cubit.loadingRecent) {
+                //   return const Expanded(
+                //     child: Center(
+                //       child: CircularProgressIndicator(
+                //         color: AppColors.navyDark,
+                //       ),
+                //     ),
+                //   );
+                // }
 
-                final properties = cubit.recentProperties;
+                // final properties = cubit.recentProperties;
 
-                /// SEARCH FILTER
-                final filtered = properties.where((property) {
-                  return property.location.toLowerCase().contains(searchQuery);
-                }).toList();
+                // /// SEARCH FILTER
+                // final filtered = properties.where((property) {
+                //   return property.location.toLowerCase().contains(searchQuery);
+                // }).toList();
 
-                return Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14),
-                        child: Text(
-                          "${filtered.length} properties found",
-                          style: AppTextStyles.label,
+                return AnimatedBuilder(
+                  animation: vm,
+                  builder: (context, _) {
+                    final bool isSearching = searchQuery.isNotEmpty;
+
+                    final properties = isSearching
+                        ? vm.properties
+                        : cubit.recentProperties;
+
+                    if (vm.isLoading || cubit.loadingRecent) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.navyDark,
                         ),
+                      );
+                    }
+
+                    if (properties.isEmpty) {
+                      return const Center(child: Text("No properties found"));
+                    }
+                    return Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 14),
+                            child: Text(
+                              "${properties.length} properties found",
+                              style: AppTextStyles.label,
+                            ),
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: properties.length,
+                              itemBuilder: (context, index) {
+                                final property = properties[index];
+
+                                return BrowsePropertyCard(
+                                  property: property,
+                                  onTap: () => navigateToDetails(property),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-
-                      const SizedBox(height: 10),
-
-                      Expanded(
-                        child: filtered.isEmpty
-                            ? const Center(
-                                child: Text(
-                                  "No properties found",
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                              )
-                            : ListView.builder(
-                                itemCount: filtered.length,
-                                itemBuilder: (context, index) {
-                                  final property = filtered[index];
-
-                                  return BrowsePropertyCard(
-                                    property: property,
-                                    onTap: () => navigateToDetails(property),
-                                  );
-                                },
-                              ),
-                      ),
-                    ],
-                  ),
+                    );
+                  },
                 );
               },
             ),

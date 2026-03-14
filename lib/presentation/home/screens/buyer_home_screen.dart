@@ -39,21 +39,7 @@ class _BuyerHomeState extends State<BuyerHome> {
   String searchQuery = "";
   late SearchPropertyViewModel vm;
 
-  // void _onSearchChanged(String value) {
-  //   setState(() {
-  //     searchQuery = value.toLowerCase();
-  //   });
-  // }
-
   Timer? _debounce;
-
-  // void _onSearchChanged(String value) {
-  //   if (_debounce?.isActive ?? false) _debounce!.cancel();
-
-  //   _debounce = Timer(const Duration(milliseconds: 500), () {
-  //     vm.search(value);
-  //   });
-  // }
 
   void _onSearchChanged(String value) {
     searchQuery = value;
@@ -78,16 +64,6 @@ class _BuyerHomeState extends State<BuyerHome> {
 
   @override
   Widget build(BuildContext context) {
-    //final filtered = dummyProperties;
-    // final filtered = dummyProperties.where((property) {
-    //   final matchesSearch = property.location.toLowerCase().contains(
-    //     searchQuery,
-    //   );
-
-    //   return matchesSearch;
-    // }).toList();
-    //final filtered = vm.properties;
-
     return Scaffold(
       drawer: const CustomDrawer(),
       backgroundColor: AppColors.background,
@@ -184,53 +160,6 @@ class _BuyerHomeState extends State<BuyerHome> {
 
                 const SizedBox(height: 30),
 
-                // Container(
-                //   padding: const EdgeInsets.symmetric(horizontal: 16),
-                //   decoration: BoxDecoration(
-                //     color: Colors.white,
-                //     borderRadius: BorderRadius.circular(30),
-                //     boxShadow: [
-                //       BoxShadow(
-                //         color: Colors.black.withOpacity(0.1),
-                //         blurRadius: 8,
-                //         offset: const Offset(0, 4),
-                //       ),
-                //     ],
-                //   ),
-                //   child: Row(
-                //     children: [
-                //       const Icon(Icons.search, color: Colors.grey),
-                //       const SizedBox(width: 10),
-                //        Expanded(
-                //         child: TextField(
-                //           onChanged: _onSearchChanged,
-                //           decoration: InputDecoration(
-                //             hintText: "Search by location...",
-                //             border: InputBorder.none,
-                //           ),
-                //         ),
-                //       ),
-                //       GestureDetector(
-                //         onTap: () {
-                //           Navigator.push(
-                //             context,
-                //             MaterialPageRoute(
-                //               builder: (_) => const FilterScreen(),
-                //             ),
-                //           );
-                //         },
-                //         child: Container(
-                //           padding: const EdgeInsets.all(8),
-                //           decoration: BoxDecoration(
-                //             color: AppColors.primaryNavy,
-                //             borderRadius: BorderRadius.circular(20),
-                //           ),
-                //           child: const Icon(Icons.tune, color: Colors.white),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
                 SearchHeader(onSearchChanged: _onSearchChanged),
               ],
             ),
@@ -397,195 +326,6 @@ class _BuyerHomeState extends State<BuyerHome> {
 
           const SizedBox(height: 12),
 
-          // SizedBox(
-          //   height: 320,
-          //   child: filtered.isEmpty
-          //       ? const Center(
-          //           child: Text(
-          //             "No properties found",
-          //             style: TextStyle(color: Colors.grey),
-          //           ),
-          //         )
-          //       : ListView.separated(
-          //           scrollDirection: Axis.horizontal,
-          //           padding: const EdgeInsets.only(left: 20),
-          //           itemCount: filtered.length, //stat
-          //           separatorBuilder: (_, __) => const SizedBox(width: 16),
-          //           itemBuilder: (context, index) {
-          //             final property = filtered[index];
-          //             return PropertyCard(
-          //               property: property,
-          //               /////////////////////////////////////////
-          //               onTap: () {
-          //                 Navigator.push(
-          //                   context,
-          //                   MaterialPageRoute(
-          //                     builder: (context) => PropertyDetailsScreen(
-          //                       propertyId: property.id,
-          //                     ),
-          //                   ),
-          //                 );
-          //               },
-          //             );
-          //           },
-          //         ),
-          // ),
-          // AnimatedBuilder(
-          //   animation: vm,
-          //   builder: (context, _) {
-          //     final filtered = vm.properties;
-
-          //     if (vm.isLoading) {
-          //       return const Center(child: CircularProgressIndicator());
-          //     }
-
-          //     if (filtered.isEmpty) {
-          //       return const Center(child: Text("No properties found"));
-          //     }
-
-          //     return ListView.separated(
-          //       scrollDirection: Axis.horizontal,
-          //       padding: const EdgeInsets.only(left: 20),
-          //       itemCount: filtered.length,
-          //       separatorBuilder: (_, __) => const SizedBox(width: 16),
-          //       itemBuilder: (context, index) {
-          //         final property = filtered[index];
-          //         return PropertyCard(
-          //           property: property,
-          //           onTap: () {
-          //             Navigator.push(
-          //               context,
-          //               MaterialPageRoute(
-          //                 builder: (_) =>
-          //                     PropertyDetailsScreen(propertyId: property.id),
-          //               ),
-          //             );
-          //           },
-          //         );
-          //       },
-          //     );
-          //   },
-          // ),
-
-          // BlocBuilder<PropertyCubit, PropertyState>(
-          //   builder: (context, state) {
-          //     final cubit = context.read<PropertyCubit>();
-
-          //     if (cubit.loadingRecommended) {
-          //       return const Center(
-          //         child: CircularProgressIndicator(color: AppColors.navyDark),
-          //       );
-          //     }
-
-          //     final properties = cubit.recommendedProperties;
-
-          //     if (properties.isEmpty) {
-          //       return const Center(child: Text("No recommendations found"));
-          //     }
-
-          //     return AnimatedBuilder(
-          //       animation: vm,
-          //       builder: (context, _) {
-          //         final properties = vm.properties;
-
-          //         if (vm.isLoading) {
-          //           return const Center(
-          //             child: CircularProgressIndicator(
-          //               color: AppColors.navyDark,
-          //             ),
-          //           );
-          //         }
-
-          //         if (properties.isEmpty) {
-          //           return const Center(child: Text("No properties found"));
-          //         }
-          //         return SizedBox(
-          //           height: 320,
-          //           child: ListView.separated(
-          //             scrollDirection: Axis.horizontal,
-          //             padding: const EdgeInsets.only(left: 20),
-          //             itemCount: 5,
-          //             //properties.length,
-          //             separatorBuilder: (_, __) => const SizedBox(width: 16),
-          //             itemBuilder: (context, index) {
-          //               final property = properties[index];
-
-          //               return PropertyCard(
-          //                 property: property,
-          //                 onTap: () {
-          //                   Navigator.push(
-          //                     context,
-          //                     MaterialPageRoute(
-          //                       builder: (_) => PropertyDetailsScreen(
-          //                         propertyId: property.id,
-          //                       ),
-          //                     ),
-          //                   );
-          //                 },
-          //               );
-          //             },
-          //           ),
-          //         );
-          //       },
-          //     );
-          //   },
-          // ),
-          // BlocBuilder<PropertyCubit, PropertyState>(
-          //   builder: (context, state) {
-          //     final cubit = context.read<PropertyCubit>();
-
-          //     return AnimatedBuilder(
-          //       animation: vm,
-          //       builder: (context, _) {
-          //         /// if search results exist → show them
-          //         final bool isSearching = vm.properties.isNotEmpty;
-
-          //         final properties = isSearching
-          //             ? vm.properties
-          //             : cubit.recommendedProperties;
-
-          //         if (vm.isLoading || cubit.loadingRecommended) {
-          //           return const Center(
-          //             child: CircularProgressIndicator(
-          //               color: AppColors.navyDark,
-          //             ),
-          //           );
-          //         }
-
-          //         if (properties.isEmpty) {
-          //           return const Center(child: Text("No properties found"));
-          //         }
-
-          //         return SizedBox(
-          //           height: 320,
-          //           child: ListView.separated(
-          //             scrollDirection: Axis.horizontal,
-          //             padding: const EdgeInsets.only(left: 20),
-          //             itemCount: properties.length,
-          //             separatorBuilder: (_, __) => const SizedBox(width: 16),
-          //             itemBuilder: (context, index) {
-          //               final property = properties[index];
-
-          //               return PropertyCard(
-          //                 property: property,
-          //                 onTap: () {
-          //                   Navigator.push(
-          //                     context,
-          //                     MaterialPageRoute(
-          //                       builder: (_) => PropertyDetailsScreen(
-          //                         propertyId: property.id,
-          //                       ),
-          //                     ),
-          //                   );
-          //                 },
-          //               );
-          //             },
-          //           ),
-          //         );
-          //       },
-          //     );
-          //   },
-          // ),
           BlocBuilder<PropertyCubit, PropertyState>(
             builder: (context, state) {
               final cubit = context.read<PropertyCubit>();
@@ -642,58 +382,6 @@ class _BuyerHomeState extends State<BuyerHome> {
             },
           ),
 
-          // BlocBuilder<PropertyCubit, PropertyState>(
-          //   builder: (context, state) {
-          //     final cubit = context.read<PropertyCubit>();
-
-          //     if (cubit.loadingRecommended) {
-          //       return const Center(
-          //         child: CircularProgressIndicator(color: AppColors.navyDark),
-          //       );
-          //     }
-
-          //     final allProperties = cubit.recommendedProperties;
-
-          //     /// filter by location
-          //     final filteredProperties = searchQuery.isEmpty
-          //         ? allProperties
-          //         : allProperties.where((property) {
-          //             return property.location.toLowerCase().contains(
-          //               searchQuery,
-          //             );
-          //           }).toList();
-
-          //     if (filteredProperties.isEmpty) {
-          //       return const Center(child: Text("No properties found"));
-          //     }
-
-          //     return SizedBox(
-          //       height: 320,
-          //       child: ListView.separated(
-          //         scrollDirection: Axis.horizontal,
-          //         padding: const EdgeInsets.only(left: 20),
-          //         itemCount: filteredProperties.length,
-          //         separatorBuilder: (_, __) => const SizedBox(width: 16),
-          //         itemBuilder: (context, index) {
-          //           final property = filteredProperties[index];
-
-          //           return PropertyCard(
-          //             property: property,
-          //             onTap: () {
-          //               Navigator.push(
-          //                 context,
-          //                 MaterialPageRoute(
-          //                   builder: (_) =>
-          //                       PropertyDetailsScreen(propertyId: property.id),
-          //                 ),
-          //               );
-          //             },
-          //           );
-          //         },
-          //       ),
-          //     );
-          //   },
-          // ),
           const SizedBox(height: 25),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -728,98 +416,56 @@ class _BuyerHomeState extends State<BuyerHome> {
 
           const SizedBox(height: 12),
 
-          // BlocBuilder<PropertyCubit, PropertyState>(
-          //   builder: (context, state) {
-          //     final cubit = context.read<PropertyCubit>();
-
-          //     if (cubit.loadingRecent) {
-          //       return const Center(
-          //         child: CircularProgressIndicator(color: AppColors.navyDark),
-          //       );
-          //     }
-
-          //     final properties = cubit.recentProperties;
-
-          //     if (properties.isEmpty) {
-          //       return const Center(child: Text("No properties found"));
-          //     }
-
-          //     return SizedBox(
-          //       height: 320,
-          //       child: ListView.separated(
-          //         scrollDirection: Axis.horizontal,
-          //         padding: const EdgeInsets.only(left: 20),
-          //         itemCount: 5,
-          //         separatorBuilder: (_, __) => const SizedBox(width: 16),
-          //         itemBuilder: (context, index) {
-          //           final property = properties[index];
-
-          //           return PropertyCard(
-          //             property: property,
-          //             onTap: () {
-          //               Navigator.push(
-          //                 context,
-          //                 MaterialPageRoute(
-          //                   builder: (_) =>
-          //                       PropertyDetailsScreen(propertyId: property.id),
-          //                 ),
-          //               );
-          //             },
-          //           );
-          //         },
-          //       ),
-          //     );
-          //   },
-          // ),
           BlocBuilder<PropertyCubit, PropertyState>(
             builder: (context, state) {
               final cubit = context.read<PropertyCubit>();
 
-              if (cubit.loadingRecent) {
-                return const Center(
-                  child: CircularProgressIndicator(color: AppColors.navyDark),
-                );
-              }
+              return AnimatedBuilder(
+                animation: vm,
+                builder: (context,_) {
+                  final bool isSearching = searchQuery.isNotEmpty;
 
-              final allProperties = cubit.recentProperties;
+                  final properties = isSearching
+                      ? vm.properties
+                      : cubit.recentProperties;
 
-              /// filter by location
-              final filteredProperties = searchQuery.isEmpty
-                  ? allProperties
-                  : allProperties.where((property) {
-                      return property.location.toLowerCase().contains(
-                        searchQuery,
-                      );
-                    }).toList();
+                  if (vm.isLoading || cubit.loadingRecent) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.navyDark,
+                      ),
+                    );
+                  }
 
-              if (filteredProperties.isEmpty) {
-                return const Center(child: Text("No properties found"));
-              }
-
-              return SizedBox(
-                height: 320,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.only(left: 20),
-                  itemCount: filteredProperties.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 16),
-                  itemBuilder: (context, index) {
-                    final property = filteredProperties[index];
-
-                    return PropertyCard(
-                      property: property,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                PropertyDetailsScreen(propertyId: property.id),
-                          ),
+                  if (properties.isEmpty) {
+                    return const Center(child: Text("No properties found"));
+                  }
+                  return SizedBox(
+                    height: 320,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.only(left: 20),
+                      itemCount: properties.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 16),
+                      itemBuilder: (context, index) {
+                        final property = properties[index];
+                  
+                        return PropertyCard(
+                          property: property,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    PropertyDetailsScreen(propertyId: property.id),
+                              ),
+                            );
+                          },
                         );
                       },
-                    );
-                  },
-                ),
+                    ),
+                  );
+                }
               );
             },
           ),
