@@ -23,9 +23,11 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
   @override
   Future<Set<String>> add(String id) async {
     final raw = await api.addFavorite(id);
+    print("API RESPONSE: $raw");
     final response = FavoriteResponse.fromMap(raw);
     final ids = response.favorites.toSet();
     await hive.saveFavorites(ids);
+    print(" PARSED IDS: $ids");
     return ids;
   }
 

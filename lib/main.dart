@@ -31,6 +31,14 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => getIt<FavoriteBloc>()..add(FavoriteLoad())),
+        //     BlocProvider<FavoriteBloc>(
+        //   create: (context) {
+        //     final bloc = getIt<FavoriteBloc>();
+        //     bloc.add(FavoriteLoad());
+        //     return bloc;
+        //   },
+        // ),
+
         BlocProvider(create: (_) => getIt<SettingsBloc>()..add(LoadSettings())),
       ],
       child: Movin(),

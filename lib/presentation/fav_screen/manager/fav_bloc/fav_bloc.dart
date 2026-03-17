@@ -16,19 +16,41 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
     on<FavoriteClear>(_onClear);
   }
 
-  Future<void> _onLoad(
-      FavoriteLoad event, Emitter<FavoriteState> emit) async {
+  Future<void> _onLoad(FavoriteLoad event, Emitter<FavoriteState> emit) async {
     final ids = await repo.loadFavorites();
     emit(state.copyWith(favorites: ids, loaded: true));
   }
 
   Future<void> _onToggle(
       FavoriteToggle event, Emitter<FavoriteState> emit) async {
-    final updated = state.isFavorite(event.propertyId)
-        ? await repo.remove(event.propertyId)
-        : await repo.add(event.propertyId);
+    final isFav = state.isFavorite(event.propertyId);
 
-    emit(state.copyWith(favorites: updated));
+    final temp = Set<String>.from(state.favorites);
+    if (isFav)
+      temp.remove(event.propertyId);
+    else
+      temp.add(event.propertyId);
+
+    emit(state.copyWith(favorites: temp));
+
+    try {
+      final updated = isFav
+          ? await repo.remove(event.propertyId)
+          : await repo.add(event.propertyId);
+
+      emit(state.copyWith(favorites: updated));
+    } catch (e) {
+      print("ERROR: $e");
+    }
+    // try {
+    //   final updated = state.isFavorite(event.propertyId)
+    //       ? await repo.remove(event.propertyId)
+    //       : await repo.add(event.propertyId);
+    //   print(" UPDATED FAVORITES: $updated");
+    //   emit(state.copyWith(favorites: updated));
+    // } catch (e) {
+    //   print(" ERROR IN FAVORITE TOGGLE: $e");
+    // }
   }
 
   Future<void> _onRemove(
