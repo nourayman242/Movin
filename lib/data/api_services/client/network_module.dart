@@ -7,6 +7,7 @@ import 'package:movin/data/api_services/forget_pass_services.dart';
 import 'package:movin/data/api_services/login_services.dart';
 import 'package:movin/data/api_services/register_services.dart';
 import 'package:movin/data/api_services/role_services.dart';
+import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
 import 'package:movin/data/repositories/forget_pass_repository_imp.dart';
 import 'package:movin/domain/repositories/forget_pass_repository.dart';
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
@@ -16,15 +17,39 @@ abstract class NetworkServices {
   @lazySingleton
   Dio get dio {
     const base = 'https://movin-app.vercel.app';
-    
-    
+
     final options = BaseOptions(
       baseUrl: base,
-      connectTimeout: const Duration(seconds: 15),
-      receiveTimeout: const Duration(seconds: 15),
+      connectTimeout: const Duration(seconds: 20),
+      receiveTimeout: const Duration(seconds: 20),
       headers: {'Content-Type': 'application/json'},
     );
-    return Dio(options);
+
+    final dio = Dio(options);
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final token = await SharedHelper.getToken();
+
+          if (token != null) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+
+          debugPrint("REQUEST: ${options.method} ${options.uri}");
+
+          return handler.next(options);
+        },
+        onResponse: (response, handler) {
+          debugPrint("RESPONSE: ${response.data}");
+          return handler.next(response);
+        },
+        onError: (error, handler) {
+          debugPrint("ERROR: ${error.message}");
+          return handler.next(error);
+        },
+      ),
+    );
+    return dio;
   }
 
   @lazySingleton
@@ -35,30 +60,28 @@ abstract class NetworkServices {
   @lazySingleton
   LoginServices loginServices(Dio dio) => LoginServices(dio);
 
-    
   @lazySingleton
   ForgotPasswordService forgotPasswordService(Dio dio) {
     return ForgotPasswordService(dio);
   }
 
-  
   @lazySingleton
-  ForgotPasswordRepository forgotPasswordRepository(ForgotPasswordService service) {
+  ForgotPasswordRepository forgotPasswordRepository(
+      ForgotPasswordService service) {
     return ForgotPasswordRepositoryImpl(service);
   }
 
-  
   @factory
   ForgotPasswordCubit forgotPasswordCubit(ForgotPasswordRepository repo) {
     return ForgotPasswordCubit(repo);
   }
 
   @lazySingleton
-FavoriteApiService favoriteApiService(Dio dio) {
-  return FavoriteApiService(dio);
-}
+  FavoriteApiService favoriteApiService(Dio dio) {
+    return FavoriteApiService(dio);
+  }
 
-@lazySingleton
+  @lazySingleton
   RoleServices roleServices(Dio dio) {
     return RoleServices(dio);
   }
