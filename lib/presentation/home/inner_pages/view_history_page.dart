@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/domain/entities/property_entity.dart';
-import 'package:movin/domain/entities/property_model.dart';
+
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
 import 'package:movin/presentation/home/widgets/view_history_cards.dart';
 

@@ -1,4 +1,3 @@
-
 import 'package:movin/domain/entities/property_entity.dart';
 
 class PropertyModel {
@@ -37,17 +36,28 @@ class PropertyModel {
       }
     }
 
+    final details = json['details'] is Map<String, dynamic>
+        ? json['details']
+        : {};
+
     return PropertyModel(
-      id: json['_id'] ?? '',
-      location: json['location'] ?? '',
-      description: json['description'] ?? '',
-      price: json['price'] ?? 0,
-      listingType: json['listingType'] ?? '',
-      type: json['type'] ?? '',
-      size: json['size'] ?? '',
+      id: json['_id']?.toString() ?? '',
+      location: json['location']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+
+      price: json['price'] is int
+          ? json['price']
+          : int.tryParse(json['price'].toString()) ?? 0,
+
+      listingType: json['listingType']?.toString() ?? '',
+      type: json['type']?.toString() ?? '',
+
+      size: details['size']?.toString() ?? '',
+
       images: parsedImages,
-      status: json['status'] ?? '',
-      details: json['details'] ?? {},
+      status: json['status']?.toString() ?? '',
+
+      details: details,
     );
   }
   PropertyEntity toEntity() {
@@ -60,9 +70,8 @@ class PropertyModel {
       type: type,
       size: size,
       images: images,
-      status:status,
+      status: status,
       details: details,
     );
   }
 }
-

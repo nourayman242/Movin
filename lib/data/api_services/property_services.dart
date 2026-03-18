@@ -78,61 +78,6 @@ class PropertyService {
     await dio.delete('/api/seller/properties/$id');
   }
 
-  // Future<List<PropertyModel>> searchProperties(String location) async {
-  //   final response = await dio.get(
-  //     '/api/seller/properties/search',
-  //     queryParameters: {"location": location},
-  //   );
-
-  //   if (response.data == null || response.data['results'] == null) {
-  //     return [];
-  //   }
-
-  //   return (response.data['results'] as List)
-  //       .map((e) => PropertyModel.fromJson(e))
-  //       .toList();
-  // }
-  // Future<List<PropertyModel>> searchProperties(String location) async {
-  //   print("SEARCH LOCATION: $location");
-
-  //   final response = await dio.get(
-  //     '/api/seller/properties/search',
-  //     queryParameters: {"location": location},
-  //   );
-
-  //   print("DATA RESPONSE/////////////////////:${response.data}");
-
-  //   if (response.data == null || response.data['results'] == null) {
-  //     return [];
-  //   }
-
-  //   return (response.data['results'] as List)
-  //       .map((e) => PropertyModel.fromJson(e))
-  //       .toList();
-  // }
-  // Future<List<PropertyModel>> searchProperties(String location) async {
-  //   try {
-  //     print("SEARCH LOCATION: $location");
-
-  //     final response = await dio.get(
-  //       '/api/seller/properties/search',
-  //       queryParameters: {"location": location},
-  //     );
-
-  //     print("DATA RESPONSE: ${response.data}");
-
-  //     if (response.data == null || response.data['results'] == null) {
-  //       return [];
-  //     }
-
-  //     return (response.data['results'] as List)
-  //         .map((e) => PropertyModel.fromJson(e))
-  //         .toList();
-  //   } catch (e) {
-  //     print("SEARCH API ERROR: $e");
-  //     return [];
-  //   }
-  // }
   Future<List<PropertyModel>> searchProperties(String location) async {
     try {
       final token = await SharedHelper.getToken(); // get saved token
@@ -169,6 +114,7 @@ class PropertyService {
   }
 
   Future<List<PropertyModel>> getRecommendedProperties() async {
+    try{
     final response = await dio.get('/api/recommend/all');
 
     if (response.data == null || response.data['recommendations'] == null) {
@@ -178,5 +124,33 @@ class PropertyService {
     return (response.data['recommendations'] as List)
         .map((e) => PropertyModel.fromJson(e))
         .toList();
+    }catch(e)
+    {
+      print("TYPE API ERROR: $e");
+      return [];
+    }
+  }
+
+  Future<List<PropertyModel>> getPropertiesByType(String type) async {
+    try {
+      final token = await SharedHelper.getToken();
+
+      final response = await dio.get(
+        "/api/seller/properties/listing-type",
+        queryParameters: {"type": type},
+        options: Options(headers: {"Authorization": "Bearer $token"}),
+      );
+
+      if (response.data == null || response.data['results'] == null) {
+        return [];
+      }
+
+      return (response.data['results'] as List)
+          .map((e) => PropertyModel.fromJson(e))
+          .toList();
+    } catch (e) {
+      print("TYPE API ERROR: $e");
+      return [];
+    }
   }
 }

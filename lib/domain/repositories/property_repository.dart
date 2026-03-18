@@ -11,4 +11,5 @@ abstract class PropertyRepository {
   Future<List<PropertyEntity>> searchProperties(String location);
   Future<List<PropertyEntity>> getRecentProperties();
   Future<List<PropertyEntity>> getRecommendedProperties();
+  Future<List<PropertyEntity>> getPropertiesByType(String type);
 }

@@ -46,11 +46,19 @@ class BrowsePropertyCard extends StatelessWidget {
                     top: Radius.circular(20),
                   ),
                   child: Image.network(
-                    property.images.first,
+                    property.images.isNotEmpty
+                        ? property.images.first
+                        : "https://via.placeholder.com/150",
                     height: 200,
                     width: double.infinity,
                     fit: BoxFit.cover,
                   ),
+                  // Image.network(
+                  //   property.images.first,
+                  //   height: 200,
+                  //   width: double.infinity,
+                  //   fit: BoxFit.cover,
+                  // ),
                 ),
                 //tag
                 Positioned(
@@ -134,15 +142,15 @@ class BrowsePropertyCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "${property.details["bedrooms"]} beds",
+                        "${property.details["bedrooms"]?.toString() ?? "-"} beds",
                         style: AppTextStyles.smallText,
                       ),
                       Text(
-                        "${property.details["bathrooms"]} baths",
+                        "${property.details["bedrooms"]?.toString() ?? "-"} beds",
                         style: AppTextStyles.smallText,
                       ),
                       Text(
-                        property.size,
+                        property.size.isNotEmpty ? property.size : '-',
                         style: AppTextStyles.smallText,
                       ),
                     ],

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:movin/data/models/property_model.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
+import 'package:movin/domain/repositories/property_repository.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 
@@ -39,6 +40,9 @@ void main() async {
       splitScreenMode: true,
       builder: (_, __) => MultiBlocProvider(
         providers: [
+          RepositoryProvider<PropertyRepository>(
+          create: (_) => getIt<PropertyRepository>(),
+        ),
           BlocProvider(create: (_) => getIt<AuthCubit>()),
           BlocProvider(create: (_) => getIt<PropertyCubit>()),
           BlocProvider(

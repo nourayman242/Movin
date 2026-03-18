@@ -195,8 +195,10 @@ class _BuyerHomeState extends State<BuyerHome> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              BrowsePropertiesScreen(type: 'sale'),
+                          builder: (context) => BlocProvider(
+                            create: (context) => getIt<PropertyCubit>(),
+                            child: BrowsePropertiesScreen(type: "sale"),
+                          ),
                         ),
                       );
                     },
@@ -209,24 +211,26 @@ class _BuyerHomeState extends State<BuyerHome> {
 
                   GestureDetector(
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) =>
-                      //         BrowsePropertiesScreen(type: 'rent'),
-                      //   ),
-                      // );
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ChangeNotifierProvider(
-                            create: (_) => SearchPropertyViewModel(
-                              getIt<PropertyRepository>(),
-                            ),
+                          builder: (context) => BlocProvider(
+                            create: (context) => getIt<PropertyCubit>(),
                             child: BrowsePropertiesScreen(type: "rent"),
                           ),
                         ),
                       );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (_) => ChangeNotifierProvider(
+                      //       create: (_) => SearchPropertyViewModel(
+                      //         getIt<PropertyRepository>(),
+                      //       ),
+                      //       child: BrowsePropertiesScreen(type: "rent"),
+                      //     ),
+                      //   ),
+                      // );
                     },
                     child: _propertyCard(
                       icon: Icons.key_outlined,
@@ -236,24 +240,24 @@ class _BuyerHomeState extends State<BuyerHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) =>
-                      //         BrowsePropertiesScreen(type: 'Commercial'),
-                      //   ),
-                      // );
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ChangeNotifierProvider(
-                            create: (_) => SearchPropertyViewModel(
-                              getIt<PropertyRepository>(),
-                            ),
-                            child: BrowsePropertiesScreen(type: "Commercial"),
-                          ),
+                          builder: (context) =>
+                              BrowsePropertiesScreen(type: 'Commercial'),
                         ),
                       );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (_) => ChangeNotifierProvider(
+                      //       create: (_) => SearchPropertyViewModel(
+                      //         getIt<PropertyRepository>(),
+                      //       ),
+                      //       child: BrowsePropertiesScreen(type: "Commercial"),
+                      //     ),
+                      //   ),
+                      // );
                     },
                     child: _propertyCard(
                       icon: Icons.apartment_outlined,
@@ -263,24 +267,24 @@ class _BuyerHomeState extends State<BuyerHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) =>
-                      //         BrowsePropertiesScreen(type: 'Investment'),
-                      //   ),
-                      // );
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ChangeNotifierProvider(
-                            create: (_) => SearchPropertyViewModel(
-                              getIt<PropertyRepository>(),
-                            ),
-                            child: BrowsePropertiesScreen(type: "Investment"),
-                          ),
+                          builder: (context) =>
+                              BrowsePropertiesScreen(type: 'Investment'),
                         ),
                       );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (_) => ChangeNotifierProvider(
+                      //       create: (_) => SearchPropertyViewModel(
+                      //         getIt<PropertyRepository>(),
+                      //       ),
+                      //       child: BrowsePropertiesScreen(type: "Investment"),
+                      //     ),
+                      //   ),
+                      // );
                     },
                     child: _propertyCard(
                       icon: Icons.show_chart_outlined,
@@ -309,7 +313,9 @@ class _BuyerHomeState extends State<BuyerHome> {
                 GestureDetector(
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ViewMoreRecommendtion()),
+                    MaterialPageRoute(
+                      builder: (context) => ViewMoreRecommendtion(),
+                    ),
                   ),
                   child: const Text(
                     "View More",
@@ -367,9 +373,8 @@ class _BuyerHomeState extends State<BuyerHome> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => PropertyDetailsScreen(
-                                  property: property,
-                                ),
+                                builder: (_) =>
+                                    PropertyDetailsScreen(property: property),
                               ),
                             );
                           },
@@ -422,7 +427,7 @@ class _BuyerHomeState extends State<BuyerHome> {
 
               return AnimatedBuilder(
                 animation: vm,
-                builder: (context,_) {
+                builder: (context, _) {
                   final bool isSearching = searchQuery.isNotEmpty;
 
                   final properties = isSearching
@@ -449,7 +454,7 @@ class _BuyerHomeState extends State<BuyerHome> {
                       separatorBuilder: (_, __) => const SizedBox(width: 16),
                       itemBuilder: (context, index) {
                         final property = properties[index];
-                  
+
                         return PropertyCard(
                           property: property,
                           onTap: () {
@@ -465,7 +470,7 @@ class _BuyerHomeState extends State<BuyerHome> {
                       },
                     ),
                   );
-                }
+                },
               );
             },
           ),

@@ -54,4 +54,10 @@ class PropertyRepositoryImpl implements PropertyRepository {
     final models = await service.getRecommendedProperties();
     return models.map((e) => e.toEntity()).toList();
   }
+
+  @override
+  Future<List<PropertyEntity>> getPropertiesByType(String type) async {
+    final models = await service.getPropertiesByType(type);
+   return models.map((e) => e.toEntity()).toList();
+  }
 }
