@@ -12,15 +12,10 @@ class PropertyRepositoryImpl implements PropertyRepository {
   @override
   Future<List<PropertyModel>> getAll() async {
     return await service.getAllSellerProperties();
-    //  final models = await service.getAllSellerProperties();
-
-    // return models.map((m) => m.toEntity()).toList();
   }
 
   @override
-  // Future<void> create(PropertyEntity property) {
-  //   return service.createProperty(property);
-  // }
+
   Future<void> create(AddPropertyViewModel vm, String token) {
     return service.createProperty(vm: vm, token: token);
   }

@@ -10,25 +10,6 @@ class SearchPropertyViewModel extends ChangeNotifier {
   List<PropertyEntity> properties = [];
   bool isLoading = false;
 
-  // Future<void> search(String location) async {
-  //   if (location.isEmpty) {
-  //     properties = [];
-  //     notifyListeners();
-  //     return;
-  //   }
-
-  //   isLoading = true;
-  //   notifyListeners();
-
-  //   try {
-  //     properties = await repository.searchProperties(location);
-  //   } catch (e) {
-  //     properties = [];
-  //   }
-
-  //   isLoading = false;
-  //   notifyListeners();
-  // }
   Future<void> search(String location) async {
     final query = location.trim().toLowerCase();
 

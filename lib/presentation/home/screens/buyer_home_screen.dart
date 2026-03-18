@@ -8,7 +8,6 @@ import 'package:movin/app_theme.dart';
 import 'package:movin/data/api_services/property_services.dart';
 import 'package:movin/data/repositories/property_repository_impl.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
-import 'package:movin/domain/repositories/property_repository.dart';
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
 import 'package:movin/presentation/auction/all%20proparties%20auctions/screens/property_auctions_screen.dart';
 
@@ -205,7 +204,7 @@ class _BuyerHomeState extends State<BuyerHome> {
                     child: _propertyCard(
                       icon: Icons.home_outlined,
                       title: "For Sale",
-                      count: "2,453",
+                      //count: "2,453",
                     ),
                   ),
 
@@ -220,22 +219,12 @@ class _BuyerHomeState extends State<BuyerHome> {
                           ),
                         ),
                       );
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (_) => ChangeNotifierProvider(
-                      //       create: (_) => SearchPropertyViewModel(
-                      //         getIt<PropertyRepository>(),
-                      //       ),
-                      //       child: BrowsePropertiesScreen(type: "rent"),
-                      //     ),
-                      //   ),
-                      // );
+                      
                     },
                     child: _propertyCard(
                       icon: Icons.key_outlined,
                       title: "For Rent",
-                      count: "1,832",
+                      //count: "1,832",
                     ),
                   ),
                   GestureDetector(
@@ -247,22 +236,12 @@ class _BuyerHomeState extends State<BuyerHome> {
                               BrowsePropertiesScreen(type: 'Commercial'),
                         ),
                       );
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (_) => ChangeNotifierProvider(
-                      //       create: (_) => SearchPropertyViewModel(
-                      //         getIt<PropertyRepository>(),
-                      //       ),
-                      //       child: BrowsePropertiesScreen(type: "Commercial"),
-                      //     ),
-                      //   ),
-                      // );
+                     
                     },
                     child: _propertyCard(
                       icon: Icons.apartment_outlined,
                       title: "Commercial",
-                      count: "567",
+                      //count: "567",
                     ),
                   ),
                   GestureDetector(
@@ -274,22 +253,12 @@ class _BuyerHomeState extends State<BuyerHome> {
                               BrowsePropertiesScreen(type: 'Investment'),
                         ),
                       );
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (_) => ChangeNotifierProvider(
-                      //       create: (_) => SearchPropertyViewModel(
-                      //         getIt<PropertyRepository>(),
-                      //       ),
-                      //       child: BrowsePropertiesScreen(type: "Investment"),
-                      //     ),
-                      //   ),
-                      // );
+                      
                     },
                     child: _propertyCard(
                       icon: Icons.show_chart_outlined,
                       title: "Investments",
-                      count: "342",
+                      //count: "342",
                     ),
                   ),
                 ],
@@ -482,7 +451,7 @@ class _BuyerHomeState extends State<BuyerHome> {
   Widget _propertyCard({
     required IconData icon,
     required String title,
-    required String count,
+   // required String count,
   }) {
     final bool isActive = selectedCategory == title;
 
@@ -523,15 +492,15 @@ class _BuyerHomeState extends State<BuyerHome> {
             ),
 
             SizedBox(height: 4.h),
-            Text(
-              count,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: isActive ? AppColors.gold : Colors.grey,
-              ),
-            ),
+            // Text(
+            //   count,
+            //   maxLines: 1,
+            //   overflow: TextOverflow.ellipsis,
+            //   style: TextStyle(
+            //     fontSize: 14.sp,
+            //     color: isActive ? AppColors.gold : Colors.grey,
+            //   ),
+            // ),
           ],
         ),
       ),
