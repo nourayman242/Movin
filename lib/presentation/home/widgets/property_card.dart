@@ -176,7 +176,7 @@ class PropertyCard extends StatelessWidget {
                      
                       _attrItem(
                         property.size.isNotEmpty ? property.size : '-',
-                        'sqft',
+                        "",
                       ),
                     ],
                   ),
