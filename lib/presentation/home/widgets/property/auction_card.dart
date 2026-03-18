@@ -7,7 +7,7 @@ import 'package:movin/presentation/auction/screens/auction_screen.dart';
 
 class AuctionCard extends StatelessWidget {
   const AuctionCard({Key? key, required this.propertyId}) : super(key: key);
-  final int propertyId;
+  final String propertyId;
   @override
   Widget build(BuildContext context) {
     return Container(

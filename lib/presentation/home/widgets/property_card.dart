@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/domain/entities/property_model.dart';
+import 'package:movin/domain/entities/property_entity.dart';
+
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_state.dart';
 
 class PropertyCard extends StatelessWidget {
-  final PropertyModel property;
+  //final PropertyModel property;
+  final PropertyEntity property;
   final VoidCallback? onTap;
   //final VoidCallback? onFavoriteToggle;
 
-  const PropertyCard({
-    super.key,
-    required this.property,
-    required this.onTap,
-    
-  });
+  const PropertyCard({super.key, required this.property, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +46,16 @@ class PropertyCard extends StatelessWidget {
                   SizedBox(
                     width: cardWidth,
                     height: imageHeight,
-                    child: Image.asset(property.image, fit: BoxFit.cover),
+                    child: Image.network(
+                      property.images.isNotEmpty ? property.images.first : "",
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) {
+                        return Container(
+                          color: Colors.grey.shade200,
+                          child: const Icon(Icons.image_not_supported),
+                        );
+                      },
+                    ),
                   ),
                   //2
                   Positioned(
@@ -62,13 +68,14 @@ class PropertyCard extends StatelessWidget {
                       ),
                       ///////////////will editeddddd
                       decoration: BoxDecoration(
-                        color: property.tag.toLowerCase().contains('rent')
+                        color:
+                            property.listingType.toLowerCase().contains('rent')
                             ? AppColors.gold
                             : AppColors.primaryNavy,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        _getTagText(property.tag),
+                        _getTagText(property.listingType),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -79,35 +86,34 @@ class PropertyCard extends StatelessWidget {
                   ),
                   //3
                   Positioned(
-  right: 8,
-  top: 8,
-  child: BlocBuilder<FavoriteBloc, FavoriteState>(
-    builder: (context, state) {
-      final isFav = state.isFavorite(property.id);
+                    right: 8,
+                    top: 8,
+                    child: BlocBuilder<FavoriteBloc, FavoriteState>(
+                      builder: (context, state) {
+                        final isFav = state.isFavorite(property.id);
 
-      return GestureDetector(
-        onTap: () {
-          context
-              .read<FavoriteBloc>()
-              .add(FavoriteToggle(property.id));
-        },
-        child: Container(
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.9),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            isFav ? Icons.favorite : Icons.favorite_border,
-            size: 18,
-            color: isFav ? Colors.red : AppColors.primaryNavy, 
-          ),
-        ),
-      );
-    },
-  ),
-),
-
+                        return GestureDetector(
+                          onTap: () {
+                            context.read<FavoriteBloc>().add(
+                              FavoriteToggle(property.id),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.9),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              isFav ? Icons.favorite : Icons.favorite_border,
+                              size: 18,
+                              color: isFav ? Colors.red : AppColors.primaryNavy,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -118,7 +124,7 @@ class PropertyCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    property.title,
+                    property.description,
                     style: AppTextStyles.label,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -145,7 +151,7 @@ class PropertyCard extends StatelessWidget {
 
                   const SizedBox(height: 10),
                   Text(
-                    property.price,
+                    '${property.price}',
                     style: TextStyle(
                       color: AppColors.gold,
                       fontSize: 18,
@@ -157,11 +163,21 @@ class PropertyCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _attrItem('${property.beds}', 'beds'),
+                      _attrItem(
+                        '${property.details["bedrooms"] ?? "-"}',
+                        'beds',
+                      ),
                       _verticalDivider(),
-                      _attrItem('${property.baths}', 'baths'),
+                      _attrItem(
+                        '${property.details["bathrooms"] ?? "-"}',
+                        'baths',
+                      ),
                       _verticalDivider(),
-                      _attrItem('${property.sqft}', 'sqft'),
+                     
+                      _attrItem(
+                        property.size.isNotEmpty ? property.size : '-',
+                        'sqft',
+                      ),
                     ],
                   ),
                 ],

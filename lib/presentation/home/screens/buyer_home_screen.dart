@@ -1,19 +1,30 @@
+import 'dart:async';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/data/api_services/property_services.dart';
+import 'package:movin/data/repositories/property_repository_impl.dart';
+import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
+import 'package:movin/presentation/auction/all%20proparties%20auctions/screens/property_auctions_screen.dart';
 
 import 'package:movin/presentation/browse_property/screens/browse_properties.dart';
-import 'package:movin/presentation/browse_property/widgets/dummy_properties.dart';
+import 'package:movin/presentation/browse_property/widgets/search_property_viewmodel.dart';
+import 'package:movin/presentation/browse_property/widgets/search_widget.dart';
 import 'package:movin/presentation/fav_screen/screens/fav_screen.dart';
 
-import 'package:movin/presentation/home/screens/filter_screen.dart';
 import 'package:movin/presentation/home/widgets/custom_drawer.dart';
 import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
 import 'package:movin/presentation/home/widgets/property_card.dart';
 import 'package:movin/presentation/notifications/screens/notifications_screen.dart';
+import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
-import 'package:movin/presentation/view_more_home/screens/view_more_home.dart';
+import 'package:movin/presentation/view_more_home/screens/view_more_listing.dart';
+import 'package:movin/presentation/view_more_home/screens/view_more_recommendtion.dart';
+import 'package:provider/provider.dart';
 
 class BuyerHome extends StatefulWidget {
   const BuyerHome({super.key});
@@ -25,23 +36,33 @@ class BuyerHome extends StatefulWidget {
 class _BuyerHomeState extends State<BuyerHome> {
   String selectedCategory = "For Sale";
   String searchQuery = "";
+  late SearchPropertyViewModel vm;
+
+  Timer? _debounce;
 
   void _onSearchChanged(String value) {
-    setState(() {
-      searchQuery = value.toLowerCase();
+    searchQuery = value;
+
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      vm.search(value);
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    //final filtered = dummyProperties;
-    final filtered = dummyProperties.where((property) {
-      final matchesSearch = property.location.toLowerCase().contains(
-        searchQuery,
-      );
+  void initState() {
+    super.initState();
+    context.read<PropertyCubit>().loadRecentProperties();
+    context.read<PropertyCubit>().loadRecommendedProperties();
 
-      return matchesSearch;
-    }).toList();
+    vm = SearchPropertyViewModel(
+      PropertyRepositoryImpl(PropertyService(Dio())),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       drawer: const CustomDrawer(),
       backgroundColor: AppColors.background,
@@ -104,6 +125,19 @@ class _BuyerHomeState extends State<BuyerHome> {
                           },
                           child: iconContainer(Icons.favorite_border),
                         ),
+                        const SizedBox(width: 12),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const PropertyAuctionsScreen(),
+                              ),
+                            );
+                          },
+                          child: iconContainer(Icons.gavel_outlined),
+                        ),
                       ],
                     ),
                   ],
@@ -125,53 +159,7 @@ class _BuyerHomeState extends State<BuyerHome> {
 
                 const SizedBox(height: 30),
 
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.search, color: Colors.grey),
-                      const SizedBox(width: 10),
-                       Expanded(
-                        child: TextField(
-                          onChanged: _onSearchChanged,
-                          decoration: InputDecoration(
-                            hintText: "Search by location...",
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const FilterScreen(),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryNavy,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Icon(Icons.tune, color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                SearchHeader(onSearchChanged: _onSearchChanged),
               ],
             ),
           ),
@@ -206,15 +194,17 @@ class _BuyerHomeState extends State<BuyerHome> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              BrowsePropertiesScreen(type: 'sale'),
+                          builder: (context) => BlocProvider(
+                            create: (context) => getIt<PropertyCubit>(),
+                            child: BrowsePropertiesScreen(type: "sale"),
+                          ),
                         ),
                       );
                     },
                     child: _propertyCard(
                       icon: Icons.home_outlined,
                       title: "For Sale",
-                      count: "2,453",
+                      //count: "2,453",
                     ),
                   ),
 
@@ -223,15 +213,18 @@ class _BuyerHomeState extends State<BuyerHome> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              BrowsePropertiesScreen(type: 'rent'),
+                          builder: (context) => BlocProvider(
+                            create: (context) => getIt<PropertyCubit>(),
+                            child: BrowsePropertiesScreen(type: "rent"),
+                          ),
                         ),
                       );
+                      
                     },
                     child: _propertyCard(
                       icon: Icons.key_outlined,
                       title: "For Rent",
-                      count: "1,832",
+                      //count: "1,832",
                     ),
                   ),
                   GestureDetector(
@@ -243,11 +236,12 @@ class _BuyerHomeState extends State<BuyerHome> {
                               BrowsePropertiesScreen(type: 'Commercial'),
                         ),
                       );
+                     
                     },
                     child: _propertyCard(
                       icon: Icons.apartment_outlined,
                       title: "Commercial",
-                      count: "567",
+                      //count: "567",
                     ),
                   ),
                   GestureDetector(
@@ -259,11 +253,12 @@ class _BuyerHomeState extends State<BuyerHome> {
                               BrowsePropertiesScreen(type: 'Investment'),
                         ),
                       );
+                      
                     },
                     child: _propertyCard(
                       icon: Icons.show_chart_outlined,
                       title: "Investments",
-                      count: "342",
+                      //count: "342",
                     ),
                   ),
                 ],
@@ -287,7 +282,9 @@ class _BuyerHomeState extends State<BuyerHome> {
                 GestureDetector(
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ViewMoreHome()),
+                    MaterialPageRoute(
+                      builder: (context) => ViewMoreRecommendtion(),
+                    ),
                   ),
                   child: const Text(
                     "View More",
@@ -304,39 +301,61 @@ class _BuyerHomeState extends State<BuyerHome> {
 
           const SizedBox(height: 12),
 
-          SizedBox(
-            height: 320,
-            child: filtered.isEmpty
-                  ? const Center(
-                      child: Text(
-                        "No properties found",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    )
-                  :
-             ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.only(left: 20),
-              itemCount: filtered.length, //stat
-              separatorBuilder: (_, __) => const SizedBox(width: 16),
-              itemBuilder: (context, index) {
-                final property = filtered[index];
-                return PropertyCard(
-                  property: property,
-                  /////////////////////////////////////////
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            PropertyDetailsScreen(propertyId: property.id),
+          BlocBuilder<PropertyCubit, PropertyState>(
+            builder: (context, state) {
+              final cubit = context.read<PropertyCubit>();
+
+              return AnimatedBuilder(
+                animation: vm,
+                builder: (context, _) {
+                  final bool isSearching = searchQuery.isNotEmpty;
+
+                  final properties = isSearching
+                      ? vm.properties
+                      : cubit.recommendedProperties;
+
+                  if (vm.isLoading || cubit.loadingRecommended) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.navyDark,
                       ),
                     );
-                  },
-                );
-              },
-            ),
+                  }
+
+                  if (properties.isEmpty) {
+                    return const Center(child: Text("No properties found"));
+                  }
+
+                  return SizedBox(
+                    height: 320,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.only(left: 20),
+                      itemCount: properties.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 16),
+                      itemBuilder: (context, index) {
+                        final property = properties[index];
+
+                        return PropertyCard(
+                          property: property,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    PropertyDetailsScreen(property: property),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  );
+                },
+              );
+            },
           ),
+
           const SizedBox(height: 25),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -354,7 +373,7 @@ class _BuyerHomeState extends State<BuyerHome> {
                 GestureDetector(
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ViewMoreHome()),
+                    MaterialPageRoute(builder: (context) => ViewMoreListing()),
                   ),
                   child: const Text(
                     "View More",
@@ -371,114 +390,68 @@ class _BuyerHomeState extends State<BuyerHome> {
 
           const SizedBox(height: 12),
 
-          SizedBox(
-            height: 320,
-            child: filtered.isEmpty
-                  ? const Center(
-                      child: Text(
-                        "No properties found",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    )
-                  :
-             ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.only(left: 20),
-              itemCount: filtered.length, //stat
-              separatorBuilder: (_, __) => const SizedBox(width: 16),
-              itemBuilder: (context, index) {
-                final property = filtered[index];
-                return PropertyCard(
-                  property: property,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PropertyDetailsScreen(
-                          propertyId: property.id,
-                        ), //////////////
+          BlocBuilder<PropertyCubit, PropertyState>(
+            builder: (context, state) {
+              final cubit = context.read<PropertyCubit>();
+
+              return AnimatedBuilder(
+                animation: vm,
+                builder: (context, _) {
+                  final bool isSearching = searchQuery.isNotEmpty;
+
+                  final properties = isSearching
+                      ? vm.properties
+                      : cubit.recentProperties;
+
+                  if (vm.isLoading || cubit.loadingRecent) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.navyDark,
                       ),
                     );
-                  },
-                );
-              },
-            ),
+                  }
+
+                  if (properties.isEmpty) {
+                    return const Center(child: Text("No properties found"));
+                  }
+                  return SizedBox(
+                    height: 320,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.only(left: 20),
+                      itemCount: properties.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 16),
+                      itemBuilder: (context, index) {
+                        final property = properties[index];
+
+                        return PropertyCard(
+                          property: property,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    PropertyDetailsScreen(property: property),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
     );
   }
 
-  // Widget _propertyCard({
-  //   required IconData icon,
-  //   required String title,
-  //   required String count,
-  // }) {
-  //   final bool isActive = selectedCategory == title;
-
-  //   return InkWell(
-  //     borderRadius: BorderRadius.circular(16),
-
-  //     child: AnimatedContainer(
-  //       duration: const Duration(milliseconds: 250),
-  //       curve: Curves.easeInOut,
-  //       decoration: BoxDecoration(
-  //         color: isActive ? AppColors.primaryNavy : Colors.grey.shade100,
-  //         borderRadius: BorderRadius.circular(16),
-  //         boxShadow: isActive
-  //             ? [
-  //                 BoxShadow(
-  //                   color: AppColors.primaryNavy.withOpacity(0.3),
-  //                   blurRadius: 8,
-  //                   offset: const Offset(0, 4),
-  //                 ),
-  //               ]
-  //             : [],
-  //       ),
-  //       padding: const EdgeInsets.all(16),
-  //       child: SizedBox(
-  //         //
-  //         width: double.infinity,
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: [
-  //             Icon(
-  //               icon,
-  //               size: 32,
-  //               color: isActive ? AppColors.gold : AppColors.navyDark,
-  //             ),
-  //             const SizedBox(height: 12),
-  //             Text(
-  //               title,
-  //               maxLines: 2,
-  //               overflow: TextOverflow.ellipsis,
-  //               style: TextStyle(
-  //                 color: isActive ? Colors.white : AppColors.navyDark,
-  //                 fontSize: 16,
-  //                 fontWeight: FontWeight.w600,
-  //               ),
-  //             ),
-  //             const SizedBox(height: 4),
-  //             Text(
-  //               count,
-  //               maxLines: 1,
-  //               overflow: TextOverflow.ellipsis,
-  //               style: TextStyle(
-  //                 color: isActive ? AppColors.gold : Colors.grey,
-  //                 fontSize: 14,
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
   Widget _propertyCard({
     required IconData icon,
     required String title,
-    required String count,
+   // required String count,
   }) {
     final bool isActive = selectedCategory == title;
 
@@ -493,7 +466,7 @@ class _BuyerHomeState extends State<BuyerHome> {
         ),
         padding: EdgeInsets.all(16.r),
         child: Column(
-          mainAxisSize: MainAxisSize.min, 
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -504,7 +477,6 @@ class _BuyerHomeState extends State<BuyerHome> {
             ),
 
             SizedBox(height: 10.h),
-
 
             Flexible(
               child: Text(
@@ -520,15 +492,15 @@ class _BuyerHomeState extends State<BuyerHome> {
             ),
 
             SizedBox(height: 4.h),
-            Text(
-              count,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: isActive ? AppColors.gold : Colors.grey,
-              ),
-            ),
+            // Text(
+            //   count,
+            //   maxLines: 1,
+            //   overflow: TextOverflow.ellipsis,
+            //   style: TextStyle(
+            //     fontSize: 14.sp,
+            //     color: isActive ? AppColors.gold : Colors.grey,
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -12,15 +12,10 @@ class PropertyRepositoryImpl implements PropertyRepository {
   @override
   Future<List<PropertyModel>> getAll() async {
     return await service.getAllSellerProperties();
-    //  final models = await service.getAllSellerProperties();
-
-    // return models.map((m) => m.toEntity()).toList();
   }
 
   @override
-  // Future<void> create(PropertyEntity property) {
-  //   return service.createProperty(property);
-  // }
+
   Future<void> create(AddPropertyViewModel vm, String token) {
     return service.createProperty(vm: vm, token: token);
   }
@@ -33,5 +28,31 @@ class PropertyRepositoryImpl implements PropertyRepository {
   @override
   Future<void> delete(String id) {
     return service.deleteProperty(id);
+  }
+
+  @override
+  Future<List<PropertyEntity>> searchProperties(String location) async {
+    final models = await service.searchProperties(location);
+
+    return models.map((e) => e.toEntity()).toList();
+  }
+
+  @override
+  Future<List<PropertyEntity>> getRecentProperties() async {
+    final models = await service.getRecentProperties();
+
+    return models.map((e) => e.toEntity()).toList();
+  }
+
+  @override
+  Future<List<PropertyEntity>> getRecommendedProperties() async {
+    final models = await service.getRecommendedProperties();
+    return models.map((e) => e.toEntity()).toList();
+  }
+
+  @override
+  Future<List<PropertyEntity>> getPropertiesByType(String type) async {
+    final models = await service.getPropertiesByType(type);
+   return models.map((e) => e.toEntity()).toList();
   }
 }

@@ -8,4 +8,8 @@ abstract class PropertyRepository {
   Future<void> create(AddPropertyViewModel vm, String token);
   Future<void> update(String id, PropertyEntity property);
   Future<void> delete(String id);
+  Future<List<PropertyEntity>> searchProperties(String location);
+  Future<List<PropertyEntity>> getRecentProperties();
+  Future<List<PropertyEntity>> getRecommendedProperties();
+  Future<List<PropertyEntity>> getPropertiesByType(String type);
 }

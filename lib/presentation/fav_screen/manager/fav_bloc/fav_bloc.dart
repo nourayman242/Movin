@@ -25,7 +25,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
 
   Future<void> _onToggle(
       FavoriteToggle event, Emitter<FavoriteState> emit) async {
-    final updated = Set<int>.from(state.favorites);
+    final updated = Set<String>.from(state.favorites);
 
     if (updated.contains(event.propertyId)) {
       updated.remove(event.propertyId);
@@ -39,7 +39,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
 
   Future<void> _onRemove(
       FavoriteRemove event, Emitter<FavoriteState> emit) async {
-    final updated = Set<int>.from(state.favorites)
+    final updated = Set<String>.from(state.favorites)
       ..remove(event.propertyId);
 
     await hive.saveFavorites(updated);

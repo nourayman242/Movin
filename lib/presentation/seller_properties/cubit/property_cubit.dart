@@ -12,6 +12,10 @@ class PropertyCubit extends Cubit<PropertyState> {
   final PropertyRepository repository;
 
   PropertyCubit(this.repository) : super(PropertyInitial());
+  List<PropertyEntity> recentProperties = [];
+  List<PropertyEntity> recommendedProperties = [];
+  bool loadingRecent = false;
+  bool loadingRecommended = false;
 
   // GET ALL SELLER PROPERTIES
 
@@ -97,5 +101,33 @@ class PropertyCubit extends Cubit<PropertyState> {
     } catch (e) {
       emit(PropertyError(e.toString()));
     }
+  }
+
+  Future<void> loadRecentProperties() async {
+    loadingRecent = true;
+    emit(PropertyLoading());
+
+    try {
+      recentProperties = await repository.getRecentProperties();
+      emit(PropertySuccess());
+    } catch (e) {
+      emit(PropertyError(e.toString()));
+    }
+
+    loadingRecent = false;
+  }
+
+  Future<void> loadRecommendedProperties() async {
+    loadingRecommended = true;
+    emit(PropertyLoading());
+
+    try {
+      recommendedProperties = await repository.getRecommendedProperties();
+      emit(PropertySuccess());
+    } catch (e) {
+      emit(PropertyError(e.toString()));
+    }
+
+    loadingRecommended = false;
   }
 }
