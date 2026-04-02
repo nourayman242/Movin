@@ -14,7 +14,13 @@ class AddPropertyViewModel extends ChangeNotifier {
   AddPropertyViewModel() {
     selectedListingType = ListingType.sale; // default
   }
+  bool isAuction = false;
 
+  DateTime? auctionStart;
+  DateTime? auctionEnd;
+
+  final startingBidController = TextEditingController();
+  final auctionDescriptionController = TextEditingController();
   // Text controllers (shared across sections)
   final priceController = TextEditingController();
   final locationController = TextEditingController();
@@ -104,6 +110,30 @@ class AddPropertyViewModel extends ChangeNotifier {
     }
   }
 
+  bool get isAuctionValid {
+    if (!isAuction) return true;
+
+    return auctionStart != null &&
+        auctionEnd != null &&
+        startingBidController.text.trim().isNotEmpty &&
+        auctionDescriptionController.text.trim().isNotEmpty;
+  }
+
+  void setAuction(bool value) {
+    isAuction = value;
+    notifyListeners();
+  }
+
+  void setAuctionStart(DateTime date) {
+    auctionStart = date;
+    notifyListeners();
+  }
+
+  void setAuctionEnd(DateTime date) {
+    auctionEnd = date;
+    notifyListeners();
+  }
+
   Map<String, dynamic> get details {
     if (selectedType == null) return {};
 
@@ -184,7 +214,8 @@ class AddPropertyViewModel extends ChangeNotifier {
       selectedType != null &&
       selectedListingType != null &&
       isBasicValid &&
-      isTypeSpecificValid;
+      isTypeSpecificValid &&
+      isAuctionValid;
 
   // Reset form
   void reset() {
@@ -208,6 +239,13 @@ class AddPropertyViewModel extends ChangeNotifier {
     descriptionController.clear();
     images = [];
     notifyListeners();
+    isAuction = false;
+    auctionStart = null;
+    auctionEnd = null;
+    startingBidController.clear();
+    auctionDescriptionController.clear();
+
+    notifyListeners();
   }
 
   @override
@@ -226,6 +264,8 @@ class AddPropertyViewModel extends ChangeNotifier {
     officParkingController.dispose();
     terraceController.dispose();
     descriptionController.dispose();
+    startingBidController.dispose();
+auctionDescriptionController.dispose();
     super.dispose();
   }
 
@@ -238,7 +278,9 @@ class AddPropertyViewModel extends ChangeNotifier {
       type: selectedType!.name,
       size: '${areaController.text.trim()} sqm',
       images: imageUrls,
-      details: details, id: '', status: '',
+      details: details,
+      id: '',
+      status: '',
     );
   }
 }

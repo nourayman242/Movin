@@ -10,6 +10,7 @@ import 'package:movin/presentation/seller_properties/add_property/widgets/proper
 import 'package:movin/presentation/seller_properties/add_property/widgets/images_section.dart';
 import 'package:movin/presentation/seller_properties/add_property/widgets/description_section.dart';
 import 'package:movin/presentation/seller_properties/add_property/widgets/success_dialog.dart';
+import 'package:movin/presentation/seller_properties/add_property/widgets/auction_section.dart';
 
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
@@ -152,6 +153,7 @@ class AddPropertyScreen extends StatelessWidget {
                             const PropertyDetailsSection(),
                             const ImagesSection(),
                             const DescriptionSection(),
+                            const AuctionSection(),
                             const SizedBox(height: 18),
 
                             Padding(
