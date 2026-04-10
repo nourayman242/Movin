@@ -9,15 +9,19 @@ import 'package:movin/data/api_services/otp_services.dart';
 import 'package:movin/data/api_services/property_services.dart';
 import 'package:movin/data/api_services/register_services.dart';
 import 'package:movin/data/api_services/reset_password_service.dart';
+import 'package:movin/data/api_services/socket_service.dart';
+import 'package:movin/data/repositories/auction_repository_impl.dart';
 
 import 'package:movin/data/repositories/forget_pass_repository_imp.dart';
 
 import 'package:movin/data/repositories/property_repository_impl.dart';
+import 'package:movin/domain/repositories/auction_repository.dart';
 import 'package:movin/domain/repositories/forget_pass_repository.dart';
 import 'package:movin/domain/repositories/otp_repository.dart';
 import 'package:movin/domain/repositories/property_repository.dart';
 
 import 'package:movin/domain/repositories/reset_pass_repository.dart';
+import 'package:movin/presentation/auction/cubit/auction_cubit.dart';
 
 import 'package:movin/presentation/login/cubit/auth_cubit.dart';
 
@@ -109,4 +113,18 @@ abstract class NetworkServices {
       AuthRepositoryImpl(service);
   @factory
   AuthCubit authCubit(AuthRepository repo) => AuthCubit(repo);
+
+  @lazySingleton
+  SocketService socketService() {
+    final s = SocketService();
+    s.connect();
+    return s;
+  }
+
+  @lazySingleton
+  AuctionRepository auctionRepository(SocketService socketService) =>
+      AuctionRepositoryImpl(socketService);
+
+  @factory
+  AuctionCubit auctionCubit(AuctionRepository repo) => AuctionCubit(repo);
 }

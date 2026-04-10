@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:movin/app_theme.dart';
+import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/presentation/auction/screens/auction_screen.dart';
 
 class AuctionCard extends StatelessWidget {
@@ -84,7 +85,7 @@ class AuctionCard extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => AuctionScreen(propertyId: propertyId),
+                  builder: (_) => AuctionScreen(property: propertyId as PropertyEntity),
                 ),
               );
             },

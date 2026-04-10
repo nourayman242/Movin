@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
+import 'package:movin/domain/entities/property_entity.dart';
+import 'package:movin/presentation/auction/cubit/auction_cubit.dart';
 
 class PlaceBidSection extends StatefulWidget {
-  const PlaceBidSection();
+  final PropertyEntity property;
+  const PlaceBidSection(this.property, {super.key});
 
   @override
   State<PlaceBidSection> createState() => _PlaceBidSectionState();
@@ -72,8 +77,24 @@ class _PlaceBidSectionState extends State<PlaceBidSection> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
+                    final amount = int.parse(controller.text);
+
+                    final userId = await SharedHelper.getUserId();
+
+                    if (userId == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("User not found")),
+                      );
+                      return;
+                    }
+
+                    context.read<AuctionCubit>().placeBid(
+                      widget.property.id,
+                      amount,
+                      userId,
+                    );
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         backgroundColor: AppColors.background,

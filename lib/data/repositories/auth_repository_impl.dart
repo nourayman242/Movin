@@ -7,8 +7,9 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this.service);
 
   @override
-  Future<String> loginWithGoogle() async {
-    final result = await service.signInWithGoogle();
-    return result["token"];
+  Future<Map<String, dynamic>> loginWithGoogle() async {
+    // final result = await service.signInWithGoogle();
+    // return result["token"];
+    return await service.signInWithGoogle();
   }
 }

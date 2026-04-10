@@ -4,6 +4,7 @@ class SharedHelper {
   static const String _onboardingKey = 'onboarding_seen';
   static const String _isLoggedInKey = 'is_logged_in';
   static const String _userRoleKey = 'user_role';
+  static const String _userIdKey = 'user_id';
 
   //ONBOARDING
 
@@ -69,6 +70,16 @@ class SharedHelper {
 static Future<String?> getToken() async {
   final prefs = await SharedPreferences.getInstance();
   return prefs.getString('token');
+}
+
+static Future<void> saveUserId(String userId) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString(_userIdKey, userId);
+}
+
+static Future<String?> getUserId() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString(_userIdKey);
 }
 
 

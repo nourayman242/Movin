@@ -1,4 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:movin/data/api_services/user_response.dart';
+
 
 abstract class AuthState extends Equatable {
   const AuthState();
@@ -16,11 +18,11 @@ class AuthLoading extends AuthState {}
 /// Success state
 class AuthSuccess extends AuthState {
   final String token;
-
-  const AuthSuccess(this.token);
+  final UserResponse user;
+  const AuthSuccess(this.token, this.user);
 
   @override
-  List<Object?> get props => [token];
+  List<Object?> get props => [token,user];
 }
 
 /// Error state
