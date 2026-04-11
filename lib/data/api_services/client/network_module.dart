@@ -107,12 +107,12 @@ abstract class NetworkServices {
   ResetPasswordCubit resetPasswordCubit(ResetPasswordRepository repo) =>
       ResetPasswordCubit(repo);
 
-  GoogleAuthService googleAuthService() => GoogleAuthService();
-  @lazySingleton
-  AuthRepository authRepository(GoogleAuthService service) =>
-      AuthRepositoryImpl(service);
-  @factory
-  AuthCubit authCubit(AuthRepository repo) => AuthCubit(repo);
+  //GoogleAuthService googleAuthService() => GoogleAuthService();
+  // @lazySingleton
+  // AuthRepository authRepository(GoogleAuthService service) =>
+  //     AuthRepositoryImpl(service);
+  // @factory
+  // AuthCubit authCubit(AuthRepository repo) => AuthCubit(repo);
 
   @lazySingleton
   SocketService socketService() {

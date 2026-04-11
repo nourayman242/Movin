@@ -7,6 +7,11 @@ class AuctionRepositoryImpl implements AuctionRepository {
   AuctionRepositoryImpl(this.socketService);
 
   @override
+  void connect() {
+    socketService.connect();
+  }
+
+  @override
   void joinAuction(String propertyId) {
     socketService.socket.emit("joinAuction", propertyId);
   }

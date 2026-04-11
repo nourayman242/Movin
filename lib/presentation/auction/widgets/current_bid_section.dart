@@ -5,7 +5,7 @@ import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/auction/cubit/auction_cubit.dart';
 
 class CurrentBidCard extends StatelessWidget {
-  const CurrentBidCard();
+  const CurrentBidCard({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -7,8 +7,10 @@ class AuctionState {
   final String status;
   final String endTime;
   final List bids;
+  final int startPrice;
 
   AuctionState({
+    this.startPrice = 0,
     this.currentBid = 0,
     this.totalBids = 0,
     this.status = "live",
@@ -17,6 +19,7 @@ class AuctionState {
   });
 
   AuctionState copyWith({
+    int? startPrice,
     int? currentBid,
     int? totalBids,
     String? status,
@@ -24,6 +27,7 @@ class AuctionState {
     List? bids,
   }) {
     return AuctionState(
+      startPrice: startPrice ?? this.startPrice,
       currentBid: currentBid ?? this.currentBid,
       totalBids: totalBids ?? this.totalBids,
       status: status ?? this.status,
@@ -38,42 +42,47 @@ class AuctionCubit extends Cubit<AuctionState> {
 
   AuctionCubit(this.repo) : super(AuctionState());
 
+ 
   void init(String propertyId) {
+    repo.connect();
     repo.joinAuction(propertyId);
 
     repo.listenAuctionData((data) {
-      emit(state.copyWith(
-        currentBid: data["currentBid"],
-        totalBids: data["totalBids"],
-        endTime: data["endTime"],
-        status: data["status"],
-        bids: data["bids"],
-      ));
+      print("auctionData: $data"); 
+
+      emit(
+        state.copyWith(
+          currentBid: data["currentBid"] ?? 0,
+          totalBids: data["totalBids"] ?? 0,
+          endTime: data["endTime"] ?? "",
+          status: data["status"] ?? "live",
+          bids: data["bids"] ?? [],
+        ),
+      );
     });
 
     repo.listenNewBid((data) {
+      print("newBid: $data");
+
       final newBids = List.from(state.bids)..insert(0, data["bid"]);
 
-      emit(state.copyWith(
-        currentBid: data["currentBid"],
-        totalBids: data["totalBids"],
-        endTime: data["endTime"],
-        status: data["status"],
-        bids: newBids,
-      ));
+      emit(
+        state.copyWith(
+          currentBid: data["currentBid"] ?? state.currentBid,
+          totalBids: data["totalBids"] ?? state.totalBids,
+          endTime: data["endTime"] ?? state.endTime,
+          status: data["status"] ?? state.status,
+          bids: newBids,
+        ),
+      );
     });
 
     repo.listenAuctionExtended((data) {
-      emit(state.copyWith(
-        endTime: data["endTime"],
-        status: data["status"],
-      ));
+      emit(state.copyWith(endTime: data["endTime"], status: data["status"]));
     });
 
     repo.listenAuctionEnded((data) {
-      emit(state.copyWith(
-        status: "ended",
-      ));
+      emit(state.copyWith(status: "ended"));
     });
   }
 

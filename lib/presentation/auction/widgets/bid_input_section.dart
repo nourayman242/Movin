@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
+import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/presentation/auction/cubit/auction_cubit.dart';
 
@@ -16,6 +17,14 @@ class PlaceBidSection extends StatefulWidget {
 class _PlaceBidSectionState extends State<PlaceBidSection> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController controller = TextEditingController();
+  @override
+void initState() {
+  super.initState();
+
+  final cubit = getIt<AuctionCubit>();
+
+  cubit.init(widget.property.id);
+}
   @override
   Widget build(BuildContext context) {
     return Padding(

@@ -1,6 +1,7 @@
+import 'package:injectable/injectable.dart';
 import 'package:movin/data/api_services/google_auth_service.dart';
 import 'package:movin/domain/repositories/auth_repository.dart';
-
+@LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
   final GoogleAuthService service;
 

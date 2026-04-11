@@ -94,6 +94,7 @@ class TitleCard extends StatelessWidget {
                 property.size.isNotEmpty ? property.size : '-',
                 'sqft',
               ),
+              if (property.isAuction)
               _infoItem(
                 Icons.gavel_outlined,
                 'Mazad',

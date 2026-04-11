@@ -51,9 +51,9 @@ class _AuctionScreenState extends State<AuctionScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AuctionImageSection(controller: controller.pageController),
+                AuctionImageSection(controller: controller.pageController,property:widget.property),
                 const SizedBox(height: 16),
-                const PropertyHeaderSection(),
+                 PropertyHeaderSection(property:widget.property),
                 const SizedBox(height: 16),
                 const TimeRemainingCard(),
                 const SizedBox(height: 20),

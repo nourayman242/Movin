@@ -18,6 +18,7 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
 
   List<PropertyEntity> historyProperties = [
     PropertyEntity(
+      isAuction: true,
       id: "1",
       description: "Modern Luxury Villa",
       location: "Dubai Marina",

@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
+import 'package:injectable/injectable.dart';
 
-
+@lazySingleton
 class GoogleAuthService {
   // Future<Map<String, dynamic>> signInWithGoogle() async {
   //   try {

@@ -12,25 +12,25 @@ final getIt = GetIt.instance;
 
 @InjectableInit()
 Future<void> setUpServiceLocator() async {
-  getIt.init();
+ await getIt.init();
 
   final favHive = getIt<FavoriteHiveService>();
   await favHive.init();
 
   // Register Google service
-  getIt.registerLazySingleton<GoogleAuthService>(
-    () => GoogleAuthService(),
-  );
+  // getIt.registerLazySingleton<GoogleAuthService>(
+  //   () => GoogleAuthService(),
+  // );
 
   // Register repository
-  getIt.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(
-      getIt<GoogleAuthService>(),
-    ),
-  );
+  // getIt.registerLazySingleton<AuthRepository>(
+  //   () => AuthRepositoryImpl(
+  //     getIt<GoogleAuthService>(),
+  //   ),
+  // );
 
   // Register cubit
-  getIt.registerFactory<AuthCubit>(
-    () => AuthCubit(getIt<AuthRepository>()),
-  );
+  // getIt.registerFactory<AuthCubit>(
+  //   () => AuthCubit(getIt<AuthRepository>()),
+  // );
 }

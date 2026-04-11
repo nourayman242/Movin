@@ -153,6 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         await SharedHelper.saveToken(response.token);
                         await SharedHelper.saveUserId(response.user.id);
+                        print("USER ID: ${response.user.id}");
                         await SharedHelper.setLoggedIn(true);
 
                         if (!context.mounted) return;

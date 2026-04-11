@@ -8,16 +8,6 @@ class BidHistorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final bids = [
-    //   {
-    //     "user": "User ***23",
-    //     "price": "1,250,000EG",
-    //     "time": "5 minutes ago",
-    //     "highest": true,
-    //   },
-    //   {"user": "User ***87", "price": "1,240,000EG", "time": "12minutes ago"},
-    //   {"user": "User ***45", "price": "1,225,000EG", "time": "28minutes ago"},
-    // ];
 
     return BlocBuilder<AuctionCubit, AuctionState>(
       builder: (context, state) {
@@ -53,9 +43,9 @@ class BidHistorySection extends StatelessWidget {
                       ),
                       Column(
                         children: [
-                          Text("${bid["user"]["name"]}"),
+                          Text("${bid["user"]?["name"] ?? "Unknown"}"),
                           Text(
-                            "${bid["createdAt"]}",
+                            "${formatTimeAgo(bid["createdAt"])}",
                             style: TextStyle(
                               color: AppColors.grey,
                               fontSize: 10,
@@ -74,7 +64,7 @@ class BidHistorySection extends StatelessWidget {
                                   color: AppColors.gold,
                                 ),
                               ),
-                              if (bid["highest"] == true)
+                              if  (bid == state.bids.first)
                                 Container(
                                   margin: const EdgeInsets.only(left: 6),
                                   padding: const EdgeInsets.symmetric(
@@ -112,5 +102,27 @@ class BidHistorySection extends StatelessWidget {
         );
       },
     );
+  }
+}
+String formatTimeAgo(String isoTime) {
+  try {
+    final date = DateTime.parse(isoTime).toLocal();
+    final now = DateTime.now();
+
+    final diff = now.difference(date);
+
+    if (diff.inSeconds < 60) {
+      return "${diff.inSeconds}s ago";
+    } else if (diff.inMinutes < 60) {
+      return "${diff.inMinutes}m ago";
+    } else if (diff.inHours < 24) {
+      return "${diff.inHours}h ago";
+    } else if (diff.inDays < 7) {
+      return "${diff.inDays}d ago";
+    } else {
+      return "${date.day}/${date.month}/${date.year}";
+    }
+  } catch (e) {
+    return "";
   }
 }

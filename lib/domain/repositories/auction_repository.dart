@@ -1,4 +1,5 @@
 abstract class AuctionRepository {
+  void connect();
   void joinAuction(String propertyId);
   void placeBid(String propertyId, int amount, String userId);
 

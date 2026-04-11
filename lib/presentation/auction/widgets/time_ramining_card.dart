@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/presentation/auction/cubit/auction_cubit.dart';
+import 'package:movin/presentation/home/widgets/property/auction_card.dart';
 
 class TimeRemainingCard extends StatelessWidget {
   const TimeRemainingCard();
@@ -30,7 +31,7 @@ class TimeRemainingCard extends StatelessWidget {
               ),
               SizedBox(height: 6),
               Text(
-                state.endTime,
+                formatTime(state.endTime),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),

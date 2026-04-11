@@ -8,14 +8,22 @@ class SocketService {
       "https://movin-backend.fly.dev",
       {
         "transports": ["websocket"],
-        "autoConnect": true,
+        "autoConnect": false,
       },
     );
 
     socket.connect();
-  }
 
-  void disconnect() {
-    socket.disconnect();
+    socket.onConnect((_) {
+      print("✅ Socket Connected");
+    });
+
+    socket.onDisconnect((_) {
+      print("❌ Socket Disconnected");
+    });
+
+    socket.onConnectError((err) {
+      print("❌ Connect Error: $err");
+    });
   }
 }

@@ -1,10 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:movin/data/api_services/user_response.dart';
 import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
 import 'package:movin/domain/repositories/auth_repository.dart';
 import 'package:movin/presentation/login/cubit/auth_state.dart';
 
-
+@injectable
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository repo;
 
