@@ -31,7 +31,9 @@ class _LoginScreenState extends State<LoginScreen> {
           showDialog(
             context: context,
             barrierDismissible: false,
-            builder: (_) => const Center(child: CircularProgressIndicator(color: AppColors.gold)),
+            builder: (_) => const Center(
+              child: CircularProgressIndicator(color: AppColors.gold),
+            ),
           );
         }
 
@@ -40,6 +42,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
           if (Navigator.canPop(context)) {
             Navigator.pop(context);
+          }
+
+          // ✅ Save token from Google/social auth state if available
+          if (state.token != null) {
+            await SharedHelper.saveToken(state.token!);
           }
 
           await SharedHelper.setLoggedIn(true);
@@ -54,9 +61,9 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.pop(context);
           }
 
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
         }
       },
       child: Scaffold(
@@ -130,7 +137,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   AppWidgets.verticalSpace(AppSpacing.medium),
 
-                  ///////////linking
                   ElevatedButton(
                     style: AppButtons.primary,
                     onPressed: () async {
@@ -147,6 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       try {
                         final response = await repo.loginUser(entity);
 
+                        // ✅ Token saved here — role switch API will use this
                         await SharedHelper.saveToken(response.token);
                         await SharedHelper.setLoggedIn(true);
 
@@ -163,9 +170,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       } catch (e) {
                         if (!context.mounted) return;
 
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(SnackBar(content: Text(e.toString())));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(e.toString())),
+                        );
                       }
                     },
                     child: const Text(
@@ -197,7 +204,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
+
                   const SizedBox(height: 20),
+
                   ElevatedButton(
                     onPressed: () {
                       context.read<AuthCubit>().loginWithGoogle();
@@ -207,7 +216,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       minimumSize: const Size(150, 50),
                       side: const BorderSide(color: AppColors.gold),
                     ),
-
                     child: Row(
                       children: [
                         Image.asset(
@@ -215,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 35,
                           width: 35,
                         ),
-                        SizedBox(width: 30),
+                        const SizedBox(width: 30),
                         const Text(
                           'Sign in with Google',
                           style: TextStyle(fontSize: 18, color: AppColors.gold),
