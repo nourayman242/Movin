@@ -1,33 +1,31 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:movin/app_theme.dart';
 import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
 import 'package:movin/presentation/home/managers/mode_service.dart';
 
 class SwitchRoleService {
-  static const String _baseUrl = 'https://movin-app.vercel.app/api/auth';
+  static final Dio _dio = Dio(
+    BaseOptions(baseUrl: 'https://movin-app.vercel.app'),
+  );
 
   static Future<Map<String, dynamic>> switchRole(String newRole) async {
     final token = await SharedHelper.getToken();
 
-    final response = await http.put(
-      Uri.parse('$_baseUrl/switch-role'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode({'newRole': newRole}),
+    final response = await _dio.put(
+      '/api/auth/switch-role',
+      data: {'newRole': newRole},
+      options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      ),
     );
 
-    final data = jsonDecode(response.body);
-
-    if (response.statusCode == 200) {
-      return data;
-    } else {
-      throw Exception(data['message'] ?? 'Failed to switch role');
-    }
+    return response.data as Map<String, dynamic>;
   }
 }
 
@@ -62,6 +60,12 @@ class _RoleSelectionState extends State<RoleSelection> {
 
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/home');
+    } on DioException catch (e) {
+      if (!mounted) return;
+      final message = e.response?.data?['message'] ?? 'Failed to switch role';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
