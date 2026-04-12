@@ -24,13 +24,13 @@ class AuctionScreen extends StatefulWidget {
 
 class _AuctionScreenState extends State<AuctionScreen> {
   final controller = PropertyDetailsController();
-  late AuctionCubit cubit;
+ // late AuctionCubit cubit;
 
   @override
   void initState() {
     super.initState();
-    cubit = getIt<AuctionCubit>();
-    cubit.init(widget.property.id);
+    // cubit = getIt<AuctionCubit>();
+    // cubit.init(widget.property.id);
     controller.init();
   }
 
@@ -42,8 +42,8 @@ class _AuctionScreenState extends State<AuctionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: cubit,
+    return BlocProvider(
+      create: (_) => getIt<AuctionCubit>()..init(widget.property.id),
       child: Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(

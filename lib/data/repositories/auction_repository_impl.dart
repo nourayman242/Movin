@@ -17,12 +17,27 @@ class AuctionRepositoryImpl implements AuctionRepository {
   }
 
   @override
-  void placeBid(String propertyId, int amount, String userId) {
-    socketService.socket.emit("placeBid", {
+  void placeBid({
+    required String propertyId,
+    required String userId,
+    int? amount,
+    int? increment,
+    int? percent,
+  }) {
+    final Map<String, dynamic> data = {
       "propertyId": propertyId,
-      "amount": amount,
       "userId": userId,
-    });
+    };
+
+    if (amount != null) {
+      data["amount"] = amount;
+    } else if (increment != null) {
+      data["increment"] = increment;
+    } else if (percent != null) {
+      data["percent"] = percent;
+    }
+
+    socketService.socket.emit("placeBid", data);
   }
 
   @override
@@ -44,6 +59,11 @@ class AuctionRepositoryImpl implements AuctionRepository {
   void listenAuctionEnded(Function(dynamic p1) onData) {
     socketService.socket.on("auctionEnded", onData);
   }
+
+@override
+void listenBidError(Function(dynamic) onError) {
+  socketService.socket.on("bidError", onError);
+}
 
   @override
   void dispose() {

@@ -4,11 +4,10 @@ import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/auction/cubit/auction_cubit.dart';
 
 class BidHistorySection extends StatelessWidget {
-  const BidHistorySection();
+  const BidHistorySection({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     return BlocBuilder<AuctionCubit, AuctionState>(
       builder: (context, state) {
         return Container(
@@ -26,6 +25,7 @@ class BidHistorySection extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
+              if (state.bids.isEmpty) const Text("No bids yet"),
               ...state.bids.map(
                 (bid) => Padding(
                   padding: const EdgeInsets.only(bottom: 14),
@@ -43,9 +43,9 @@ class BidHistorySection extends StatelessWidget {
                       ),
                       Column(
                         children: [
-                          Text("${bid["user"]?["name"] ?? "Unknown"}"),
+                          Text(bid["user"].toString().split(" ").first),
                           Text(
-                            "${formatTimeAgo(bid["createdAt"])}",
+                            formatTimeAgo(bid["createdAt"]),
                             style: TextStyle(
                               color: AppColors.grey,
                               fontSize: 10,
@@ -64,7 +64,7 @@ class BidHistorySection extends StatelessWidget {
                                   color: AppColors.gold,
                                 ),
                               ),
-                              if  (bid == state.bids.first)
+                              if (bid == state.bids.first)
                                 Container(
                                   margin: const EdgeInsets.only(left: 6),
                                   padding: const EdgeInsets.symmetric(
@@ -104,6 +104,7 @@ class BidHistorySection extends StatelessWidget {
     );
   }
 }
+
 String formatTimeAgo(String isoTime) {
   try {
     final date = DateTime.parse(isoTime).toLocal();
