@@ -1,3 +1,3 @@
 abstract class AuthRepository {
-  Future<String> loginWithGoogle();
+  Future<Map<String, dynamic>> loginWithGoogle();
 }

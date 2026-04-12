@@ -1,7 +1,9 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/domain/entities/property_entity.dart';
+import 'package:movin/presentation/auction/cubit/auction_cubit.dart';
 import 'package:movin/presentation/controllers/property_details_controller.dart';
 import 'package:movin/presentation/home/widgets/property/agent_card.dart';
 import 'package:movin/presentation/home/widgets/property/auction_card.dart';
@@ -10,13 +12,9 @@ import 'package:movin/presentation/home/widgets/property/tabs/property_tabs.dart
 import 'package:movin/presentation/home/widgets/property/title_card.dart';
 
 class PropertyDetailsScreen extends StatefulWidget {
-  final PropertyEntity property; 
+  final PropertyEntity property;
 
-  const PropertyDetailsScreen({
-    super.key,
-    required this.property,
-  });
-  
+  const PropertyDetailsScreen({super.key, required this.property});
 
   @override
   State<PropertyDetailsScreen> createState() => _PropertyDetailsScreenState();
@@ -52,14 +50,19 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
               children: [
                 PropertyImageSlider(
                   controller: controller.pageController,
-                   property:widget.property
+                  property: widget.property,
                 ),
                 SizedBox(height: 16.h),
-                TitleCard(controller: controller,property:widget.property,),
+                TitleCard(controller: controller, property: widget.property),
                 SizedBox(height: 16.h),
                 PropertyTabs(controller: controller),
                 SizedBox(height: 16.h),
-                AuctionCard(propertyId: widget.property.id,),
+                if (widget.property.isAuction)
+                  BlocProvider(
+                    create: (context) =>
+                        getIt<AuctionCubit>()..init(widget.property.id),
+                    child: AuctionCard(property: widget.property),
+                  ),
                 SizedBox(height: 16.h),
                 AgentCard(controller: controller),
                 SizedBox(height: 40.h),

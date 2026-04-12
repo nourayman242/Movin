@@ -7,10 +7,12 @@ class PropertyEntity {
   final String type;
   final String size;
   final List<String> images;
-   String status;
+  String status;
   final Map<String, dynamic> details;
+  final bool isAuction;
 
   PropertyEntity({
+    required this.isAuction,
     required this.id,
     required this.location,
     required this.description,
@@ -34,5 +36,6 @@ class PropertyEntity {
     "images": images,
     "status": status,
     "details": details,
+    "isAuction":isAuction
   };
 }

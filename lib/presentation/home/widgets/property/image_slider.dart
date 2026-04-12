@@ -29,8 +29,10 @@ class PropertyImageSlider extends StatelessWidget {
             controller: controller,
             children:  [
               Image(
-                image: NetworkImage(property.images.first),
-                //AssetImage('assets/images/villa2.webp')
+                image: 
+                property.images.isNotEmpty?
+                NetworkImage(property.images.first):
+                AssetImage('assets/images/villa2.webp'),
                 fit: BoxFit.cover,
               ),
               Image(

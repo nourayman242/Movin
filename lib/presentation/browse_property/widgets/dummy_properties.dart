@@ -183,6 +183,7 @@ import 'package:movin/domain/entities/property_entity.dart';
 
 List<PropertyEntity> dummyProperties = [
   PropertyEntity(
+    isAuction: true,
     id: "1",
     description: "Modern Luxury Villa",
     location: "Dubai Marina",

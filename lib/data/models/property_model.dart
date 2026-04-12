@@ -11,8 +11,10 @@ class PropertyModel {
   final List<String> images;
   final String status;
   final Map<String, dynamic> details;
+  final bool isAuction;
 
   PropertyModel({
+    required this.isAuction,
     required this.id,
     required this.location,
     required this.description,
@@ -39,8 +41,11 @@ class PropertyModel {
     final details = json['details'] is Map<String, dynamic>
         ? json['details']
         : {};
-
+        final auction = json['auction'];
     return PropertyModel(
+       isAuction: auction != null
+        ? auction['isAuction'] == true
+        : false,
       id: json['_id']?.toString() ?? '',
       location: json['location']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
@@ -62,6 +67,7 @@ class PropertyModel {
   }
   PropertyEntity toEntity() {
     return PropertyEntity(
+      isAuction:isAuction,
       id: id,
       location: location,
       description: description,

@@ -202,7 +202,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
       details: {
         "bedrooms": bedroomsController.text.trim(),
         "bathrooms": bathroomsController.text.trim(),
-      }, id: '', status: '',
+      }, id: '', status: '', isAuction: false,
     );
 
     final cubit = context.read<PropertyCubit>();

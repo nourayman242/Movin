@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/data/api_services/user_response.dart';
 import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/domain/entities/login_entity.dart';
@@ -149,12 +150,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         email: email,
                         password: password,
                       );
+                    
 
                       try {
                         final response = await repo.loginUser(entity);
 
                         // ✅ Token saved here — role switch API will use this
                         await SharedHelper.saveToken(response.token);
+                        await SharedHelper.saveUserId(response.user.id);
+                        print("USER ID: ${response.user.id}");
                         await SharedHelper.setLoggedIn(true);
 
                         if (!context.mounted) return;

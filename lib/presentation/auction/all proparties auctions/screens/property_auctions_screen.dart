@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/presentation/auction/screens/auction_screen.dart';
 
 import '../widgets/auction_header.dart';
@@ -60,7 +61,7 @@ class PropertyAuctionsScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => AuctionScreen(propertyId: "hsdudshsh58765"),
+                        builder: (_) => AuctionScreen(property: property as PropertyEntity),
                       ),
                     );
                   },
