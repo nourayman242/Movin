@@ -156,7 +156,7 @@ class _PlaceBidSectionState extends State<PlaceBidSection> {
                         return;
                       }
 
-                      context.read<AuctionCubit>().placeManualBid(
+                      context.read<AuctionCubit>().placeIncrementBid(
                         widget.property.id,
                         amount,
                         userId,
