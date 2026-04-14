@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-
+import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
+import 'package:movin/data/api_services/auction_list_services.dart';
 import 'package:movin/data/api_services/client/auth_interceptor.dart';
 import 'package:movin/data/api_services/forget_pass_services.dart';
 import 'package:movin/data/api_services/login_services.dart';
@@ -11,36 +11,26 @@ import 'package:movin/data/api_services/register_services.dart';
 import 'package:movin/data/api_services/reset_password_service.dart';
 import 'package:movin/data/api_services/socket_service.dart';
 import 'package:movin/data/repositories/auction_repository_impl.dart';
-
 import 'package:movin/data/repositories/forget_pass_repository_imp.dart';
-
 import 'package:movin/data/repositories/property_repository_impl.dart';
 import 'package:movin/domain/repositories/auction_repository.dart';
 import 'package:movin/domain/repositories/forget_pass_repository.dart';
 import 'package:movin/domain/repositories/otp_repository.dart';
 import 'package:movin/domain/repositories/property_repository.dart';
-
 import 'package:movin/domain/repositories/reset_pass_repository.dart';
 import 'package:movin/presentation/auction/cubit/auction_cubit.dart';
-
-import 'package:movin/presentation/login/cubit/auth_cubit.dart';
-
+import 'package:movin/presentation/auction/cubit/auction_list_cubit.dart'; 
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
 import 'package:movin/presentation/login/cubit/otp_cubit.dart';
 import 'package:movin/presentation/login/cubit/reset_pass_cubit.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
-import 'package:movin/data/api_services/google_auth_service.dart';
-import 'package:movin/data/repositories/auth_repository_impl.dart';
-import 'package:movin/domain/repositories/auth_repository.dart';
+
 
 @module
 abstract class NetworkServices {
   @lazySingleton
   Dio provideDio() {
-    const base =
-        //'https://movin-oipd650to-malakkhaled22s-projects.vercel.app';
-        //'https://movin-app.vercel.app';
-        'https://movin-backend.fly.dev';
+    const base = 'https://movin-backend.fly.dev';
 
     final dio = Dio(
       BaseOptions(
@@ -51,36 +41,29 @@ abstract class NetworkServices {
     );
 
     dio.interceptors.add(AuthInterceptor());
-
     dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
 
     return dio;
   }
 
   @lazySingleton
-  RegisterServices registerServices(Dio dio) {
-    return RegisterServices(dio);
-  }
+  RegisterServices registerServices(Dio dio) => RegisterServices(dio);
 
   @lazySingleton
   LoginServices loginServices(Dio dio) => LoginServices(dio);
 
   @lazySingleton
-  ForgotPasswordService forgotPasswordService(Dio dio) {
-    return ForgotPasswordService(dio);
-  }
+  ForgotPasswordService forgotPasswordService(Dio dio) =>
+      ForgotPasswordService(dio);
 
   @lazySingleton
   ForgotPasswordRepository forgotPasswordRepository(
     ForgotPasswordService service,
-  ) {
-    return ForgotPasswordRepositoryImpl(service);
-  }
+  ) => ForgotPasswordRepositoryImpl(service);
 
   @factory
-  ForgotPasswordCubit forgotPasswordCubit(ForgotPasswordRepository repo) {
-    return ForgotPasswordCubit(repo);
-  }
+  ForgotPasswordCubit forgotPasswordCubit(ForgotPasswordRepository repo) =>
+      ForgotPasswordCubit(repo);
 
   @lazySingleton
   PropertyService propertyService(Dio dio) => PropertyService(dio);
@@ -88,17 +71,16 @@ abstract class NetworkServices {
   @lazySingleton
   PropertyRepository propertyRepository(PropertyService service) =>
       PropertyRepositoryImpl(service);
+
   @factory
   PropertyCubit propertyCubit(PropertyRepository repo) => PropertyCubit(repo);
 
   @lazySingleton
   OtpServices otpServices(Dio dio) => OtpServices(dio);
 
-  // @lazySingleton
-  // OtpRepository otpRepository(OtpServices service) => OtpRepositoryImpl(service);
-
   @factory
   OtpCubit otpCubit(OtpRepository repo) => OtpCubit(repo);
+
   @lazySingleton
   ResetPasswordService resetPasswordService(Dio dio) =>
       ResetPasswordService(dio);
@@ -106,13 +88,6 @@ abstract class NetworkServices {
   @factory
   ResetPasswordCubit resetPasswordCubit(ResetPasswordRepository repo) =>
       ResetPasswordCubit(repo);
-
-  //GoogleAuthService googleAuthService() => GoogleAuthService();
-  // @lazySingleton
-  // AuthRepository authRepository(GoogleAuthService service) =>
-  //     AuthRepositoryImpl(service);
-  // @factory
-  // AuthCubit authCubit(AuthRepository repo) => AuthCubit(repo);
 
   @lazySingleton
   SocketService socketService() {
@@ -127,4 +102,11 @@ abstract class NetworkServices {
 
   @factory
   AuctionCubit auctionCubit(AuctionRepository repo) => AuctionCubit(repo);
+
+  @lazySingleton
+  AuctionListService auctionListService(Dio dio) => AuctionListService(dio);
+
+  @factory
+  AuctionListCubit auctionListCubit(AuctionListService service) =>
+      AuctionListCubit(service);
 }

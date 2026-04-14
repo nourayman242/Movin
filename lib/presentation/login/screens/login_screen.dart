@@ -45,11 +45,6 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.pop(context);
           }
 
-          // ✅ Save token from Google/social auth state if available
-          if (state.token != null) {
-            await SharedHelper.saveToken(state.token!);
-          }
-
           await SharedHelper.setLoggedIn(true);
 
           Navigator.pushReplacementNamed(context, '/role');
@@ -62,9 +57,9 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.pop(context);
           }
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
         }
       },
       child: Scaffold(
@@ -150,7 +145,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         email: email,
                         password: password,
                       );
-                    
 
                       try {
                         final response = await repo.loginUser(entity);
@@ -174,9 +168,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       } catch (e) {
                         if (!context.mounted) return;
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(e.toString())),
-                        );
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(e.toString())));
                       }
                     },
                     child: const Text(

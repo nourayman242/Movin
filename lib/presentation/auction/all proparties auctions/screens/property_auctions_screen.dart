@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movin/app_theme.dart';
+import 'package:movin/data/models/auction_list_model.dart';
+import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/domain/entities/property_entity.dart';
+import 'package:movin/presentation/auction/cubit/auction_list_cubit.dart';
 import 'package:movin/presentation/auction/screens/auction_screen.dart';
-
 import '../widgets/auction_header.dart';
 import '../widgets/auction_property_card.dart';
 
@@ -10,77 +14,139 @@ class PropertyAuctionsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auctions = [
-      {
-        "title": "Modern Luxury Villa",
-        "location": "Dubai Marina",
-        "image": "assets/images/photo-1622015663381-d2e05ae91b72.jfif",
-        "bid": "\$1,250,000",
-        "start": "\$1,000,000",
-        "bids": "23",
-        "time": "2d 5h 32m",
-        "status": "Active",
-      },
-      {
-        "title": "Luxury Penthouse",
-        "location": "Downtown Dubai",
-        "image": "assets/images/photo-1639405091806-01e8ab3cd13a.jfif",
-        "bid": "\$3,500,000",
-        "start": "\$3,000,000",
-        "bids": "45",
-        "time": "5h 18m",
-        "status": "Ending Soon",
-      },
-      {
-        "title": "Contemporary Villa",
-        "location": "Palm Jumeirah",
-        "image": "assets/images/villa3.jpg",
-        "bid": "\$890,000",
-        "start": "\$750,000",
-        "bids": "18",
-        "time": "1d 12h",
-        "status": "Active",
-      },
-    ];
-
-    return Scaffold(
-      backgroundColor: const Color(0xFFF3F4F6),
-      body: Column(
-        children: [
-          const AuctionHeader(),
-
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: auctions.length,
-              itemBuilder: (context, index) {
-                final property = auctions[index];
-
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => AuctionScreen(property: property as PropertyEntity),
+    return BlocProvider(
+      create: (_) => getIt<AuctionListCubit>()..loadAuctions(),
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF3F4F6),
+        body: Column(
+          children: [
+            const AuctionHeader(),
+            Expanded(
+              child: BlocBuilder<AuctionListCubit, AuctionListState>(
+                builder: (context, state) {
+                  if (state is AuctionListLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.gold,
                       ),
                     );
-                  },
-                  child: AuctionPropertyCard(
-                    title: property["title"]!,
-                    location: property["location"]!,
-                    image: property["image"]!,
-                    currentBid: property["bid"]!,
-                    startingPrice: property["start"]!,
-                    bids: property["bids"]!,
-                    timeRemaining: property["time"]!,
-                    status: property["status"]!,
-                  ),
-                );
-              },
+                  }
+
+                  if (state is AuctionListError) {
+                    return Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.error_outline,
+                              color: Colors.red, size: 48),
+                          const SizedBox(height: 12),
+                          Text(
+                            state.message,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.gold,
+                            ),
+                            onPressed: () => context
+                                .read<AuctionListCubit>()
+                                .loadAuctions(),
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  if (state is AuctionListLoaded) {
+                    if (state.auctions.isEmpty) {
+                      return const Center(
+                        child: Text('No active auctions at the moment.'),
+                      );
+                    }
+
+                    return ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: state.auctions.length,
+                      itemBuilder: (context, index) {
+                        final auction = state.auctions[index];
+
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => AuctionScreen(
+                                  property: _toEntity(auction),
+                                ),
+                              ),
+                            );
+                          },
+                          child: AuctionPropertyCard(
+                            title: auction.type,
+                            location: auction.location,
+                            image: auction.image ?? '',
+                            currentBid:
+                                '${auction.currentBid.toStringAsFixed(0)} EGP',
+                            startingPrice:
+                                '${auction.startPrice.toStringAsFixed(0)} EGP',
+                            bids: auction.totalBids.toString(),
+                            timeRemaining:
+                                _formatEndTime(auction.endTime),
+                            status: auction.status,
+                          ),
+                        );
+                      },
+                    );
+                  }
+
+                  return const SizedBox();
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
+  }
+
+  // Convert AuctionListModel → PropertyEntity
+PropertyEntity _toEntity(AuctionListModel a) {
+  return PropertyEntity(
+    id: a.id,
+    description: a.description,
+    location: a.location,
+    price: a.currentBid.toInt(),
+    listingType: a.listingType,
+    type: a.type,
+    size: a.size.toString(),
+    images: a.image != null ? [a.image!] : [],
+    details: {},
+    status: a.status,
+    isAuction: true, 
+  );
+}
+
+  // Format ISO date → "2d 5h 32m"
+  String _formatEndTime(String endTime) {
+    if (endTime.isEmpty) return 'N/A';
+    try {
+      final end = DateTime.parse(endTime);
+      final diff = end.difference(DateTime.now());
+
+      if (diff.isNegative) return 'Ended';
+
+      final days = diff.inDays;
+      final hours = diff.inHours % 24;
+      final mins = diff.inMinutes % 60;
+
+      if (days > 0) return '${days}d ${hours}h ${mins}m';
+      if (hours > 0) return '${hours}h ${mins}m';
+      return '${mins}m';
+    } catch (_) {
+      return 'N/A';
+    }
   }
 }

@@ -4,10 +4,8 @@ class SharedHelper {
   static const String _onboardingKey = 'onboarding_seen';
   static const String _isLoggedInKey = 'is_logged_in';
   static const String _userRoleKey = 'user_role';
-
   static const String _tokenKey = 'token';
-
-  static const String _userIdKey = 'user_id';
+  static const String _userIdKey = 'user_id'; // ✅ added
 
   // ONBOARDING
 
@@ -35,15 +33,27 @@ class SharedHelper {
 
   // TOKEN
 
-  // static Future<void> saveToken(String token) async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await prefs.setString(_tokenKey, token);
-  // }
+  static Future<void> saveToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_tokenKey, token);
+  }
 
-  // static Future<String?> getToken() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   return prefs.getString(_tokenKey);
-  // }
+  static Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_tokenKey);
+  }
+
+  // USER ID
+
+  static Future<void> saveUserId(String userId) async { // ✅ added
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userIdKey, userId);
+  }
+
+  static Future<String?> getUserId() async { // ✅ added
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_userIdKey);
+  }
 
   // USER ROLE
 
@@ -69,27 +79,7 @@ class SharedHelper {
     await prefs.remove(_onboardingKey);
     await prefs.remove(_isLoggedInKey);
     await prefs.remove(_userRoleKey);
-    await prefs.remove(_tokenKey); // ✅ also clear token on logout
-  }
-
-  //saved token after login
-  static Future<void> saveToken(String token) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', token);
-  }
-
-  static Future<String?> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token');
-  }
-
-  static Future<void> saveUserId(String userId) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_userIdKey, userId);
-  }
-
-  static Future<String?> getUserId() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_userIdKey);
+    await prefs.remove(_tokenKey);
+    await prefs.remove(_userIdKey); // ✅ clear on logout
   }
 }

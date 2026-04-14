@@ -11,6 +11,7 @@
 import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:movin/data/api_services/auction_list_services.dart' as _i467;
 import 'package:movin/data/api_services/client/network_module.dart' as _i324;
 import 'package:movin/data/api_services/forget_pass_services.dart' as _i753;
 import 'package:movin/data/api_services/google_auth_service.dart' as _i137;
@@ -38,6 +39,8 @@ import 'package:movin/domain/repositories/property_repository.dart' as _i770;
 import 'package:movin/domain/repositories/register_repository.dart' as _i623;
 import 'package:movin/domain/repositories/reset_pass_repository.dart' as _i332;
 import 'package:movin/presentation/auction/cubit/auction_cubit.dart' as _i473;
+import 'package:movin/presentation/auction/cubit/auction_list_cubit.dart'
+    as _i790;
 import 'package:movin/presentation/budget_calculator/managers/bc_bloc/loan_calc_bloc.dart'
     as _i872;
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart'
@@ -86,6 +89,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkServices.otpServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i295.ResetPasswordService>(
         () => networkServices.resetPasswordService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i467.AuctionListService>(
+        () => networkServices.auctionListService(gh<_i361.Dio>()));
     gh.lazySingleton<_i574.OtpRepository>(
         () => _i736.OtpRepositoryImpl(gh<_i97.OtpServices>()));
     gh.lazySingleton<_i1021.AuthRepository>(
@@ -112,6 +117,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkServices.auctionRepository(gh<_i731.SocketService>()));
     gh.lazySingleton<_i332.ResetPasswordRepository>(() =>
         _i684.ResetPasswordRepositoryImpl(gh<_i295.ResetPasswordService>()));
+    gh.factory<_i790.AuctionListCubit>(
+        () => networkServices.auctionListCubit(gh<_i467.AuctionListService>()));
     gh.factory<_i267.PropertyCubit>(
         () => networkServices.propertyCubit(gh<_i770.PropertyRepository>()));
     gh.factory<_i288.AuthCubit>(

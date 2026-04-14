@@ -11,34 +11,21 @@ class AuthCubit extends Cubit<AuthState> {
 
   AuthCubit(this.repo) : super(AuthInitial());
 
-  // Future<void> loginWithGoogle() async {
-  //   emit(AuthLoading());
-
-  //   try {
-  //     final token = await repo.loginWithGoogle();
-
-  //     await SharedHelper.saveToken(token);
-
-  //     emit(AuthSuccess(token));
-  //   } catch (e) {
-  //     emit(AuthError(e.toString()));
-  //   }
-  // }
   Future<void> loginWithGoogle() async {
-  emit(AuthLoading());
+    emit(AuthLoading());
 
-  try {
-    final result = await repo.loginWithGoogle();
+    try {
+      final result = await repo.loginWithGoogle();
 
-    final token = result['token'];
-    final user = UserResponse.fromJson(result['user']);
+      final token = result['token'] as String;
+      final user = UserResponse.fromJson(result['user'] as Map<String, dynamic>);
 
-    await SharedHelper.saveToken(token);
-    await SharedHelper.saveUserId(user.id); // ✅ هنا الحل
+      await SharedHelper.saveToken(token);
+      await SharedHelper.saveUserId(user.id);
 
-    emit(AuthSuccess(token, user));
-  } catch (e) {
-    emit(AuthError(e.toString()));
+      emit(AuthSuccess(token, user));
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
   }
-}
 }
