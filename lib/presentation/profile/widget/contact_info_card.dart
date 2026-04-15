@@ -1,16 +1,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/presentation/profile/model/profile_model.dart';
+import 'package:movin/data/models/profile_model.dart';
 
 class EditableContactInfoCard extends StatelessWidget {
   final TextEditingController emailController;
   final TextEditingController phoneController;
   final TextEditingController locationController;
 
-  const EditableContactInfoCard({
+  const EditableContactInfoCard(
+     
+    {
     super.key,
-    required this.emailController,
+     required this.emailController,
     required this.phoneController,
     required this.locationController, required ProfileModel profile,
   });
@@ -28,8 +30,10 @@ class EditableContactInfoCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          _editableItem(Icons.email, "Email", emailController),
-          _editableItem(Icons.phone, "Phone", phoneController, keyboardType: TextInputType.phone),
+           _editableItem(Icons.email, "Email", emailController),
+           _editableItem(Icons.phone, "Phone", phoneController, keyboardType: TextInputType.phone),
+          // _readOnlyItem(Icons.email, "Email",""),
+          // _readOnlyItem(Icons.phone, "Phone",""),
           _editableItem(Icons.location_on, "Location", locationController),
 
           _readOnlyItem(

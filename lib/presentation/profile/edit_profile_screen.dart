@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/home/managers/mode_service.dart';
+import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/profile/widget/contact_info_card.dart';
 import 'package:movin/presentation/profile/widget/custom_badge.dart';
-import 'model/profile_model.dart';
+import '../../data/models/profile_model.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final ProfileModel profile;
@@ -192,24 +194,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
+ 
   void _save() {
-    Navigator.pop(
-      context,
-      widget.profile.copyWith(
-        name: nameCtrl.text,
-        bio: bioCtrl.text,
-        email: emailCtrl.text,
-        phone: phoneCtrl.text,
-        location: locationCtrl.text,
-      ),
+    context.read<ProfileCubit>().updateProfile(
+      username: nameCtrl.text,
+      bio: bioCtrl.text,
+      location: locationCtrl.text,
+      phone: phoneCtrl.text,
     );
-  }
-}
 
-String _initials(String name) {
-  final parts = name.trim().split(" ");
-  if (parts.length >= 2) {
-    return "${parts[0][0]}${parts[1][0]}".toUpperCase();
+    Navigator.pop(context);
   }
-  return name.isNotEmpty ? name[0].toUpperCase() : "";
+
+  String _initials(String name) {
+    final parts = name.trim().split(" ");
+    if (parts.length >= 2) {
+      return "${parts[0][0]}${parts[1][0]}".toUpperCase();
+    }
+    return name.isNotEmpty ? name[0].toUpperCase() : "";
+  }
 }

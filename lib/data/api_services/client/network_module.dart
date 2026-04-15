@@ -6,6 +6,7 @@ import 'package:movin/data/api_services/client/auth_interceptor.dart';
 import 'package:movin/data/api_services/forget_pass_services.dart';
 import 'package:movin/data/api_services/login_services.dart';
 import 'package:movin/data/api_services/otp_services.dart';
+import 'package:movin/data/api_services/profile_services.dart';
 import 'package:movin/data/api_services/property_services.dart';
 import 'package:movin/data/api_services/register_services.dart';
 import 'package:movin/data/api_services/reset_password_service.dart';
@@ -13,25 +14,21 @@ import 'package:movin/data/api_services/socket_service.dart';
 import 'package:movin/data/repositories/auction_repository_impl.dart';
 
 import 'package:movin/data/repositories/forget_pass_repository_imp.dart';
+import 'package:movin/data/repositories/profile_repository_impl.dart';
 
 import 'package:movin/data/repositories/property_repository_impl.dart';
 import 'package:movin/domain/repositories/auction_repository.dart';
 import 'package:movin/domain/repositories/forget_pass_repository.dart';
 import 'package:movin/domain/repositories/otp_repository.dart';
+import 'package:movin/domain/repositories/profile_repository.dart';
 import 'package:movin/domain/repositories/property_repository.dart';
-
 import 'package:movin/domain/repositories/reset_pass_repository.dart';
 import 'package:movin/presentation/auction/cubit/auction_cubit.dart';
-
-import 'package:movin/presentation/login/cubit/auth_cubit.dart';
-
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
 import 'package:movin/presentation/login/cubit/otp_cubit.dart';
 import 'package:movin/presentation/login/cubit/reset_pass_cubit.dart';
+import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
-import 'package:movin/data/api_services/google_auth_service.dart';
-import 'package:movin/data/repositories/auth_repository_impl.dart';
-import 'package:movin/domain/repositories/auth_repository.dart';
 
 @module
 abstract class NetworkServices {
@@ -94,9 +91,6 @@ abstract class NetworkServices {
   @lazySingleton
   OtpServices otpServices(Dio dio) => OtpServices(dio);
 
-  // @lazySingleton
-  // OtpRepository otpRepository(OtpServices service) => OtpRepositoryImpl(service);
-
   @factory
   OtpCubit otpCubit(OtpRepository repo) => OtpCubit(repo);
   @lazySingleton
@@ -106,13 +100,6 @@ abstract class NetworkServices {
   @factory
   ResetPasswordCubit resetPasswordCubit(ResetPasswordRepository repo) =>
       ResetPasswordCubit(repo);
-
-  //GoogleAuthService googleAuthService() => GoogleAuthService();
-  // @lazySingleton
-  // AuthRepository authRepository(GoogleAuthService service) =>
-  //     AuthRepositoryImpl(service);
-  // @factory
-  // AuthCubit authCubit(AuthRepository repo) => AuthCubit(repo);
 
   @lazySingleton
   SocketService socketService() {
@@ -127,4 +114,14 @@ abstract class NetworkServices {
 
   @factory
   AuctionCubit auctionCubit(AuctionRepository repo) => AuctionCubit(repo);
+
+  @lazySingleton
+  ProfileService profileService(Dio dio) => ProfileService(dio);
+
+  @lazySingleton
+  ProfileRepository profileRepository(ProfileService service) =>
+      ProfileRepositoryImpl(service);
+
+  @factory
+  ProfileCubit profileCubit(ProfileRepository repo) => ProfileCubit(repo);
 }
