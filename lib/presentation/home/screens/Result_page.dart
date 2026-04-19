@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movin/data/api_services/filter_services.dart';
-import 'package:movin/data/models/property_model.dart'; // ← adjust to your actual import path
-
+import 'package:movin/data/models/property_model.dart'; 
+import 'package:movin/presentation/Heatmap/pages/heatmap_screen.dart';  
 
 class ResultsPage extends StatefulWidget {
   final Color navy;
@@ -220,6 +220,12 @@ class _ResultsPageState extends State<ResultsPage> {
               ],
             ),
           ),
+
+          // ── Heatmap FAB ──────────────────────────────────────────────────────
+          floatingActionButton: _HeatmapFab(navy: widget.navy),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.endTop,
+
           body: _buildBody(snapshot),
         );
       },
@@ -313,6 +319,72 @@ class _ResultsPageState extends State<ResultsPage> {
         return _PropertyCard(
             property: properties[index], navy: widget.navy);
       },
+    );
+  }
+}
+
+// ── Heatmap FAB ───────────────────────────────────────────────────────────────
+class _HeatmapFab extends StatelessWidget {
+  final Color navy;
+  const _HeatmapFab({required this.navy});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      // Push it down so it sits just below the curved AppBar
+      padding: const EdgeInsets.only(top: 16),
+      child: FloatingActionButton.extended(
+        heroTag: 'heatmap_fab',
+        backgroundColor: navy,
+        elevation: 6,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(28),
+        ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const HeatmapPage()),
+          );
+        },
+        icon: Stack(
+          alignment: Alignment.center,
+          children: [
+            // Outer glow layer for heatmap feel
+            Icon(
+              Icons.map_rounded,
+              color: Colors.white.withOpacity(0.25),
+              size: 28,
+            ),
+            const Icon(
+              Icons.map_rounded,
+              color: Colors.white,
+              size: 22,
+            ),
+            // Small flame/heat dot overlay
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0xFFFF5C5C),
+                ),
+              ),
+            ),
+          ],
+        ),
+        label: const Text(
+          "Heat Map",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 14,
+            letterSpacing: 0.3,
+          ),
+        ),
+      ),
     );
   }
 }
