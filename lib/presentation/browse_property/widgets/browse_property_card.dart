@@ -146,7 +146,7 @@ class BrowsePropertyCard extends StatelessWidget {
                         style: AppTextStyles.smallText,
                       ),
                       Text(
-                        "${property.details["bedrooms"]?.toString() ?? "-"} beds",
+                        "${property.details["bathrooms"]?.toString() ?? "-"} baths",
                         style: AppTextStyles.smallText,
                       ),
                       Text(
