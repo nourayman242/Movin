@@ -9,7 +9,7 @@ class ProfileStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final stats = profile.stats;
+    final stats = profile.stats??{};
     
       return ValueListenableBuilder(
         valueListenable: ModeService.isSellerNotifier,
@@ -22,17 +22,17 @@ class ProfileStats extends StatelessWidget {
                 children: [
                   _StatItem(
                     icon: Icons.home_work,
-                    value: stats!["propertiesListed"],
+                    value: stats["propertiesListed"] ?? 0,
                     label: "Properties Listed",
                   ),
                   _StatItem(
                     icon: Icons.star,
-                    value: stats["totalViews"],
+                    value: stats["totalViews"] ?? 0,
                     label: "Total Views",
                   ),
                   _StatItem(
                     icon: Icons.verified,
-                    value: stats["successfulSales"],
+                    value: stats["successfulSales"] ?? 0,
                     label: "Successful Sales",
                   ),
                 ],
@@ -44,7 +44,7 @@ class ProfileStats extends StatelessWidget {
               children: [
                 _StatItem(
                   icon: Icons.gavel,
-                  value: stats!["auctionParticipated"],
+                  value: stats["auctionParticipated"] ?? 0,
                   label: "Auction Participated",
                 ),
               ],
@@ -57,7 +57,7 @@ class ProfileStats extends StatelessWidget {
 
 class _StatItem extends StatelessWidget {
   final IconData icon;
-  final int? value;
+  final int value;
   final String label;
 
   const _StatItem({

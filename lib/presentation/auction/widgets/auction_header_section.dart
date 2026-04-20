@@ -1,5 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/presentation/auction/cubit/auction_cubit.dart';
@@ -13,51 +15,84 @@ class PropertyHeaderSection extends StatelessWidget {
     return BlocBuilder<AuctionCubit, AuctionState>(
       builder: (context, state) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
+              
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   Text(
-                    property.description,
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  Expanded(
+                    child: Text(
+                      property.description,
+                      style: TextStyle(
+                        fontSize: 22.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                  SizedBox(width: 180),
+
+                  SizedBox(width: 12.w),
+
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        'starting Bid',
-                        style: TextStyle(color: AppColors.grey),
+                        'Starting Bid',
+                        style: TextStyle(
+                          color: AppColors.grey,
+                          fontSize: 12.sp,
+                        ),
                       ),
                       Text(
                         '${state.startPrice}',
-                        style: TextStyle(color: AppColors.navyDark),
+                        style: TextStyle(
+                          color: AppColors.navyDark,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
                   ),
                 ],
               ),
-              const SizedBox(height: 6),
+
+              SizedBox(height: 8.h),
+
+              /// LOCATION
               Row(
-                children:  [
-                  Icon(Icons.location_on_outlined, size: 18),
-                  SizedBox(width: 4),
-                  Text(property.location, style: TextStyle(color: AppColors.grey)),
+                children: [
+                  Icon(Icons.location_on_outlined, size: 18.sp),
+                  SizedBox(width: 4.w),
+                  Expanded(
+                    child: Text(
+                      property.location,
+                      style: TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 13.sp,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ],
               ),
-              const SizedBox(height: 16),
+
+              SizedBox(height: 16.h),
+
+              /// INFO ROW
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children:  [
+                children: [
                   _InfoItem(
                     icon: Icons.bed_outlined,
-                    value:  property.details["bedrooms"]??"-",
+                    value: "${property.details["bedrooms"] ?? "-"}",
                     label: "Bedrooms",
                   ),
                   _InfoItem(
                     icon: Icons.bathtub_outlined,
-                    value: property.details["bathrooms"]??"-",
+                    value: "${property.details["bathrooms"] ?? "-"}",
                     label: "Bathrooms",
                   ),
                   _InfoItem(
@@ -90,10 +125,22 @@ class _InfoItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Icon(icon),
-        const SizedBox(height: 4),
-        Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
-        Text(label, style: const TextStyle(fontSize: 12)),
+        Icon(icon, size: 20.sp),
+        SizedBox(height: 4.h),
+        Text(
+          value,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14.sp,
+          ),
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11.sp,
+            color: Colors.grey,
+          ),
+        ),
       ],
     );
   }

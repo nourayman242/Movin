@@ -24,13 +24,10 @@ class AuctionScreen extends StatefulWidget {
 
 class _AuctionScreenState extends State<AuctionScreen> {
   final controller = PropertyDetailsController();
- // late AuctionCubit cubit;
 
   @override
   void initState() {
     super.initState();
-    // cubit = getIt<AuctionCubit>();
-    // cubit.init(widget.property.id);
     controller.init();
   }
 

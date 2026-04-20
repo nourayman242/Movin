@@ -36,12 +36,13 @@ class CustomDrawer extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                Navigator.pop(context);
+                final cubit = context.read<ProfileCubit>(); 
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => BlocProvider.value(
-                      value: context.read<ProfileCubit>(),
+                      value: cubit,
                       child: const ProfileScreen(),
                     ),
                   ),

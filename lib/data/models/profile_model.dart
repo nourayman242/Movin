@@ -9,6 +9,7 @@ class ProfileModel {
   final bool isBuyer;
 
   final Map<String, dynamic> ?stats;
+  final DateTime createdAt;
 
 
   ProfileModel({
@@ -20,6 +21,7 @@ class ProfileModel {
      required this.isSeller,
     required this.isBuyer,
     required this.stats,
+     required this.createdAt,
   });
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
@@ -35,24 +37,10 @@ class ProfileModel {
       isSeller: user["isSeller"] ?? false,
       isBuyer: user["isBuyer"] ?? false,
       stats: stats,
+      createdAt: DateTime.parse(user['createdAt']),
     );
   }
 
-  // ProfileModel copyWith({
-  //   String? name,
-  //   String? bio,
-  //   String? email,
-  //   String? phone,
-  //   String? location,
-  // }) {
-  //   return ProfileModel(
-  //     name: name ?? this.name,
-  //     bio: bio ?? this.bio,
-  //     email: email ?? this.email,
-  //     phone: phone ?? this.phone,
-  //     location: location ?? this.location,
-  //   );
-  // }
   ProfileModel copyWith({
   String? name,
   String? bio,
@@ -62,6 +50,7 @@ class ProfileModel {
   bool? isSeller,
   bool? isBuyer,
   Map<String, dynamic>? stats,
+  DateTime? createdAt,
 }) {
   return ProfileModel(
     name: name ?? this.name,
@@ -72,6 +61,7 @@ class ProfileModel {
     isSeller: isSeller ?? this.isSeller,
     isBuyer: isBuyer ?? this.isBuyer,
     stats: stats ?? this.stats,
+    createdAt: createdAt ?? this.createdAt,
   );
 }
 }

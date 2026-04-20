@@ -91,7 +91,7 @@ class _BuyerHomeState extends State<BuyerHome> {
         location: "",
         isSeller: false,
         isBuyer: true,
-        stats: {},
+        stats: {}, createdAt:  DateTime.now(),
       );
 
     return Scaffold(
