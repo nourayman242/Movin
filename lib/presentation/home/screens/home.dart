@@ -6,13 +6,12 @@ import 'package:movin/presentation/seller_properties/saller%20home/seller_home_s
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
-
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
       valueListenable: ModeService.isSellerNotifier,
       builder: (context, isSeller, _) {
-        return isSeller ? const SellerHome() : const BuyerHome();
+        return isSeller ? const SellerHome() :const BuyerHome();
       },
     );
   }

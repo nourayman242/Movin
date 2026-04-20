@@ -19,6 +19,7 @@ import 'package:movin/presentation/login/cubit/auth_cubit.dart';
 import 'package:movin/presentation/login/screens/forgot_password_page.dart';
 import 'package:movin/presentation/login/screens/login_screen.dart';
 import 'package:movin/presentation/onboarding/screens/onboarding.dart';
+import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/role_selection/screens/role_selection.dart';
 import 'package:movin/presentation/seller_properties/add_property/add_property_screen.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
@@ -41,10 +42,11 @@ void main() async {
       builder: (_, __) => MultiBlocProvider(
         providers: [
           RepositoryProvider<PropertyRepository>(
-          create: (_) => getIt<PropertyRepository>(),
-        ),
+            create: (_) => getIt<PropertyRepository>(),
+          ),
           BlocProvider(create: (_) => getIt<AuthCubit>()),
           BlocProvider(create: (_) => getIt<PropertyCubit>()),
+          BlocProvider(create: (_) => getIt<ProfileCubit>()..getProfile()),
           BlocProvider(
             create: (_) => getIt<FavoriteBloc>()..add(FavoriteLoad()),
           ),

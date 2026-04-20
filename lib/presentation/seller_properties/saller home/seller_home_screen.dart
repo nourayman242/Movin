@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/data/models/profile_model.dart';
 import 'package:movin/presentation/auction/all%20proparties%20auctions/screens/property_auctions_screen.dart';
 import 'package:movin/presentation/home/widgets/custom_drawer.dart';
 import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
 import 'package:movin/presentation/notifications/screens/notifications_screen.dart';
+import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 import 'package:movin/data/models/property_model.dart';
 
 class SellerHome extends StatefulWidget {
-  const SellerHome({super.key});
+  const SellerHome({super.key,});
+   
 
   @override
   State<SellerHome> createState() => _SellerHomeState();
@@ -45,7 +48,7 @@ class _SellerHomeState extends State<SellerHome>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-
+    context.read<ProfileCubit>().getProfile();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<PropertyCubit>().getAllSellerProperties();
     });
@@ -59,9 +62,39 @@ class _SellerHomeState extends State<SellerHome>
 
   @override
   Widget build(BuildContext context) {
+     return BlocBuilder<ProfileCubit, ProfileState>(
+      builder: (context, state) {
+        if (state.isLoading) {
+          return const Center(
+            child: Scaffold(
+              backgroundColor: AppColors.background,
+              body: Center(child: CircularProgressIndicator(color: AppColors.gold))),
+          );
+        }
+
+        
+
+        return _buildContent(context,state.profile);
+      },
+    );
+   }
+
+   Widget _buildContent(BuildContext context, ProfileModel? profile){
+    final safeProfile = profile ??
+      ProfileModel(
+        name: "Guest",
+        bio: "",
+        email: "",
+        phone: "",
+        location: "",
+        isSeller: false,
+        isBuyer: true,
+        stats: {}, createdAt: DateTime.now() ,
+        
+      );
     return Scaffold(
       backgroundColor: AppColors.background,
-      drawer: const CustomDrawer(),
+      drawer:  CustomDrawer(profile: safeProfile,),
       body: DefaultTabController(
         length: 3,
         child: NestedScrollView(

@@ -6,31 +6,49 @@ import 'package:movin/data/api_services/client/auth_interceptor.dart';
 import 'package:movin/data/api_services/forget_pass_services.dart';
 import 'package:movin/data/api_services/login_services.dart';
 import 'package:movin/data/api_services/otp_services.dart';
+import 'package:movin/data/api_services/profile_services.dart';
 import 'package:movin/data/api_services/property_services.dart';
 import 'package:movin/data/api_services/register_services.dart';
 import 'package:movin/data/api_services/reset_password_service.dart';
 import 'package:movin/data/api_services/socket_service.dart';
 import 'package:movin/data/repositories/auction_repository_impl.dart';
 import 'package:movin/data/repositories/forget_pass_repository_imp.dart';
+
+import 'package:movin/data/repositories/profile_repository_impl.dart';
+
+
 import 'package:movin/data/repositories/property_repository_impl.dart';
 import 'package:movin/domain/repositories/auction_repository.dart';
 import 'package:movin/domain/repositories/forget_pass_repository.dart';
 import 'package:movin/domain/repositories/otp_repository.dart';
+import 'package:movin/domain/repositories/profile_repository.dart';
 import 'package:movin/domain/repositories/property_repository.dart';
 import 'package:movin/domain/repositories/reset_pass_repository.dart';
 import 'package:movin/presentation/auction/cubit/auction_cubit.dart';
+
 import 'package:movin/presentation/auction/cubit/auction_list_cubit.dart'; 
+
+
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
 import 'package:movin/presentation/login/cubit/otp_cubit.dart';
 import 'package:movin/presentation/login/cubit/reset_pass_cubit.dart';
+import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
+
+
+
 
 
 @module
 abstract class NetworkServices {
   @lazySingleton
   Dio provideDio() {
-    const base = 'https://movin-backend.fly.dev';
+    const base =
+        //'https://movin-oipd650to-malakkhaled22s-projects.vercel.app';
+        //'https://movin-app.vercel.app';
+        //'https://movin-backend.fly.dev';
+        'https://movin-backend-production.up.railway.app';
+
 
     final dio = Dio(
       BaseOptions(
@@ -109,4 +127,14 @@ abstract class NetworkServices {
   @factory
   AuctionListCubit auctionListCubit(AuctionListService service) =>
       AuctionListCubit(service);
+
+  ProfileService profileService(Dio dio) => ProfileService(dio);
+
+  @lazySingleton
+  ProfileRepository profileRepository(ProfileService service) =>
+      ProfileRepositoryImpl(service);
+
+  @factory
+  ProfileCubit profileCubit(ProfileRepository repo) => ProfileCubit(repo);
 }
+

@@ -1,8 +1,10 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
+
+import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'edit_profile_screen.dart';
-import 'model/profile_model.dart';
+import '../../data/models/profile_model.dart';
 import 'package:movin/presentation/profile/widget/contact_info_card.dart';
 import 'package:movin/presentation/profile/widget/profile_header.dart';
 import 'package:movin/presentation/profile/widget/profile_stats.dart';
@@ -15,50 +17,70 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  ProfileModel profile = ProfileModel(
-    name: " Dr Mohammed",
-    bio:
-        "Passionate about real estate and finding the perfect home for my family.",
-    email: "mohammed@gmail.com",
-    phone: "+971 50 123 4567",
-    location: "EGYPT, Cairo",
-  );
+ 
 
+  @override
+  void initState() {
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ProfileHeader(
-              profile: profile,
-              onEdit: () async {
-                final updated = await Navigator.push<ProfileModel>(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => EditProfileScreen(profile: profile),
-                  ),
-                );
+      body: BlocBuilder<ProfileCubit, ProfileState>(
+        builder: (context, state) {
+          if (state.isLoading) {
+            return const Center(child: CircularProgressIndicator(color: AppColors.gold,));
+          }
 
-                if (updated != null) {
-                  setState(() => profile = updated);
-                }
-              },
+          if (state.profile == null) {
+            return const Center(child: Text("No Data"));
+          }
+
+          final profile = state.profile!;
+
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                ProfileHeader(
+                  profile: profile,
+                  onEdit: () async {
+                    final updated = await Navigator.push<ProfileModel>(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => BlocProvider.value(
+                          value: context.read<ProfileCubit>(),
+                          child: EditProfileScreen(profile: profile),
+                        ),
+                      ),
+                    );
+
+                    if (updated != null) {
+                      context.read<ProfileCubit>().updateProfile(
+                        username: updated.name,
+                        bio: updated.bio,
+                        location: updated.location,
+                        phone:updated.phone
+                      );
+                    }
+                  },
+                ),
+                const SizedBox(height: 24),
+                 ProfileStats(profile: state.profile!,),
+                
+                EditableContactInfoCard(
+                  emailController: TextEditingController(text: profile.email),
+                  phoneController: TextEditingController(text: profile.phone),
+                  locationController: TextEditingController(
+                    text: profile.location,
+                  ),
+                  profile: profile,
+                ),
+              ],
             ),
-            const SizedBox(height: 24),
-            const ProfileStats(),
-            const SizedBox(height: 32),
-            EditableContactInfoCard(
-              emailController: TextEditingController(text: profile.email),
-              phoneController: TextEditingController(text: profile.phone),
-              locationController: TextEditingController(text: profile.location), profile: profile,
-            ),
-            const SizedBox(height: 40),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 }
-

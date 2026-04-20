@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/data/models/profile_model.dart';
 
 import 'package:movin/presentation/budget_calculator/screens/budget_calculator_screen.dart';
 import 'package:movin/presentation/home/inner_pages/rate_properties_page.dart';
@@ -9,6 +10,7 @@ import 'package:movin/presentation/home/inner_pages/view_history_page.dart';
 import 'package:movin/presentation/home/widgets/drawer_header.dart';
 import 'package:movin/presentation/home/widgets/drawer_item.dart';
 import 'package:movin/presentation/home/widgets/mode_toggle_statement.dart';
+import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 
 import 'package:movin/presentation/profile/profile_screen.dart';
 
@@ -17,11 +19,9 @@ import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
 import 'package:movin/presentation/settings/screens/settings_screen.dart';
 
-
-
-
 class CustomDrawer extends StatelessWidget {
-  const CustomDrawer({super.key});
+  const CustomDrawer({super.key, required this.profile});
+  final ProfileModel profile;
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +35,21 @@ class CustomDrawer extends StatelessWidget {
         child: Column(
           children: [
             GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const ProfileScreen(),
+              onTap: () {
+                final cubit = context.read<ProfileCubit>(); 
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: cubit,
+                      child: const ProfileScreen(),
                     ),
-                  );
-                },
-              child: const CustomDrawerHeader()),
+                  ),
+                );
+              },
+              child: CustomDrawerHeader(profile: profile),
+            ),
             const Divider(
               thickness: 1,
               color: Color.fromARGB(255, 178, 178, 180),
