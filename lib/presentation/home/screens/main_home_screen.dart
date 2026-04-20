@@ -4,7 +4,7 @@ import 'package:movin/presentation/home/screens/home.dart';
 import 'package:movin/presentation/home/widgets/for_sale_screen.dart';
 
 class MainHomeScreen extends StatefulWidget {
-  const MainHomeScreen({super.key});
+  const MainHomeScreen({super.key,});
 
   @override
   State<MainHomeScreen> createState() => _MainHomeScreenState();

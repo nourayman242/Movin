@@ -195,8 +195,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
  
-  void _save() {
-    context.read<ProfileCubit>().updateProfile(
+  void _save() async{
+   await context.read<ProfileCubit>().updateProfile(
       username: nameCtrl.text,
       bio: bioCtrl.text,
       location: locationCtrl.text,

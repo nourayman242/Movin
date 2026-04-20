@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/data/api_services/property_services.dart';
+import 'package:movin/data/models/profile_model.dart';
 import 'package:movin/data/repositories/property_repository_impl.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
@@ -20,11 +21,11 @@ import 'package:movin/presentation/home/widgets/custom_drawer.dart';
 import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
 import 'package:movin/presentation/home/widgets/property_card.dart';
 import 'package:movin/presentation/notifications/screens/notifications_screen.dart';
+import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
 import 'package:movin/presentation/view_more_home/screens/view_more_listing.dart';
 import 'package:movin/presentation/view_more_home/screens/view_more_recommendtion.dart';
-import 'package:provider/provider.dart';
 
 class BuyerHome extends StatefulWidget {
   const BuyerHome({super.key});
@@ -53,6 +54,7 @@ class _BuyerHomeState extends State<BuyerHome> {
   @override
   void initState() {
     super.initState();
+    context.read<ProfileCubit>().getProfile();
     context.read<PropertyCubit>().loadRecentProperties();
     context.read<PropertyCubit>().loadRecommendedProperties();
 
@@ -63,8 +65,37 @@ class _BuyerHomeState extends State<BuyerHome> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<ProfileCubit, ProfileState>(
+      builder: (context, state) {
+        if (state.isLoading) {
+          return const Center(
+            child: Scaffold(
+              backgroundColor: AppColors.background,
+              body: Center(child: CircularProgressIndicator(color: AppColors.gold))),
+          );
+        }
+
+        return _buildContent(context,state.profile);
+      },
+    );
+    
+  }
+
+  Widget _buildContent(BuildContext context, ProfileModel? profile) {
+     final safeProfile = profile ??
+      ProfileModel(
+        name: "Guest",
+        bio: "",
+        email: "",
+        phone: "",
+        location: "",
+        isSeller: false,
+        isBuyer: true,
+        stats: {},
+      );
+
     return Scaffold(
-      drawer: const CustomDrawer(),
+      drawer: CustomDrawer(profile: safeProfile),
       backgroundColor: AppColors.background,
       body: ListView(
         children: [
@@ -148,8 +179,10 @@ class _BuyerHomeState extends State<BuyerHome> {
                   "Welcome back,",
                   style: TextStyle(color: AppColors.gold, fontSize: 18),
                 ),
-                const Text(
-                  "Dr Mohammed",
+                Text(
+                safeProfile.name.isNotEmpty
+                    ? safeProfile.name
+                    : "Guest",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 26,
@@ -219,7 +252,6 @@ class _BuyerHomeState extends State<BuyerHome> {
                           ),
                         ),
                       );
-                      
                     },
                     child: _propertyCard(
                       icon: Icons.key_outlined,
@@ -236,7 +268,6 @@ class _BuyerHomeState extends State<BuyerHome> {
                               BrowsePropertiesScreen(type: 'Commercial'),
                         ),
                       );
-                     
                     },
                     child: _propertyCard(
                       icon: Icons.apartment_outlined,
@@ -253,7 +284,6 @@ class _BuyerHomeState extends State<BuyerHome> {
                               BrowsePropertiesScreen(type: 'Investment'),
                         ),
                       );
-                      
                     },
                     child: _propertyCard(
                       icon: Icons.show_chart_outlined,
@@ -451,7 +481,7 @@ class _BuyerHomeState extends State<BuyerHome> {
   Widget _propertyCard({
     required IconData icon,
     required String title,
-   // required String count,
+    // required String count,
   }) {
     final bool isActive = selectedCategory == title;
 

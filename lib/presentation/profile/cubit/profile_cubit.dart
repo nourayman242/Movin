@@ -41,16 +41,9 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       final profile = await repo.getProfile();
 
-      emit(state.copyWith(
-        profile: profile,
-        isLoading: false,
-        error: null,
-      ));
+      emit(state.copyWith(profile: profile, isLoading: false, error: null));
     } catch (e) {
-      emit(state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      ));
+      emit(state.copyWith(isLoading: false, error: e.toString()));
     }
   }
 
@@ -58,28 +51,28 @@ class ProfileCubit extends Cubit<ProfileState> {
     required String username,
     required String bio,
     required String location,
-    required String phone
+    required String phone,
   }) async {
-    emit(state.copyWith(isUpdating: true));
+    final updatedLocal = state.profile?.copyWith(
+      name: username,
+      bio: bio,
+      location: location,
+      phone: phone,
+    );
+
+    emit(state.copyWith(profile: updatedLocal, isUpdating: true));
 
     try {
       final updatedProfile = await repo.updateProfile(
         username: username,
         bio: bio,
         location: location,
-        phone:phone
+        phone: phone,
       );
 
-      emit(state.copyWith(
-        profile: updatedProfile,
-        isUpdating: false,
-        error: null,
-      ));
+      emit(state.copyWith(profile: updatedProfile, isUpdating: false));
     } catch (e) {
-      emit(state.copyWith(
-        isUpdating: false,
-        error: e.toString(),
-      ));
+      emit(state.copyWith(isUpdating: false, error: e.toString()));
     }
   }
 }

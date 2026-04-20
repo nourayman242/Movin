@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/data_injection/getIt/service_locator.dart';
+import 'package:movin/data/models/profile_model.dart';
 
 import 'package:movin/presentation/budget_calculator/screens/budget_calculator_screen.dart';
 import 'package:movin/presentation/home/inner_pages/rate_properties_page.dart';
@@ -19,12 +19,9 @@ import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
 import 'package:movin/presentation/settings/screens/settings_screen.dart';
 
-
-
-
 class CustomDrawer extends StatelessWidget {
-  const CustomDrawer({super.key,});
-
+  const CustomDrawer({super.key, required this.profile});
+  final ProfileModel profile;
 
   @override
   Widget build(BuildContext context) {
@@ -38,19 +35,20 @@ class CustomDrawer extends StatelessWidget {
         child: Column(
           children: [
             GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => BlocProvider(
-                        create: (_) => getIt<ProfileCubit>()..getProfile(),
-                        child: const ProfileScreen(),
-                      ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<ProfileCubit>(),
+                      child: const ProfileScreen(),
                     ),
-                  );
-                },
-              child: const CustomDrawerHeader()),
+                  ),
+                );
+              },
+              child: CustomDrawerHeader(profile: profile),
+            ),
             const Divider(
               thickness: 1,
               color: Color.fromARGB(255, 178, 178, 180),

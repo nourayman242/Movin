@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/data/models/profile_model.dart';
 
 import 'package:movin/presentation/home/managers/mode_service.dart';
 
 class CustomDrawerHeader extends StatefulWidget {
-  const CustomDrawerHeader({super.key});
+  const CustomDrawerHeader({super.key, required this.profile});
+  final ProfileModel profile;
  
 
   @override
@@ -28,8 +30,8 @@ class _CustomDrawerHeaderState extends State<CustomDrawerHeader> {
           CircleAvatar(
             radius: 35,
             backgroundColor: AppColors.primaryNavy,
-            child: const Text(
-              'DM',
+            child:  Text(
+              initials(widget.profile.name),
               style: TextStyle(
                 color: Color.fromARGB(255, 241, 242, 245),
                 fontSize: 28,
@@ -46,14 +48,14 @@ class _CustomDrawerHeaderState extends State<CustomDrawerHeader> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Dr Mohammed',
+                      widget.profile.name,
                       style: AppTextStyles.subHeading.copyWith(
                         color: AppColors.navyDark,
                       ),
                     ),
                     const SizedBox(height: 2),
-                    const Text(
-                      'mohammed@gmail.com',
+                     Text(
+                      widget.profile.email,
                       style: TextStyle(color: AppColors.navyDark, fontSize: 14),
                     ),
                     const SizedBox(height: 4),
@@ -86,6 +88,13 @@ class _CustomDrawerHeaderState extends State<CustomDrawerHeader> {
         ],
       ),
     );
+  }
+  String initials(String name) {
+    final parts = name.trim().split(" ");
+    if (parts.length >= 2) {
+      return "${parts[0][0]}${parts[1][0]}".toUpperCase();
+    }
+    return name.isNotEmpty ? name[0].toUpperCase() : "";
   }
 }
 
