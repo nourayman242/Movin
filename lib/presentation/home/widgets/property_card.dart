@@ -39,7 +39,7 @@ class PropertyCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: BorderRadiusGeometry.circular(16),
+              borderRadius: BorderRadius.circular(16),
               child: Stack(
                 children: [
                   //1 image
@@ -95,8 +95,12 @@ class PropertyCard extends StatelessWidget {
                         return GestureDetector(
                           onTap: () {
                             context.read<FavoriteBloc>().add(
+
                               FavoriteToggle(property.id),
                             );
+
+
+
                           },
                           child: Container(
                             padding: const EdgeInsets.all(6),
@@ -119,7 +123,7 @@ class PropertyCard extends StatelessWidget {
             ),
             //details
             Padding(
-              padding: const EdgeInsetsGeometry.all(12),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -148,7 +152,6 @@ class PropertyCard extends StatelessWidget {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 10),
                   Text(
                     '${property.price}',
@@ -158,7 +161,6 @@ class PropertyCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-
                   const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -173,11 +175,15 @@ class PropertyCard extends StatelessWidget {
                         'baths',
                       ),
                       _verticalDivider(),
+
                      
                       _attrItem(
                         property.size.isNotEmpty ? property.size : '-',
                         "",
                       ),
+
+
+
                     ],
                   ),
                 ],

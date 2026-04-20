@@ -21,13 +21,19 @@ import 'package:movin/presentation/home/widgets/custom_drawer.dart';
 import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
 import 'package:movin/presentation/home/widgets/property_card.dart';
 import 'package:movin/presentation/notifications/screens/notifications_screen.dart';
+
 import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
+
+//import 'package:movin/presentation/profile/model/profile_model.dart';
+
 
 import 'package:movin/presentation/view_more_home/screens/view_more_listing.dart';
 import 'package:movin/presentation/view_more_home/screens/view_more_recommendtion.dart';
 
 class BuyerHome extends StatefulWidget {
+  //final ProfileModel currentProfile;
+
   const BuyerHome({super.key});
 
   @override
@@ -192,7 +198,10 @@ class _BuyerHomeState extends State<BuyerHome> {
 
                 const SizedBox(height: 30),
 
+
                 SearchHeader(onSearchChanged: _onSearchChanged),
+
+
               ],
             ),
           ),
@@ -331,6 +340,7 @@ class _BuyerHomeState extends State<BuyerHome> {
 
           const SizedBox(height: 12),
 
+
           BlocBuilder<PropertyCubit, PropertyState>(
             builder: (context, state) {
               final cubit = context.read<PropertyCubit>();
@@ -384,7 +394,8 @@ class _BuyerHomeState extends State<BuyerHome> {
                 },
               );
             },
-          ),
+    ),
+
 
           const SizedBox(height: 25),
           Padding(
@@ -419,6 +430,7 @@ class _BuyerHomeState extends State<BuyerHome> {
           ),
 
           const SizedBox(height: 12),
+
 
           BlocBuilder<PropertyCubit, PropertyState>(
             builder: (context, state) {
@@ -473,7 +485,7 @@ class _BuyerHomeState extends State<BuyerHome> {
               );
             },
           ),
-        ],
+    ],
       ),
     );
   }

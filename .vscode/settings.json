@@ -1,4 +1,9 @@
 {
+<<<<<<< HEAD
     "cmake.ignoreCMakeListsMissing": true,
     "java.configuration.updateBuildConfiguration": "interactive"
+=======
+  "cmake.ignoreCMakeListsMissing": true,
+  "dart.flutterSdkPath": ".fvm/versions/3.22.0"
+>>>>>>> origin/role-api
 }

@@ -92,10 +92,10 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkServices.otpServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i295.ResetPasswordService>(
         () => networkServices.resetPasswordService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i467.AuctionListService>(
-        () => networkServices.auctionListService(gh<_i361.Dio>()));
     gh.lazySingleton<_i163.ProfileService>(
         () => networkServices.profileService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i467.AuctionListService>(
+        () => networkServices.auctionListService(gh<_i361.Dio>()));
     gh.lazySingleton<_i574.OtpRepository>(
         () => _i736.OtpRepositoryImpl(gh<_i97.OtpServices>()));
     gh.lazySingleton<_i935.ProfileRepository>(
