@@ -1,5 +1,7 @@
+
 import 'package:dio/dio.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+
 import 'package:injectable/injectable.dart';
 import 'package:movin/data/api_services/auction_list_services.dart';
 import 'package:movin/data/api_services/client/auth_interceptor.dart';
@@ -12,10 +14,9 @@ import 'package:movin/data/api_services/register_services.dart';
 import 'package:movin/data/api_services/reset_password_service.dart';
 import 'package:movin/data/api_services/socket_service.dart';
 import 'package:movin/data/repositories/auction_repository_impl.dart';
+
 import 'package:movin/data/repositories/forget_pass_repository_imp.dart';
-
 import 'package:movin/data/repositories/profile_repository_impl.dart';
-
 
 import 'package:movin/data/repositories/property_repository_impl.dart';
 import 'package:movin/domain/repositories/auction_repository.dart';
@@ -25,19 +26,12 @@ import 'package:movin/domain/repositories/profile_repository.dart';
 import 'package:movin/domain/repositories/property_repository.dart';
 import 'package:movin/domain/repositories/reset_pass_repository.dart';
 import 'package:movin/presentation/auction/cubit/auction_cubit.dart';
-
-import 'package:movin/presentation/auction/cubit/auction_list_cubit.dart'; 
-
-
+import 'package:movin/presentation/auction/cubit/auction_list_cubit.dart';
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
 import 'package:movin/presentation/login/cubit/otp_cubit.dart';
 import 'package:movin/presentation/login/cubit/reset_pass_cubit.dart';
 import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
-
-
-
-
 
 @module
 abstract class NetworkServices {
@@ -49,7 +43,6 @@ abstract class NetworkServices {
         //'https://movin-backend.fly.dev';
         'https://movin-backend-production.up.railway.app';
 
-
     final dio = Dio(
       BaseOptions(
         baseUrl: base,
@@ -59,29 +52,36 @@ abstract class NetworkServices {
     );
 
     dio.interceptors.add(AuthInterceptor());
+
     dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
 
     return dio;
   }
 
   @lazySingleton
-  RegisterServices registerServices(Dio dio) => RegisterServices(dio);
+  RegisterServices registerServices(Dio dio) {
+    return RegisterServices(dio);
+  }
 
   @lazySingleton
   LoginServices loginServices(Dio dio) => LoginServices(dio);
 
   @lazySingleton
-  ForgotPasswordService forgotPasswordService(Dio dio) =>
-      ForgotPasswordService(dio);
+  ForgotPasswordService forgotPasswordService(Dio dio) {
+    return ForgotPasswordService(dio);
+  }
 
   @lazySingleton
   ForgotPasswordRepository forgotPasswordRepository(
     ForgotPasswordService service,
-  ) => ForgotPasswordRepositoryImpl(service);
+  ) {
+    return ForgotPasswordRepositoryImpl(service);
+  }
 
   @factory
-  ForgotPasswordCubit forgotPasswordCubit(ForgotPasswordRepository repo) =>
-      ForgotPasswordCubit(repo);
+  ForgotPasswordCubit forgotPasswordCubit(ForgotPasswordRepository repo) {
+    return ForgotPasswordCubit(repo);
+  }
 
   @lazySingleton
   PropertyService propertyService(Dio dio) => PropertyService(dio);
@@ -89,7 +89,6 @@ abstract class NetworkServices {
   @lazySingleton
   PropertyRepository propertyRepository(PropertyService service) =>
       PropertyRepositoryImpl(service);
-
   @factory
   PropertyCubit propertyCubit(PropertyRepository repo) => PropertyCubit(repo);
 
@@ -98,7 +97,6 @@ abstract class NetworkServices {
 
   @factory
   OtpCubit otpCubit(OtpRepository repo) => OtpCubit(repo);
-
   @lazySingleton
   ResetPasswordService resetPasswordService(Dio dio) =>
       ResetPasswordService(dio);
@@ -122,12 +120,6 @@ abstract class NetworkServices {
   AuctionCubit auctionCubit(AuctionRepository repo) => AuctionCubit(repo);
 
   @lazySingleton
-  AuctionListService auctionListService(Dio dio) => AuctionListService(dio);
-
-  @factory
-  AuctionListCubit auctionListCubit(AuctionListService service) =>
-      AuctionListCubit(service);
-
   ProfileService profileService(Dio dio) => ProfileService(dio);
 
   @lazySingleton
@@ -136,5 +128,10 @@ abstract class NetworkServices {
 
   @factory
   ProfileCubit profileCubit(ProfileRepository repo) => ProfileCubit(repo);
-}
+  @lazySingleton
+  AuctionListService auctionListService(Dio dio) => AuctionListService(dio);
 
+  @factory
+  AuctionListCubit auctionListCubit(AuctionListService service) =>
+      AuctionListCubit(service);
+}
