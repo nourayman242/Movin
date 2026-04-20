@@ -37,7 +37,8 @@ abstract class NetworkServices {
     const base =
         //'https://movin-oipd650to-malakkhaled22s-projects.vercel.app';
         //'https://movin-app.vercel.app';
-        'https://movin-backend.fly.dev';
+        //'https://movin-backend.fly.dev';
+        'https://movin-backend-production.up.railway.app';
 
     final dio = Dio(
       BaseOptions(

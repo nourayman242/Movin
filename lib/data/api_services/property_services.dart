@@ -83,7 +83,7 @@ class PropertyService {
       final token = await SharedHelper.getToken(); // get saved token
 
       final response = await dio.get(
-        'https://movin-backend.fly.dev/api/seller/properties/search',
+        'https://movin-backend-production.up.railway.app/api/seller/properties/search',
         //"https://movin-app.vercel.app/api/seller/properties/search",
 
         queryParameters: {"location": location},

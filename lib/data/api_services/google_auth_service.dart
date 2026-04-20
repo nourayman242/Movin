@@ -4,34 +4,14 @@ import 'package:injectable/injectable.dart';
 
 @lazySingleton
 class GoogleAuthService {
-  // Future<Map<String, dynamic>> signInWithGoogle() async {
-  //   try {
-  //     final result = await FlutterWebAuth2.authenticate(
-  //       url: "https://movin-backend.fly.dev/api/auth/google",
-  //       callbackUrlScheme: "movin",
-  //     );
-  //     print("RESULT: $result");
-
-  //     final uri = Uri.parse(result);
-
-  //     final token = uri.queryParameters['token'];
-
-  //     if (token == null || token.isEmpty) {
-  //       throw Exception("Authentication failed: token missing");
-  //     }
-      
-  //     return {"token": token};
-  //   } catch (e) {
-  //     throw Exception("Google login cancelled or failed");
-  //   }
-  // }
+  
    final Dio dio = Dio(
-    BaseOptions(baseUrl: "https://movin-backend.fly.dev"),
+    BaseOptions(baseUrl: "https://movin-backend-production.up.railway.app"),
   );
 
   Future<Map<String, dynamic>> signInWithGoogle() async {
     final result = await FlutterWebAuth2.authenticate(
-      url: "https://movin-backend.fly.dev/api/auth/google",
+      url: "https://movin-backend-production.up.railway.app/api/auth/google",
       callbackUrlScheme: "movin",
     );
 
