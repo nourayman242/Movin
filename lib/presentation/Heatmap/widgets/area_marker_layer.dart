@@ -6,41 +6,50 @@ import 'package:movin/domain/utils/score_color_mapper.dart';
 
 
 class AreaMarkerLayer {
-  /// Call this once; it's async because BitmapDescriptor requires painting.
-  static Future<Set<Marker>> buildMarkers(
-    List<AreaScore> areas, {
-    void Function(AreaScore)? onTap,
-  }) async {
-    final Set<Marker> markers = {};
+ 
+static Future<Set<Marker>> buildMarkers(
+  List<AreaScore> areas, {
+  String? selectedAreaName,
+  void Function(AreaScore)? onTap,
+}) async {
+  final Set<Marker> markers = {};
 
-    for (int i = 0; i < areas.length; i++) {
-      final area = areas[i];
-      final color = ScoreColorMapper.getColor(area.score);
-      final icon = await _buildPinIcon(area.listingCount, color);
+  for (int i = 0; i < areas.length; i++) {
+    final area = areas[i];
+    final isSelected = area.name == selectedAreaName;
+    final color = isSelected
+        ? const Color(0xFF1A56DB) // blue for selected
+        : ScoreColorMapper.getColor(area.score);
+    final icon = await _buildPinIcon(area.listingCount, color,
+        isSelected: isSelected);
 
-      markers.add(
-        Marker(
-          markerId: MarkerId('area_$i'),
-          position: area.center,
-          icon: icon,
-          anchor: const Offset(0.5, 1.0), // pin tip at coordinate
-          infoWindow: InfoWindow(
-            title: area.name,
-            snippet:
-                '${area.listingCount} listings · ${ScoreColorMapper.getLabel(area.score)}',
-          ),
-          onTap: onTap != null ? () => onTap(area) : null,
+    markers.add(
+      Marker(
+        markerId: MarkerId('area_$i'),
+        position: area.center,
+        icon: icon,
+        zIndex: isSelected ? 1 : 0, // selected floats on top
+        anchor: const Offset(0.5, 1.0),
+        infoWindow: InfoWindow(
+          title: isSelected ? '📍 ${area.name} (Your area)' : area.name,
+          snippet:
+              '${area.listingCount} listings · ${ScoreColorMapper.getLabel(area.score)}'
+              '${area.distanceKm > 0 ? ' · ${area.distanceKm.toStringAsFixed(1)} km away' : ''}',
         ),
-      );
-    }
-
-    return markers;
+        onTap: onTap != null ? () => onTap(area) : null,
+      ),
+    );
   }
 
-  /// Paints a rounded-rect bubble with listing count + a small dot tail.
+  return markers;
+}
+
   static Future<BitmapDescriptor> _buildPinIcon(
     int count,
     Color color,
+     {
+  bool isSelected = false, 
+}
   ) async {
     const double w = 90, h = 40, tail = 7;
     final recorder = ui.PictureRecorder();
