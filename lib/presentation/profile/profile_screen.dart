@@ -17,7 +17,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+
  
+
+
 
   @override
   void initState() {
@@ -30,7 +33,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: BlocBuilder<ProfileCubit, ProfileState>(
         builder: (context, state) {
           if (state.isLoading) {
-            return const Center(child: CircularProgressIndicator(color: AppColors.gold,));
+            return const Center(
+                child: CircularProgressIndicator(color: AppColors.gold,));
           }
 
           if (state.profile == null) {
@@ -48,26 +52,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     final updated = await Navigator.push<ProfileModel>(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => BlocProvider.value(
-                          value: context.read<ProfileCubit>(),
-                          child: EditProfileScreen(profile: profile),
-                        ),
+                        builder: (_) =>
+                            BlocProvider.value(
+                              value: context.read<ProfileCubit>(),
+                              child: EditProfileScreen(profile: profile),
+                            ),
                       ),
                     );
 
                     if (updated != null) {
                       context.read<ProfileCubit>().updateProfile(
-                        username: updated.name,
-                        bio: updated.bio,
-                        location: updated.location,
-                        phone:updated.phone
+                          username: updated.name,
+                          bio: updated.bio,
+                          location: updated.location,
+                          phone: updated.phone
                       );
                     }
                   },
                 ),
                 const SizedBox(height: 24),
-                 ProfileStats(profile: state.profile!,),
-                
+                ProfileStats(profile: state.profile!,),
+
                 EditableContactInfoCard(
                   emailController: TextEditingController(text: profile.email),
                   phoneController: TextEditingController(text: profile.phone),
@@ -78,9 +83,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
+
           );
         },
-      ),
+    ),
     );
+
+
   }
 }

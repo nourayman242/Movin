@@ -11,6 +11,7 @@ import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 import 'package:movin/data/models/property_model.dart';
 
 class SellerHome extends StatefulWidget {
+
   const SellerHome({super.key,});
    
 
@@ -98,6 +99,7 @@ class _SellerHomeState extends State<SellerHome>
     return Scaffold(
       backgroundColor: AppColors.background,
       drawer:  CustomDrawer(profile: safeProfile,),
+
 
       body: DefaultTabController(
         length: 3,

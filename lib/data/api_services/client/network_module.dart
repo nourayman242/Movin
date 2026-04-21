@@ -36,6 +36,7 @@ import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 @module
 abstract class NetworkServices {
   @lazySingleton
+
   Dio provideDio() {
     const base =
         //'https://movin-oipd650to-malakkhaled22s-projects.vercel.app';
@@ -49,8 +50,8 @@ abstract class NetworkServices {
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
       ),
-    );
 
+    );
     dio.interceptors.add(AuthInterceptor());
 
     dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
