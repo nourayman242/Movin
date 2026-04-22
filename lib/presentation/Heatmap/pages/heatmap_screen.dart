@@ -1,18 +1,21 @@
-// lib/presentation/Heatmap/pages/heatmap_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:movin/data/repositories/heatmap_repository_impl.dart';
+import 'package:movin/domain/entities/area_score.dart';
 import 'package:movin/domain/utils/score_color_mapper.dart';
 import '../cubit/heatmap_cubit.dart';
 
 class HeatmapPage extends StatelessWidget {
-  const HeatmapPage({super.key});
+  final String? initialArea;
+  const HeatmapPage({super.key, this.initialArea});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => HeatmapCubit(HeatmapRepositoryImpl())..loadHeatmap(),
+      create: (_) =>
+          HeatmapCubit(HeatmapRepositoryImpl())
+            ..loadHeatmap(initialArea: initialArea),
       child: const _HeatmapView(),
     );
   }
@@ -27,12 +30,10 @@ class _HeatmapView extends StatefulWidget {
 
 class _HeatmapViewState extends State<_HeatmapView> {
   GoogleMapController? _mapController;
-
+String? _pendingAnimateTo;
   void _animateTo(LatLng target) {
     _mapController?.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(target: target, zoom: 12),
-      ),
+      CameraUpdate.newCameraPosition(CameraPosition(target: target, zoom: 12)),
     );
   }
 
@@ -41,6 +42,44 @@ class _HeatmapViewState extends State<_HeatmapView> {
     return Scaffold(
       body: BlocBuilder<HeatmapCubit, HeatmapState>(
         builder: (context, state) {
+          if (_mapController != null &&
+            state.selectedAreaName != null &&
+            _pendingAnimateTo != state.selectedAreaName) {
+          _pendingAnimateTo = state.selectedAreaName;
+          final area = state.areas.firstWhere(
+              (a) => a.name == state.selectedAreaName,
+              orElse: () => state.areas.first);
+          WidgetsBinding.instance.addPostFrameCallback(
+              (_) => _animateTo(area.center));
+        }
+          // ── Loading ──
+          if (state.status == HeatmapStatus.loading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          // ── Error ──
+          if (state.status == HeatmapStatus.error) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.wifi_off_rounded,
+                    size: 64,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(state.errorMessage ?? 'Failed to load heatmap'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => context.read<HeatmapCubit>().loadHeatmap(),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            );
+          }
+
           return Stack(
             children: [
               // ── Map ──
@@ -55,41 +94,81 @@ class _HeatmapViewState extends State<_HeatmapView> {
                 onMapCreated: (c) => _mapController = c,
               ),
 
-              // ── Area Selector Dropdown ──
+              // ── Back button ──
               Positioned(
                 top: 48,
                 left: 16,
-                right: 16,
-                child: _AreaSelector(
-                  areas: state.areas.map((a) => a.name).toList(),
-                  selected: state.selectedAreaName,
-                  onChanged: (name) {
-                    final area = state.areas.firstWhere((a) => a.name == name);
-                    context.read<HeatmapCubit>().selectArea(name);
-                    _animateTo(area.center);
-                  },
+                child: SafeArea(
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.black87),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
                 ),
               ),
 
-              // ── Selected Area Info Banner ──
+              // ── Area Selector Dropdown ──
+              // ── Selected area label (top-center) ──
+              if (state.selectedAreaName != null)
+                Positioned(
+                  top: 48,
+                  left: 0,
+                  right: 0,
+                  child: SafeArea(
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: const [
+                            BoxShadow(color: Colors.black26, blurRadius: 6),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.location_on_rounded,
+                              size: 16,
+                              color: Colors.red,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              state.selectedAreaName!,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+              // ── Banner (below label) ──
               if (state.selectedAreaName != null)
                 Positioned(
                   top: 110,
                   left: 16,
                   right: 16,
-                  child: _SelectedAreaBanner(
-                    areas: state.areas,
-                    selectedName: state.selectedAreaName!,
+                  child: SafeArea(
+                    child: _SelectedAreaBanner(
+                      areas: state.areas,
+                      selectedName: state.selectedAreaName!,
+                    ),
                   ),
                 ),
 
               // ── Legend ──
-              Positioned(
-                bottom: 32,
-                left: 16,
-                right: 16,
-                child: _Legend(),
-              ),
+              Positioned(bottom: 32, left: 16, right: 16, child: _Legend()),
             ],
           );
         },
@@ -98,7 +177,7 @@ class _HeatmapViewState extends State<_HeatmapView> {
   }
 }
 
-// ── Area Selector ────────────────────────────────────────────────────────────
+// ── Area Selector ─────────────────────────────────────────────────────────────
 
 class _AreaSelector extends StatelessWidget {
   final List<String> areas;
@@ -118,7 +197,7 @@ class _AreaSelector extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 6)],
+        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 6)],
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
@@ -128,7 +207,9 @@ class _AreaSelector extends StatelessWidget {
           items: areas
               .map((a) => DropdownMenuItem(value: a, child: Text(a)))
               .toList(),
-          onChanged: (v) { if (v != null) onChanged(v); },
+          onChanged: (v) {
+            if (v != null) onChanged(v);
+          },
         ),
       ),
     );
@@ -138,39 +219,47 @@ class _AreaSelector extends StatelessWidget {
 // ── Selected Area Info Banner ─────────────────────────────────────────────────
 
 class _SelectedAreaBanner extends StatelessWidget {
-  final List<dynamic> areas;
+  final List<AreaScore> areas;
   final String selectedName;
 
-  const _SelectedAreaBanner({
-    required this.areas,
-    required this.selectedName,
-  });
+  const _SelectedAreaBanner({required this.areas, required this.selectedName});
 
   @override
   Widget build(BuildContext context) {
-    final selected = areas.firstWhere((a) => a.name == selectedName);
-    final nearby   = areas.where((a) => a.score >= 70).length;
+    // Use score getter (computed from distanceKm) — NOT a stored field
+    final nearby = areas
+        .where((a) => a.score >= 70 && a.name != selectedName)
+        .length;
     final moderate = areas.where((a) => a.score >= 40 && a.score < 70).length;
-    final far      = areas.where((a) => a.score < 40).length;
+    final far = areas.where((a) => a.score < 40).length;
+    final totalListings = areas.fold<int>(0, (sum, a) => sum + a.listingCount);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 6)],
+        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 6)],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _BannerStat(label: 'Nearby', count: nearby,
-              color: ScoreColorMapper.green),
-          _BannerStat(label: 'Moderate', count: moderate,
-              color: ScoreColorMapper.orange),
-          _BannerStat(label: 'Far', count: far,
-              color: ScoreColorMapper.red),
-          _BannerStat(label: 'Total listings', count: selected.listingCount,
-              color: Colors.blueGrey),
+          _BannerStat(
+            label: 'Nearby',
+            count: nearby,
+            color: ScoreColorMapper.green,
+          ),
+          _BannerStat(
+            label: 'Moderate',
+            count: moderate,
+            color: ScoreColorMapper.orange,
+          ),
+          _BannerStat(label: 'Far', count: far, color: ScoreColorMapper.red),
+          _BannerStat(
+            label: 'Total listings',
+            count: totalListings,
+            color: Colors.blueGrey,
+          ),
         ],
       ),
     );
@@ -192,9 +281,14 @@ class _BannerStat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('$count',
-            style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: color)),
+        Text(
+          '$count',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
         Text(label, style: const TextStyle(fontSize: 10, color: Colors.grey)),
       ],
     );
@@ -211,14 +305,17 @@ class _Legend extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black12, width: 0.5),
+        border: Border.all(color: Colors.black12),
       ),
-      child: Row(
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: const [
-          _LegendItem(color: ScoreColorMapper.green,  label: 'Nearby (≤ 3km)'),
-          _LegendItem(color: ScoreColorMapper.orange, label: 'Moderate (≤ 8km)'),
-          _LegendItem(color: ScoreColorMapper.red,    label: 'Far (> 8km)'),
+        children: [
+          _LegendItem(color: ScoreColorMapper.green, label: 'Nearby (≤ 3 km)'),
+          _LegendItem(
+            color: ScoreColorMapper.orange,
+            label: 'Moderate (≤ 8 km)',
+          ),
+          _LegendItem(color: ScoreColorMapper.red, label: 'Far (> 8 km)'),
         ],
       ),
     );
@@ -235,7 +332,8 @@ class _LegendItem extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 10, height: 10,
+          width: 10,
+          height: 10,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 6),
