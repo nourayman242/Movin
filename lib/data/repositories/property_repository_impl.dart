@@ -55,4 +55,18 @@ class PropertyRepositoryImpl implements PropertyRepository {
     final models = await service.getPropertiesByType(type);
    return models.map((e) => e.toEntity()).toList();
   }
+  @override
+Future<void> createAuction({
+  required String propertyId,
+  required int startPrice,
+  required String startTime,
+  required String endTime,
+}) async {
+  await service.createAuction(
+    propertyId: propertyId,
+    startPrice: startPrice,
+    startTime: startTime,
+    endTime: endTime,
+  );
+}
 }

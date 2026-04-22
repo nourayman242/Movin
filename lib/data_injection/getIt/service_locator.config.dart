@@ -40,6 +40,8 @@ import 'package:movin/domain/repositories/profile_repository.dart' as _i935;
 import 'package:movin/domain/repositories/property_repository.dart' as _i770;
 import 'package:movin/domain/repositories/register_repository.dart' as _i623;
 import 'package:movin/domain/repositories/reset_pass_repository.dart' as _i332;
+import 'package:movin/presentation/auction/create%20auction/cubit/create_auction_cubit.dart'
+    as _i484;
 import 'package:movin/presentation/auction/cubit/auction_cubit.dart' as _i473;
 import 'package:movin/presentation/auction/cubit/auction_list_cubit.dart'
     as _i790;
@@ -92,10 +94,10 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkServices.otpServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i295.ResetPasswordService>(
         () => networkServices.resetPasswordService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i467.AuctionListService>(
-        () => networkServices.auctionListService(gh<_i361.Dio>()));
     gh.lazySingleton<_i163.ProfileService>(
         () => networkServices.profileService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i467.AuctionListService>(
+        () => networkServices.auctionListService(gh<_i361.Dio>()));
     gh.lazySingleton<_i574.OtpRepository>(
         () => _i736.OtpRepositoryImpl(gh<_i97.OtpServices>()));
     gh.lazySingleton<_i935.ProfileRepository>(
@@ -130,6 +132,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkServices.auctionListCubit(gh<_i467.AuctionListService>()));
     gh.factory<_i267.PropertyCubit>(
         () => networkServices.propertyCubit(gh<_i770.PropertyRepository>()));
+    gh.factory<_i484.CreateAuctionCubit>(
+        () => _i484.CreateAuctionCubit(gh<_i770.PropertyRepository>()));
     gh.factory<_i288.AuthCubit>(
         () => _i288.AuthCubit(gh<_i1021.AuthRepository>()));
     gh.factory<_i473.AuctionCubit>(

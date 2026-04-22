@@ -12,4 +12,10 @@ abstract class PropertyRepository {
   Future<List<PropertyEntity>> getRecentProperties();
   Future<List<PropertyEntity>> getRecommendedProperties();
   Future<List<PropertyEntity>> getPropertiesByType(String type);
+  Future<void> createAuction({
+  required String propertyId,
+  required int startPrice,
+  required String startTime,
+  required String endTime,
+});
 }

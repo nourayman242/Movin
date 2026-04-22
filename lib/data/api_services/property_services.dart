@@ -84,8 +84,8 @@ class PropertyService {
 
       final response = await dio.get(
         'https://movin-backend-production.up.railway.app/api/seller/properties/search',
-        //"https://movin-app.vercel.app/api/seller/properties/search",
 
+        //"https://movin-app.vercel.app/api/seller/properties/search",
         queryParameters: {"location": location},
         options: Options(headers: {"Authorization": "Bearer $token"}),
       );
@@ -114,18 +114,17 @@ class PropertyService {
   }
 
   Future<List<PropertyModel>> getRecommendedProperties() async {
-    try{
-    final response = await dio.get('/api/recommend/all');
+    try {
+      final response = await dio.get('/api/recommend/all');
 
-    if (response.data == null || response.data['recommendations'] == null) {
-      return [];
-    }
+      if (response.data == null || response.data['recommendations'] == null) {
+        return [];
+      }
 
-    return (response.data['recommendations'] as List)
-        .map((e) => PropertyModel.fromJson(e))
-        .toList();
-    }catch(e)
-    {
+      return (response.data['recommendations'] as List)
+          .map((e) => PropertyModel.fromJson(e))
+          .toList();
+    } catch (e) {
       print("TYPE API ERROR: $e");
       return [];
     }
@@ -152,5 +151,21 @@ class PropertyService {
       print("TYPE API ERROR: $e");
       return [];
     }
+  }
+
+  Future<Response> createAuction({
+    required String propertyId,
+    required int startPrice,
+    required String startTime,
+    required String endTime,
+  }) async {
+    return await dio.put(
+      '/api/properties/auction/create/$propertyId',
+      data: {
+        "startPrice": startPrice,
+        "startTime": startTime,
+        "endTime": endTime,
+      },
+    );
   }
 }
