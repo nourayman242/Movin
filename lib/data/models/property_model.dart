@@ -12,6 +12,8 @@ class PropertyModel {
   final String status;
   final Map<String, dynamic> details;
   final bool isAuction;
+  final double? latitude;
+  final double? longitude;
 
   PropertyModel({
     required this.isAuction,
@@ -25,6 +27,8 @@ class PropertyModel {
     required this.images,
     required this.status,
     required this.details,
+    this.latitude,
+    this.longitude,
   });
 
   factory PropertyModel.fromJson(Map<String, dynamic> json) {
@@ -78,6 +82,8 @@ class PropertyModel {
       images: images,
       status: status,
       details: details,
+      latitude: latitude,
+    longitude: longitude,
     );
   }
 }

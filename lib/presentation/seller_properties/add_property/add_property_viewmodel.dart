@@ -66,6 +66,14 @@ class AddPropertyViewModel extends ChangeNotifier {
   int? get bedrooms => int.tryParse(bedroomsController.text.trim());
   int? get bathrooms => int.tryParse(bathroomsController.text.trim());
 
+  double? latitude;
+  double? longitude;
+  void setLocation(double lat, double lng) {
+    latitude = lat;
+    longitude = lng;
+    notifyListeners();
+  }
+
   // Setters that call notifyListeners()
   void selectListingType(ListingType? t) {
     selectedListingType = t;
@@ -244,7 +252,8 @@ class AddPropertyViewModel extends ChangeNotifier {
     auctionEnd = null;
     startingBidController.clear();
     auctionDescriptionController.clear();
-
+    latitude = null;
+    longitude = null;
     notifyListeners();
   }
 
@@ -265,7 +274,7 @@ class AddPropertyViewModel extends ChangeNotifier {
     terraceController.dispose();
     descriptionController.dispose();
     startingBidController.dispose();
-auctionDescriptionController.dispose();
+    auctionDescriptionController.dispose();
     super.dispose();
   }
 
@@ -280,7 +289,8 @@ auctionDescriptionController.dispose();
       images: imageUrls,
       details: details,
       id: '',
-      status: '', isAuction: false,
+      status: '',
+      isAuction: false,
     );
   }
 }

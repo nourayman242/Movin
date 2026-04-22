@@ -10,6 +10,8 @@ class PropertyEntity {
   String status;
   final Map<String, dynamic> details;
   final bool isAuction;
+  double? latitude;
+double? longitude;
 
   PropertyEntity({
     required this.isAuction,
@@ -22,7 +24,7 @@ class PropertyEntity {
     required this.size,
     required this.images,
     required this.status,
-    required this.details,
+    required this.details, double? latitude, double? longitude,
   });
 
   Map<String, dynamic> toJson() => {
