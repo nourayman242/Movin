@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:movin/data/models/auction_summary_model.dart';
 
 class AuctionStatsRow extends StatelessWidget {
-  const AuctionStatsRow({super.key});
+  const AuctionStatsRow({super.key, required this.summary});
+  final AuctionSummary summary;
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: const [
-        _StatCard(title: "Active Auctions", value: "5"),
+      children:  [
+        _StatCard(title: "Active Auctions", value: summary.activeAuctions.toString()),
         SizedBox(width: 10),
-        _StatCard(title: "Ending Soon", value: "2"),
+        _StatCard(title: "Ending Soon", value: summary.endingSoon.toString()),
         SizedBox(width: 10),
-        _StatCard(title: "Total Bids", value: "145"),
+        _StatCard(title: "Total Bids", value: summary.totalBids.toString()),
       ],
     );
   }

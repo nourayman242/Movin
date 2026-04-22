@@ -1,12 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:movin/data/models/auction_list_model.dart';
+import 'package:movin/data/models/auction_summary_model.dart';
 
 class AuctionListService {
   final Dio dio;
 
   AuctionListService(this.dio);
 
-  Future<List<AuctionListModel>> getAuctions({
+  Future<(List<AuctionListModel>, AuctionSummary)> getAuctions({
     int page = 1,
     int limit = 10,
   }) async {
@@ -17,10 +18,12 @@ class AuctionListService {
 
     final data = response.data;
 
-    if (data == null || data['auctions'] == null) return [];
+     final auctions = (data["auctions"] as List)
+      .map((e) => AuctionListModel.fromJson(e))
+      .toList();
 
-    return (data['auctions'] as List)
-        .map((e) => AuctionListModel.fromJson(e))
-        .toList();
+  final summary = AuctionSummary.fromJson(data["summary"]);
+
+  return (auctions, summary);
   }
 }

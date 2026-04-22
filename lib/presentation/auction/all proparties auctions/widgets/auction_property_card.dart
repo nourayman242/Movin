@@ -31,28 +31,40 @@ class AuctionPropertyCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(.06),
-            blurRadius: 12,
-          )
+          BoxShadow(color: Colors.black.withOpacity(.06), blurRadius: 12),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           /// IMAGE
           Stack(
             children: [
               ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(22)),
-                child: Image.asset(
-                  image,
-                  height: 190,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(22),
                 ),
+                child:image.isNotEmpty && image.startsWith("http")
+                    ? Image.network(
+                        image,
+                        height: 190,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'assets/images/placeholder.webp',
+                            height: 190,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      )
+                    : Image.asset(
+                        'assets/images/placeholder.webp',
+                        height: 190,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
               ),
 
               Positioned(
@@ -64,9 +76,7 @@ class AuctionPropertyCard extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: status == "Active"
-                        ?  AppColors.gold
-                        : Colors.red,
+                    color: status == "Active" ? AppColors.gold : Colors.red,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
@@ -74,7 +84,7 @@ class AuctionPropertyCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.white
+                      color: AppColors.white,
                     ),
                   ),
                 ),
@@ -87,7 +97,6 @@ class AuctionPropertyCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -115,16 +124,13 @@ class AuctionPropertyCard extends StatelessWidget {
                           Text("$bids bids"),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
 
                 const SizedBox(height: 6),
 
-                Text(
-                  location,
-                  style: const TextStyle(color: Colors.grey),
-                ),
+                Text(location, style: const TextStyle(color: Colors.grey)),
 
                 const SizedBox(height: 12),
 
@@ -174,12 +180,12 @@ class AuctionPropertyCard extends StatelessWidget {
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
-                    )
+                    ),
                   ],
-                )
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
