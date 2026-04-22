@@ -11,8 +11,7 @@ import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 import 'package:movin/data/models/property_model.dart';
 
 class SellerHome extends StatefulWidget {
-  const SellerHome({super.key,});
-   
+  const SellerHome({super.key});
 
   @override
   State<SellerHome> createState() => _SellerHomeState();
@@ -62,39 +61,41 @@ class _SellerHomeState extends State<SellerHome>
 
   @override
   Widget build(BuildContext context) {
-     return BlocBuilder<ProfileCubit, ProfileState>(
+    return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
         if (state.isLoading) {
           return const Center(
             child: Scaffold(
               backgroundColor: AppColors.background,
-              body: Center(child: CircularProgressIndicator(color: AppColors.gold))),
+              body: Center(
+                child: CircularProgressIndicator(color: AppColors.gold),
+              ),
+            ),
           );
         }
 
-        
-
-        return _buildContent(context,state.profile);
+        return _buildContent(context, state.profile);
       },
     );
-   }
+  }
 
-   Widget _buildContent(BuildContext context, ProfileModel? profile){
-    final safeProfile = profile ??
-      ProfileModel(
-        name: "Guest",
-        bio: "",
-        email: "",
-        phone: "",
-        location: "",
-        isSeller: false,
-        isBuyer: true,
-        stats: {}, createdAt: DateTime.now() ,
-        
-      );
+  Widget _buildContent(BuildContext context, ProfileModel? profile) {
+    final safeProfile =
+        profile ??
+        ProfileModel(
+          name: "Guest",
+          bio: "",
+          email: "",
+          phone: "",
+          location: "",
+          isSeller: false,
+          isBuyer: true,
+          stats: {},
+          createdAt: DateTime.now(),
+        );
     return Scaffold(
       backgroundColor: AppColors.background,
-      drawer:  CustomDrawer(profile: safeProfile,),
+      drawer: CustomDrawer(profile: safeProfile),
       body: DefaultTabController(
         length: 3,
         child: NestedScrollView(
@@ -178,7 +179,7 @@ class _SellerHomeState extends State<SellerHome>
                                       hasBadge: true,
                                     ),
                                   ),
-                                  SizedBox(width: 10,),
+                                  SizedBox(width: 10),
                                   GestureDetector(
                                     onTap: () {
                                       Navigator.push(
@@ -189,9 +190,7 @@ class _SellerHomeState extends State<SellerHome>
                                         ),
                                       );
                                     },
-                                    child: iconContainer(
-                                      Icons.gavel_outlined,
-                                    ),
+                                    child: iconContainer(Icons.gavel_outlined),
                                   ),
                                 ],
                               ),
@@ -710,7 +709,9 @@ class _SellerHomeState extends State<SellerHome>
               Positioned(
                 top: 12,
                 right: 12,
-                child: _popupMenu(context, property),
+                child: CircleAvatar(
+                  backgroundColor: AppColors.white,
+                  child: _popupMenu(context, property)),
               ),
             ],
           ),
@@ -763,6 +764,12 @@ class _SellerHomeState extends State<SellerHome>
           }
         } else if (value == 'delete') {
           _confirmDelete(context, property.id);
+        } else if (value == 'create-auction') {
+          await Navigator.pushNamed(
+            context,
+            '/create-auction',
+            arguments: property,
+          );
         }
       },
       itemBuilder: (_) => [
@@ -780,6 +787,26 @@ class _SellerHomeState extends State<SellerHome>
                   Icon(Icons.edit, size: 20, color: AppColors.navyDark),
                   SizedBox(width: 10),
                   Text("Edit"),
+                ],
+              ),
+            ),
+          ),
+        ),
+        if (!property.isAuction)
+        PopupMenuItem(
+          value: 'create-auction',
+          padding: EdgeInsets.zero,
+          child: InkWell(
+            splashColor: AppColors.gold,
+            highlightColor: AppColors.gold,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: const [
+                  Icon(Icons.gavel, size: 20, color: AppColors.navyDark),
+                  SizedBox(width: 10),
+                  Text("Create Auction"),
                 ],
               ),
             ),

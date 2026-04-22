@@ -5,6 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:movin/data/models/property_model.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/domain/repositories/property_repository.dart';
+import 'package:movin/presentation/auction/create%20auction/screens/create_auction_screen.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 
@@ -97,6 +98,7 @@ class Movin extends StatelessWidget {
             child: EditPropertyScreen(property: property),
           );
         },
+        '/create-auction': (_) => const CreateAuctionScreen(),
       },
     );
   }
