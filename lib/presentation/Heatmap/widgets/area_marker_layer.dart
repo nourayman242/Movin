@@ -18,7 +18,7 @@ static Future<Set<Marker>> buildMarkers(
     final area = areas[i];
     final isSelected = area.name == selectedAreaName;
     final color = isSelected
-        ? const Color(0xFF1A56DB) // blue for selected
+        ? const Color(0xFF1A56DB)
         : ScoreColorMapper.getColor(area.score);
     final icon = await _buildPinIcon(area.listingCount, color,
         isSelected: isSelected);
@@ -28,7 +28,7 @@ static Future<Set<Marker>> buildMarkers(
         markerId: MarkerId('area_$i'),
         position: area.center,
         icon: icon,
-        zIndex: isSelected ? 1 : 0, // selected floats on top
+        zIndex: isSelected ? 1 : 0, 
         anchor: const Offset(0.5, 1.0),
         infoWindow: InfoWindow(
           title: isSelected ? '📍 ${area.name} (Your area)' : area.name,
@@ -62,7 +62,7 @@ static Future<Set<Marker>> buildMarkers(
     );
     canvas.drawRRect(rrect, bubblePaint);
 
-    // Small triangle tail at bottom-center
+    
     final tailPath = Path()
       ..moveTo(w / 2 - 6, h)
       ..lineTo(w / 2 + 6, h)
@@ -70,7 +70,7 @@ static Future<Set<Marker>> buildMarkers(
       ..close();
     canvas.drawPath(tailPath, bubblePaint);
 
-    // Listing count text
+    
     final tp = TextPainter(
       text: TextSpan(
         text: '$count listings',

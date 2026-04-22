@@ -55,7 +55,10 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                 SizedBox(height: 16.h),
                 TitleCard(controller: controller, property: widget.property),
                 SizedBox(height: 16.h),
-                PropertyTabs(controller: controller),
+                PropertyTabs(
+  controller: controller,
+  property: widget.property, 
+),
                 SizedBox(height: 16.h),
                 if (widget.property.isAuction)
                   BlocProvider(
