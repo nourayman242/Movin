@@ -24,7 +24,6 @@ import 'package:movin/domain/repositories/otp_repository.dart';
 import 'package:movin/domain/repositories/profile_repository.dart';
 import 'package:movin/domain/repositories/property_repository.dart';
 import 'package:movin/domain/repositories/reset_pass_repository.dart';
-import 'package:movin/presentation/auction/create%20auction/cubit/create_auction_cubit.dart';
 import 'package:movin/presentation/auction/cubit/auction_cubit.dart';
 import 'package:movin/presentation/auction/cubit/auction_list_cubit.dart';
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
