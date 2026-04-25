@@ -77,11 +77,10 @@ extension GetItInjectableX on _i174.GetIt {
       environment,
       environmentFilter,
     );
-    final networkServices = _$NetworkServices();
+    final networkModule = _$NetworkModule();
     gh.factory<_i872.LoanCalcBloc>(() => _i872.LoanCalcBloc());
-    gh.lazySingleton<_i361.Dio>(() => networkServices.provideDio());
-    gh.lazySingleton<_i731.SocketService>(
-        () => networkServices.socketService());
+    gh.lazySingleton<_i361.Dio>(() => networkModule.dio());
+    gh.lazySingleton<_i731.SocketService>(() => networkModule.socketService());
     gh.lazySingleton<_i137.GoogleAuthService>(() => _i137.GoogleAuthService());
     gh.lazySingleton<_i282.AuthLocalService>(() => _i282.AuthLocalService());
     gh.lazySingleton<_i87.SettingsLocalService>(
@@ -89,29 +88,29 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i718.FavoriteHiveService>(
         () => _i718.FavoriteHiveService());
     gh.lazySingleton<_i232.RegisterServices>(
-        () => networkServices.registerServices(gh<_i361.Dio>()));
+        () => networkModule.registerServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i633.LoginServices>(
-        () => networkServices.loginServices(gh<_i361.Dio>()));
+        () => networkModule.loginServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i753.ForgotPasswordService>(
-        () => networkServices.forgotPasswordService(gh<_i361.Dio>()));
+        () => networkModule.forgotPasswordService(gh<_i361.Dio>()));
     gh.lazySingleton<_i362.FavoriteApiService>(
-        () => networkServices.favoriteApiService(gh<_i361.Dio>()));
+        () => networkModule.favoriteApiService(gh<_i361.Dio>()));
     gh.lazySingleton<_i515.RoleServices>(
-        () => networkServices.roleServices(gh<_i361.Dio>()));
+        () => networkModule.roleServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i634.PropertyService>(
-        () => networkServices.propertyService(gh<_i361.Dio>()));
+        () => networkModule.propertyService(gh<_i361.Dio>()));
     gh.lazySingleton<_i97.OtpServices>(
-        () => networkServices.otpServices(gh<_i361.Dio>()));
+        () => networkModule.otpServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i295.ResetPasswordService>(
-        () => networkServices.resetPasswordService(gh<_i361.Dio>()));
+        () => networkModule.resetPasswordService(gh<_i361.Dio>()));
     gh.lazySingleton<_i163.ProfileService>(
-        () => networkServices.profileService(gh<_i361.Dio>()));
+        () => networkModule.profileService(gh<_i361.Dio>()));
     gh.lazySingleton<_i467.AuctionListService>(
-        () => networkServices.auctionListService(gh<_i361.Dio>()));
+        () => networkModule.auctionListService(gh<_i361.Dio>()));
     gh.lazySingleton<_i574.OtpRepository>(
         () => _i736.OtpRepositoryImpl(gh<_i97.OtpServices>()));
     gh.lazySingleton<_i935.ProfileRepository>(
-        () => networkServices.profileRepository(gh<_i163.ProfileService>()));
+        () => networkModule.profileRepository(gh<_i163.ProfileService>()));
     gh.lazySingleton<_i273.FavoriteRepository>(
         () => _i882.FavoriteRepositoryImpl(
               gh<_i362.FavoriteApiService>(),
@@ -126,39 +125,39 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i841.FavoriteBloc>(
         () => _i841.FavoriteBloc(gh<_i273.FavoriteRepository>()));
     gh.factory<_i898.OtpCubit>(
-        () => networkServices.otpCubit(gh<_i574.OtpRepository>()));
-    gh.lazySingleton<_i686.ForgotPasswordRepository>(() => networkServices
+        () => networkModule.otpCubit(gh<_i574.OtpRepository>()));
+    gh.lazySingleton<_i686.ForgotPasswordRepository>(() => networkModule
         .forgotPasswordRepository(gh<_i753.ForgotPasswordService>()));
     gh.factory<_i617.SettingsBloc>(() => _i617.SettingsBloc(
           gh<_i87.SettingsLocalService>(),
           gh<_i282.AuthLocalService>(),
         ));
-    gh.factory<_i493.ForgotPasswordCubit>(() => networkServices
+    gh.factory<_i493.ForgotPasswordCubit>(() => networkModule
         .forgotPasswordCubit(gh<_i686.ForgotPasswordRepository>()));
     gh.factory<_i981.ProfileCubit>(
-        () => networkServices.profileCubit(gh<_i935.ProfileRepository>()));
+        () => networkModule.profileCubit(gh<_i935.ProfileRepository>()));
     gh.lazySingleton<_i770.PropertyRepository>(
-        () => networkServices.propertyRepository(gh<_i634.PropertyService>()));
+        () => networkModule.propertyRepository(gh<_i634.PropertyService>()));
     gh.lazySingleton<_i623.RegisterRepository>(
         () => _i666.RegisterRepositoryImpl(gh<_i232.RegisterServices>()));
     gh.lazySingleton<_i701.AuctionRepository>(
-        () => networkServices.auctionRepository(gh<_i731.SocketService>()));
+        () => networkModule.auctionRepository(gh<_i731.SocketService>()));
     gh.lazySingleton<_i332.ResetPasswordRepository>(() =>
         _i684.ResetPasswordRepositoryImpl(gh<_i295.ResetPasswordService>()));
     gh.factory<_i790.AuctionListCubit>(
-        () => networkServices.auctionListCubit(gh<_i467.AuctionListService>()));
+        () => networkModule.auctionListCubit(gh<_i467.AuctionListService>()));
     gh.factory<_i267.PropertyCubit>(
-        () => networkServices.propertyCubit(gh<_i770.PropertyRepository>()));
+        () => networkModule.propertyCubit(gh<_i770.PropertyRepository>()));
     gh.factory<_i571.RoleBloc>(
         () => _i571.RoleBloc(gh<_i166.RoleRepository>()));
     gh.factory<_i288.AuthCubit>(
         () => _i288.AuthCubit(gh<_i1021.AuthRepository>()));
     gh.factory<_i473.AuctionCubit>(
-        () => networkServices.auctionCubit(gh<_i701.AuctionRepository>()));
-    gh.factory<_i896.ResetPasswordCubit>(() => networkServices
-        .resetPasswordCubit(gh<_i332.ResetPasswordRepository>()));
+        () => networkModule.auctionCubit(gh<_i701.AuctionRepository>()));
+    gh.factory<_i896.ResetPasswordCubit>(() =>
+        networkModule.resetPasswordCubit(gh<_i332.ResetPasswordRepository>()));
     return this;
   }
 }
 
-class _$NetworkServices extends _i324.NetworkServices {}
+class _$NetworkModule extends _i324.NetworkModule {}
