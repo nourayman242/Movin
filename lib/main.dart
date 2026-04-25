@@ -13,16 +13,10 @@ import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
 import 'package:movin/presentation/home/screens/home.dart';
-import 'package:movin/presentation/role_selection/manager/role_bloc/role_bloc.dart';
 
 import 'package:movin/domain/repositories/property_repository.dart';
 import 'package:movin/presentation/auction/create%20auction/screens/create_auction_screen.dart';
-import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
-import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 
-import 'package:movin/presentation/home/managers/mode_service.dart';
-import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
-import 'package:movin/presentation/home/screens/home.dart';
 
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
 
@@ -47,12 +41,15 @@ void main() async {
   await Hive.initFlutter();
   await setUpServiceLocator();
   runApp(
+
     ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, __) => MultiBlocProvider(
         providers: [
+
+
           RepositoryProvider<PropertyRepository>(
             create: (_) => getIt<PropertyRepository>(),
           ),
@@ -68,7 +65,6 @@ void main() async {
         ],
         child: const Movin(),
       ),
-
       child: Movin(),
     ),
   );

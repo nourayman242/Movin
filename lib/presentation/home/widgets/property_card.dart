@@ -94,6 +94,7 @@ class PropertyCard extends StatelessWidget {
 
                         return GestureDetector(
                           onTap: () {
+                            print("CLICKED");
                             context.read<FavoriteBloc>().add(
 
 

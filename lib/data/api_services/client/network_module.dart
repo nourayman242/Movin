@@ -76,6 +76,7 @@ abstract class NetworkModule {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           final token = await SharedHelper.getToken();
+          print("TOKEN: $token");
 
           if (token != null) {
             options.headers['Authorization'] = 'Bearer $token';
