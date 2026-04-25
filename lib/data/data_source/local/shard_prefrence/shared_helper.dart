@@ -4,6 +4,7 @@ class SharedHelper {
   static const String _onboardingKey = 'onboarding_seen';
   static const String _isLoggedInKey = 'is_logged_in';
   static const String _userRoleKey = 'user_role';
+
   static const String _tokenKey = 'token';
   static const String _userIdKey = 'user_id'; // ✅ added
 
@@ -30,6 +31,22 @@ class SharedHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_isLoggedInKey) ?? false;
   }
+  // USER ROLE
+
+  static Future<void> setUserRole(String role) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userRoleKey, role);
+  }
+
+  static Future<String?> getUserRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_userRoleKey);
+  }
+
+  static Future<void> clearUserRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_userRoleKey);
+  }
 
   // TOKEN
 
@@ -55,31 +72,23 @@ class SharedHelper {
     return prefs.getString(_userIdKey);
   }
 
-  // USER ROLE
 
-  static Future<void> setUserRole(String role) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_userRoleKey, role);
-  }
-
-  static Future<String?> getUserRole() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_userRoleKey);
-  }
-
-  static Future<void> clearUserRole() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_userRoleKey);
-  }
 
   // LOGOUT
 
   static Future<void> clearAll() async {
     final prefs = await SharedPreferences.getInstance();
+    //may remove onboarding
     await prefs.remove(_onboardingKey);
-    await prefs.remove(_isLoggedInKey);
-    await prefs.remove(_userRoleKey);
-    await prefs.remove(_tokenKey);
-    await prefs.remove(_userIdKey); // ✅ clear on logout
+    // await prefs.remove(_isLoggedInKey);
+    // await prefs.remove(_userRoleKey);
+    await prefs.remove('token');
+    await prefs.setBool(_isLoggedInKey, false);
   }
+
+
+
 }
+
+
+
