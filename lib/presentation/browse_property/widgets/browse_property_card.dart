@@ -150,6 +150,9 @@ class BrowsePropertyCard extends StatelessWidget {
                         style: AppTextStyles.smallText,
                       ),
                       Text(
+
+
+
                         property.size.isNotEmpty ? property.size : '-',
                         style: AppTextStyles.smallText,
                       ),

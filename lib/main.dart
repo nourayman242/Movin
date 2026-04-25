@@ -4,6 +4,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:movin/data/models/property_model.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
+
+
+import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
+import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
+
+
+import 'package:movin/presentation/home/managers/mode_service.dart';
+import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
+import 'package:movin/presentation/home/screens/home.dart';
+import 'package:movin/presentation/role_selection/manager/role_bloc/role_bloc.dart';
+
 import 'package:movin/domain/repositories/property_repository.dart';
 import 'package:movin/presentation/auction/create%20auction/screens/create_auction_screen.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
@@ -68,6 +79,7 @@ class Movin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       // ← now MaterialApp is the direct root
       debugShowCheckedModeBanner: false,
@@ -99,6 +111,7 @@ class Movin extends StatelessWidget {
           );
         },
         '/create-auction': (_) => const CreateAuctionScreen(),
+
       },
     );
   }

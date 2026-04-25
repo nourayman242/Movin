@@ -16,6 +16,10 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
   final Color navy = const Color(0xFF001F3F);
   final Color offWhite = const Color(0xFFF8F8F8);
 
+
+
+
+
   List<PropertyEntity> historyProperties = [
     PropertyEntity(
       isAuction: true,

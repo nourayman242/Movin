@@ -10,7 +10,9 @@ import 'package:movin/presentation/home/widgets/shared/circle_button.dart';
 
 class PropertyImageSlider extends StatelessWidget {
   final PageController controller;
+
  final PropertyEntity property;
+
 
   const PropertyImageSlider({
     super.key,
