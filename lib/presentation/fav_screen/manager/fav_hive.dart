@@ -13,16 +13,16 @@ class FavoriteHiveService {
   }
 
   Set<String> loadFavorites() {
-  final stored = box.get(_key);
-  if (stored is List) {
-    return Set<String>.from(stored.cast<String>());
+    final stored = box.get(_key);
+    if (stored is List) {
+      return Set<String>.from(stored.cast<String>());
+    }
+    return {};
   }
-  return {};
-}
 
-Future<void> saveFavorites(Set<String> ids) async {
-  await box.put(_key, ids.toList());
-}
+  Future<void> saveFavorites(Set<String> ids) async {
+    await box.put(_key, ids.toList());
+  }
 
   Future<void> clear() async {
     await box.delete(_key);

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/home/screens/filter_screen.dart';
@@ -6,24 +5,21 @@ import 'package:movin/presentation/home/screens/filter_screen.dart';
 class SearchHeader extends StatelessWidget {
   final ValueChanged<String> onSearchChanged;
 
-  const SearchHeader({
-    required this.onSearchChanged,
-    super.key,
-  });
+  const SearchHeader({required this.onSearchChanged, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(30),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            offset: Offset(0, 3),
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -31,23 +27,20 @@ class SearchHeader extends StatelessWidget {
         children: [
           const Icon(Icons.search, color: Colors.grey),
           const SizedBox(width: 10),
-
-          /// SEARCH FIELD
           Expanded(
             child: TextField(
               onChanged: onSearchChanged,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: "Search by location...",
                 border: InputBorder.none,
               ),
             ),
           ),
-
           GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => FilterScreen()),
+                MaterialPageRoute(builder: (_) => const FilterScreen()),
               );
             },
             child: Container(
@@ -62,6 +55,7 @@ class SearchHeader extends StatelessWidget {
         ],
       ),
     );
+
+   
   }
 }
-

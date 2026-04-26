@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/presentation/controllers/property_details_controller.dart';
 
 class TitleCard extends StatelessWidget {
   final PropertyDetailsController controller;
-  const TitleCard({super.key, required this.controller});
+  final PropertyEntity property;
+  const TitleCard({
+    super.key,
+    required this.controller,
+    required this.property,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +40,7 @@ class TitleCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Text(
-                  'For Sale',
+                  property.listingType,
                   style: TextStyle(
                     fontSize: 12.sp,
                     color: AppColors.white,
@@ -50,7 +56,7 @@ class TitleCard extends StatelessWidget {
           ),
           SizedBox(height: 12.h),
           Text(
-            'Modern Luxury Villa',
+            property.description,
             style: TextStyle(
               fontSize: 22.sp,
               fontWeight: FontWeight.w600,
@@ -66,16 +72,34 @@ class TitleCard extends StatelessWidget {
                 color: AppColors.grey,
               ),
               SizedBox(width: 4.w),
-              Text('Zamalek', style: TextStyle(color: AppColors.grey)),
+
+              Text(property.location, style: TextStyle(color: AppColors.grey)),
+
             ],
           ),
           SizedBox(height: 20.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _infoItem(Icons.bed_outlined, '4', 'Bedrooms'),
-              _infoItem(Icons.bathtub_outlined, '3', 'Bathrooms'),
-              _infoItem(Icons.square_outlined, '3,500', 'm²'),
+
+
+              _infoItem(
+                Icons.bed_outlined,
+                property.details["bedrooms"]??"-",
+                'Bedrooms',
+              ),
+              _infoItem(
+                Icons.bathtub_outlined,
+                property.details["bathrooms"]??"-",
+                'Bathrooms',
+              ),
+              _infoItem(
+                Icons.square_outlined,
+                property.size.isNotEmpty ? property.size : '-',
+                'sqft',
+              ),
+              if (property.isAuction)
+
               _infoItem(
                 Icons.gavel_outlined,
                 'Mazad',

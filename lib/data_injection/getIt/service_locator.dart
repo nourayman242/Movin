@@ -4,14 +4,13 @@ import 'package:movin/presentation/fav_screen/manager/fav_hive.dart';
 import 'service_locator.config.dart';
 
 
-final getIt= GetIt.instance;
+final getIt = GetIt.instance;
 
 @InjectableInit()
 Future<void> setUpServiceLocator() async {
-  getIt.init();
+ await getIt.init();
 
-  // initi hive service
   final favHive = getIt<FavoriteHiveService>();
   await favHive.init();
-}
 
+}

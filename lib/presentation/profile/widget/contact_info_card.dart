@@ -1,18 +1,21 @@
 
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/presentation/profile/model/profile_model.dart';
+import 'package:movin/data/models/profile_model.dart';
 
 class EditableContactInfoCard extends StatelessWidget {
   final TextEditingController emailController;
   final TextEditingController phoneController;
   final TextEditingController locationController;
+  final ProfileModel profile;
 
-  const EditableContactInfoCard({
+  const EditableContactInfoCard(
+     
+    {
     super.key,
-    required this.emailController,
+     required this.emailController,
     required this.phoneController,
-    required this.locationController, required ProfileModel profile,
+    required this.locationController, required this.profile,
   });
 
   @override
@@ -27,15 +30,18 @@ class EditableContactInfoCard extends StatelessWidget {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-
-          _editableItem(Icons.email, "Email", emailController),
-          _editableItem(Icons.phone, "Phone", phoneController, keyboardType: TextInputType.phone),
+           _editableItem(Icons.phone, "Phone", phoneController, keyboardType: TextInputType.phone),
           _editableItem(Icons.location_on, "Location", locationController),
-
+          const Text(
+            "Uneditable Information",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          _readOnlyItem(Icons.email, "Email",profile.email),
           _readOnlyItem(
             Icons.calendar_month,
             "Member Since",
-            "January 2024",
+           formatDate(profile.createdAt),
           ),
         ],
       ),
@@ -125,4 +131,15 @@ class EditableContactInfoCard extends StatelessWidget {
       ),
     );
   }
+  String formatDate(DateTime date) {
+  return "${_monthName(date.month)} ${date.year}";
+}
+
+String _monthName(int month) {
+  const months = [
+    "January","February","March","April","May","June",
+    "July","August","September","October","November","December"
+  ];
+  return months[month - 1];
+}
 }

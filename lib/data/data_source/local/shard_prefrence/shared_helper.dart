@@ -5,74 +5,90 @@ class SharedHelper {
   static const String _isLoggedInKey = 'is_logged_in';
   static const String _userRoleKey = 'user_role';
 
-  //ONBOARDING
+  static const String _tokenKey = 'token';
+  static const String _userIdKey = 'user_id'; // ✅ added
 
-  //set wheter the user has already seen the onboarding screens or not
+  // ONBOARDING
+
   static Future<void> setOnboardingSeen(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_onboardingKey, value);
   }
 
-  //get the onboarding seen status
   static Future<bool> isOnboardingSeen() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_onboardingKey) ?? false;
   }
-  //AUTHENTICATION
 
-  // Set login state.
+  // AUTHENTICATION
+
   static Future<void> setLoggedIn(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_isLoggedInKey, value);
   }
 
-  // Get login state   edf false
   static Future<bool> isLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_isLoggedInKey) ?? false;
   }
+  // USER ROLE
 
-  //USER ROLE
-
-  // buter or seller ?
   static Future<void> setUserRole(String role) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_userRoleKey, role);
   }
 
-  //return buyer or seller
   static Future<String?> getUserRole() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_userRoleKey);
   }
 
-  // clear role because of switching roles
   static Future<void> clearUserRole() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_userRoleKey);
   }
 
-  //LOGGEING OUT
-  //clear all because of the logging out
+  // TOKEN
+
+  static Future<void> saveToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_tokenKey, token);
+  }
+
+  static Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_tokenKey);
+  }
+
+  // USER ID
+
+  static Future<void> saveUserId(String userId) async { // ✅ added
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userIdKey, userId);
+  }
+
+  static Future<String?> getUserId() async { // ✅ added
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_userIdKey);
+  }
+
+
+
+  // LOGOUT
+
   static Future<void> clearAll() async {
     final prefs = await SharedPreferences.getInstance();
     //may remove onboarding
     await prefs.remove(_onboardingKey);
     // await prefs.remove(_isLoggedInKey);
     // await prefs.remove(_userRoleKey);
-     await prefs.remove('token');          
-     await prefs.setBool(_isLoggedInKey, false);
+    await prefs.remove('token');
+    await prefs.setBool(_isLoggedInKey, false);
   }
 
-  // saved token after login
-  static Future<void> saveToken(String token) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', token);
-  }
 
-  //get token for authenticated requests
-  static Future<String?> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token');
-  }
+
 }
+
+
+

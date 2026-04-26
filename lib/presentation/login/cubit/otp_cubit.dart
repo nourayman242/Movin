@@ -9,13 +9,13 @@ class OtpCubit extends Cubit<OtpState> {
   OtpCubit(this.repository) : super(OtpInitial());
 
   Future<void> verifyOtp({required String email, required String otp}) async {
-    emit(OtpLoading());
-    try {
-      await repository.verifyOtp(email: email, otp: otp);
-      emit(OtpSuccess());
-    } catch (e) {
-      emit(OtpFailure(e.toString()));
-    }
+  emit(OtpLoading());
+  try {
+    final message = await repository.verifyOtp(email: email, otp: otp);
+    emit(OtpSuccess(message: message));  // ← pass actual backend message
+  } catch (e) {
+    emit(OtpFailure(e.toString()));
   }
+}
 }
 
