@@ -12,7 +12,10 @@ import 'package:movin/presentation/home/widgets/property/tabs/property_tabs.dart
 import 'package:movin/presentation/home/widgets/property/title_card.dart';
 
 class PropertyDetailsScreen extends StatefulWidget {
+
+
   final PropertyEntity property;
+
 
   const PropertyDetailsScreen({super.key, required this.property});
 

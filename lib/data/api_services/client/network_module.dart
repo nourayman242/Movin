@@ -1,3 +1,4 @@
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -57,21 +58,6 @@ abstract class NetworkServices {
     return dio;
   }
 
-  @Named('authDio')
-  @lazySingleton
-  Dio provideAuthDio() {
-    final dio = Dio(
-      BaseOptions(
-        baseUrl: 'https://movin-app.vercel.app',
-        connectTimeout: const Duration(seconds: 15),
-        receiveTimeout: const Duration(seconds: 15),
-      ),
-    );
-    dio.interceptors.add(AuthInterceptor());
-    dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
-    return dio;
-  }
-
   @lazySingleton
   RegisterServices registerServices(Dio dio) {
     return RegisterServices(dio);
@@ -81,8 +67,9 @@ abstract class NetworkServices {
   LoginServices loginServices(Dio dio) => LoginServices(dio);
 
   @lazySingleton
-  ForgotPasswordService forgotPasswordService(@Named('authDio') Dio dio) =>
-      ForgotPasswordService(dio);
+  ForgotPasswordService forgotPasswordService(Dio dio) {
+    return ForgotPasswordService(dio);
+  }
 
   @lazySingleton
   ForgotPasswordRepository forgotPasswordRepository(
@@ -106,12 +93,12 @@ abstract class NetworkServices {
   PropertyCubit propertyCubit(PropertyRepository repo) => PropertyCubit(repo);
 
   @lazySingleton
-  OtpServices otpServices(@Named('authDio') Dio dio) => OtpServices(dio);
+  OtpServices otpServices(Dio dio) => OtpServices(dio);
 
   @factory
   OtpCubit otpCubit(OtpRepository repo) => OtpCubit(repo);
   @lazySingleton
-  ResetPasswordService resetPasswordService(@Named('authDio') Dio dio) =>
+  ResetPasswordService resetPasswordService(Dio dio) =>
       ResetPasswordService(dio);
 
   @factory

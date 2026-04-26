@@ -4,6 +4,9 @@ import 'package:movin/presentation/home/screens/home.dart';
 import 'package:movin/presentation/home/widgets/for_sale_screen.dart';
 
 class MainHomeScreen extends StatefulWidget {
+
+  //final ProfileModel currentProfile;  
+
   const MainHomeScreen({super.key,});
 
   @override

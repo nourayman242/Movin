@@ -54,6 +54,7 @@ class _ResultsPageState extends State<ResultsPage> {
   );
 }
 
+
 List<String> get _activeChips {
   final chips = <String>[];
   if (widget.selectedArea != null) chips.add('📍 ${widget.selectedArea}');

@@ -4,7 +4,7 @@ class SellerHomeViewModel extends ChangeNotifier {
   final List<Map<String, dynamic>> listings = [
     {
       'title': 'Modern Luxury Villa',
-      'location': 'Dubai Marina',
+      'location': 'Cairo Downtown',
       'price': '\$1,250,000',
       'status': 'active',
       'image': 'assets/images/villa2.webp',
@@ -14,7 +14,7 @@ class SellerHomeViewModel extends ChangeNotifier {
     },
     {
       'title': 'Contemporary Villa',
-      'location': 'Palm Jumeirah',
+      'location': 'Cairo Downtown',
       'price': '\$890,000',
       'status': 'pending',
       'image': 'assets/images/villa1.jpg',

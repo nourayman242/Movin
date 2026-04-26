@@ -12,22 +12,11 @@ class FavoriteHiveService {
     box = await Hive.openBox(_boxName);
   }
 
-  // Set<String> loadFavorites() {
-  //   final stored = box.get(_key);
-  //   if (stored is List) {
-  //     return Set<String>.from(stored.cast<String>());
-  //   }
-  //   return {};
-  // }
   Set<String> loadFavorites() {
-    try {
-      final stored = box.get(_key);
-
-      if (stored is List) {
-        return stored.map((e) => e.toString()).toSet();
-      }
-    } catch (_) {}
-
+    final stored = box.get(_key);
+    if (stored is List) {
+      return Set<String>.from(stored.cast<String>());
+    }
     return {};
   }
 

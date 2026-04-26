@@ -10,7 +10,10 @@ import 'package:movin/presentation/home/inner_pages/view_history_page.dart';
 import 'package:movin/presentation/home/widgets/drawer_header.dart';
 import 'package:movin/presentation/home/widgets/drawer_item.dart';
 import 'package:movin/presentation/home/widgets/mode_toggle_statement.dart';
+
+
 import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
+
 
 import 'package:movin/presentation/profile/profile_screen.dart';
 
@@ -20,8 +23,13 @@ import 'package:movin/presentation/settings/managers/settings_bloc/settings_even
 import 'package:movin/presentation/settings/screens/settings_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
+
+  //final ProfileModel currentProfile;
+
+
   const CustomDrawer({super.key, required this.profile});
   final ProfileModel profile;
+
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +134,7 @@ class CustomDrawer extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const SettingsScreen(),
+                            builder: (_) => SettingsScreen(),
                           ),
                         );
                       },

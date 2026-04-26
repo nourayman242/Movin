@@ -1,35 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
 import 'package:movin/presentation/home/managers/mode_service.dart';
-
-class SwitchRoleService {
-  static const String _baseUrl = 'https://movin-app.vercel.app/api/auth';
-
-  static Future<Map<String, dynamic>> switchRole(String newRole) async {
-    final token = await SharedHelper.getToken();
-
-    final response = await http.put(
-      Uri.parse('$_baseUrl/switch-role'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode({'newRole': newRole}),
-    );
-
-    final data = jsonDecode(response.body);
-
-    if (response.statusCode == 200) {
-      return data;
-    } else {
-      throw Exception(data['message'] ?? 'Failed to switch role');
-    }
-  }
-}
+import 'package:movin/presentation/role_selection/manager/role_bloc/role_bloc.dart';
+import 'package:movin/presentation/role_selection/manager/role_bloc/role_event.dart';
+import 'package:movin/presentation/role_selection/manager/role_bloc/role_state.dart';
+import 'package:movin/data_injection/getIt/service_locator.dart';
 
 class RoleSelection extends StatefulWidget {
   const RoleSelection({super.key});
@@ -40,9 +16,16 @@ class RoleSelection extends StatefulWidget {
 
 class _RoleSelectionState extends State<RoleSelection> {
   String? _selectedRole;
-  bool _isLoading = false;
 
-  Future<void> _confirmRole() async {
+  late final RoleBloc _roleBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _roleBloc = getIt<RoleBloc>();
+  }
+
+  void _confirmRole() {
     if (_selectedRole == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select a role to continue')),
@@ -50,26 +33,9 @@ class _RoleSelectionState extends State<RoleSelection> {
       return;
     }
 
-    setState(() => _isLoading = true);
-
-    try {
-      final apiRole = _selectedRole == 'seller' ? 'Seller' : 'Buyer';
-
-      await SwitchRoleService.switchRole(apiRole);
-
-      await SharedHelper.setUserRole(_selectedRole!);
-      ModeService.isSellerNotifier.value = _selectedRole == 'seller';
-
-      if (!mounted) return;
-      Navigator.pushReplacementNamed(context, '/home');
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
-      );
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
+    _roleBloc.add(
+      ChooseRoleEvent(_selectedRole!),
+    );
   }
 
   Widget _roleCard({
@@ -79,17 +45,20 @@ class _RoleSelectionState extends State<RoleSelection> {
     required List<String> bullets,
   }) {
     final bool selected = _selectedRole == rolekey;
-    final border = selected
-        ? Border.all(color: AppColors.gold, width: 2)
-        : null;
 
     return GestureDetector(
-      onTap: () => setState(() => _selectedRole = rolekey),
+      onTap: () {
+        setState(() {
+          _selectedRole = rolekey;
+        });
+      },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 160),
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
           color: AppColors.white,
+          border: selected ? Border.all(color: AppColors.gold, width: 2) : null,
+          borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
@@ -97,8 +66,6 @@ class _RoleSelectionState extends State<RoleSelection> {
               offset: const Offset(0, 4),
             ),
           ],
-          border: border,
-          borderRadius: BorderRadius.circular(14),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +91,7 @@ class _RoleSelectionState extends State<RoleSelection> {
             ),
             const SizedBox(height: 12),
             ...bullets.map(
-              (b) => Padding(
+                  (b) => Padding(
                 padding: const EdgeInsets.only(bottom: 6),
                 child: Row(
                   children: [
@@ -150,7 +117,6 @@ class _RoleSelectionState extends State<RoleSelection> {
                 ),
               ),
             ),
-            if (selected) const SizedBox(height: 12),
           ],
         ),
       ),
@@ -163,17 +129,18 @@ class _RoleSelectionState extends State<RoleSelection> {
     final bool isWide = width > 900;
 
     int columns = 1;
-    if (width > 1200)
+    if (width > 1200) {
       columns = 3;
-    else if (width > 720)
+    } else if (width > 720) {
       columns = 2;
+    }
 
     final cards = [
       _roleCard(
         rolekey: 'buyer',
         icon: Icons.search,
         title: "I'm a Buyer",
-        bullets: [
+        bullets: const [
           'Browse and search for properties',
           'Save favorite listings for quick access',
           'Contact sellers directly through the app',
@@ -183,7 +150,7 @@ class _RoleSelectionState extends State<RoleSelection> {
         rolekey: 'seller',
         icon: Icons.sell,
         title: "I'm a Seller",
-        bullets: [
+        bullets: const [
           'List your properties with detailed descriptions and photos',
           'Manage inquiries from potential buyers',
           'Track views and interest in your listings',
@@ -191,86 +158,109 @@ class _RoleSelectionState extends State<RoleSelection> {
       ),
     ];
 
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: isWide ? 48 : 18,
-              vertical: 20,
-            ),
-            child: Column(
-              children: [
-                Text(
-                  "How would you like to use Movin?",
-                  style: AppTextStyles.heading.copyWith(
-                    color: Colors.black,
-                    fontSize: 22,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  "Choose your preferred role to get started",
-                  style: AppTextStyles.subHeading.copyWith(
-                    color: AppColors.grey,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 28),
+    return BlocListener<RoleBloc, RoleState>(
+      bloc: _roleBloc,
+      listener: (context, state) {
+        if (state is RoleSuccess) {
+          ModeService.isSellerNotifier.value =
+              state.role.toLowerCase() == 'seller';
 
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    const double spacing = 16;
-                    final double totalWidth = constraints.maxWidth;
-                    final int colCount = columns;
-                    final double itemWidth =
-                        (totalWidth - (spacing * (colCount - 1))) / colCount;
+          Navigator.pushReplacementNamed(context, '/home');
+        }
 
-                    return Wrap(
-                      spacing: spacing,
-                      runSpacing: 16,
-                      children: cards
-                          .map((w) => SizedBox(width: itemWidth, child: w))
-                          .toList(),
-                    );
-                  },
-                ),
-
-                const SizedBox(height: 120),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _confirmRole,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.gold,
-                      foregroundColor: AppColors.navyDark,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+        if (state is RoleError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: isWide ? 48 : 18,
+                vertical: 20,
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    "How would you like to use Movin?",
+                    style: AppTextStyles.heading.copyWith(
+                      color: Colors.black,
+                      fontSize: 22,
                     ),
-                    child: _isLoading
-                        ? const SizedBox(
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    "Choose your preferred role to get started",
+                    style: AppTextStyles.subHeading.copyWith(
+                      color: AppColors.grey,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 28),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      const double spacing = 16;
+                      final double totalWidth = constraints.maxWidth;
+                      final double itemWidth =
+                          (totalWidth - (spacing * (columns - 1))) / columns;
+
+                      return Wrap(
+                        spacing: spacing,
+                        runSpacing: 16,
+                        children: cards
+                            .map((w) => SizedBox(width: itemWidth, child: w))
+                            .toList(),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 120),
+                  BlocBuilder<RoleBloc, RoleState>(
+                    bloc: _roleBloc,
+                    builder: (context, state) {
+                      final isLoading = state is RoleLoading;
+
+                      return SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: isLoading ? null : _confirmRole,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.gold,
+                            foregroundColor: AppColors.navyDark,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: isLoading
+                              ? const SizedBox(
                             height: 20,
                             width: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color: AppColors.navyDark,
+                              color: Colors.black,
                             ),
                           )
-                        : Text(
+                              : Text(
                             'Continue',
                             style: AppTextStyles.button.copyWith(
                               color: AppColors.navyDark,
                             ),
                           ),
+                        ),
+                      );
+                    },
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
