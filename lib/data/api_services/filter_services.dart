@@ -31,9 +31,11 @@ class FilteredPropertiesResponse {
 }
 
 class FilterService {
-  static const String _endpoint = '/api/buyer/properties/filter';
+  
+  static const String _endpoint = '/api/seller/properties/filter';
 
   static Future<FilteredPropertiesResponse> fetchFilteredProperties({
+    String? location,       
     String? type,
     String? bedrooms,
     String? bathrooms,
@@ -43,17 +45,17 @@ class FilterService {
     String? sort,
     int page = 1,
   }) async {
-    // Reuse the same Dio instance that already has AuthInterceptor attached —
-    // this means the Bearer token is added automatically, fixing the 401.
     final dio = getIt<Dio>();
-
     final Map<String, dynamic> queryParams = {};
 
+    
+    if (location != null && location.isNotEmpty) {
+      queryParams['location'] = location.toLowerCase();
+    }
     if (type != null && type.isNotEmpty) {
       queryParams['type'] = type.toLowerCase();
     }
     if (bedrooms != null && bedrooms.isNotEmpty) {
-      // "5+" → "5" since the API expects a plain number
       queryParams['bedrooms'] = bedrooms.replaceAll('+', '');
     }
     if (bathrooms != null && bathrooms.isNotEmpty) {
@@ -71,7 +73,6 @@ class FilterService {
     if (sort != null && sort.isNotEmpty) {
       queryParams['sort'] = sort;
     }
-
     queryParams['page'] = page;
 
     try {
@@ -97,7 +98,6 @@ class FilterService {
     }
   }
 
-  /// Converts UI sort label → API sort param value
   static String? mapSortToApi(String? uiSort) {
     switch (uiSort) {
       case 'Newest':
@@ -106,8 +106,6 @@ class FilterService {
         return 'price-asc';
       case 'Price: High to Low':
         return 'price-desc';
-      case 'Most Popular':
-        return null; // not yet supported by the API
       default:
         return null;
     }

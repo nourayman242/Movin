@@ -41,32 +41,32 @@ class _ResultsPageState extends State<ResultsPage> {
     _future = _fetchProperties();
   }
 
-  Future<FilteredPropertiesResponse> _fetchProperties() {
-    return FilterService.fetchFilteredProperties(
-      type: widget.propertyType,
-      bedrooms: widget.bedrooms,
-      bathrooms: widget.bathrooms,
-      pool: widget.hasPool,
-      minPrice: widget.minPrice,
-      maxPrice: widget.maxPrice,
-      sort: FilterService.mapSortToApi(widget.sortLabel),
-    );
-  }
+ Future<FilteredPropertiesResponse> _fetchProperties() {
+  return FilterService.fetchFilteredProperties(
+    location: widget.selectedArea,   
+    type: widget.propertyType,
+    bedrooms: widget.bedrooms,
+    bathrooms: widget.bathrooms,
+    pool: widget.hasPool,
+    minPrice: widget.minPrice,
+    maxPrice: widget.maxPrice,
+    sort: FilterService.mapSortToApi(widget.sortLabel),
+  );
+}
 
-  // Build active filter chip labels for the AppBar
-  List<String> get _activeChips {
-    final chips = <String>[];
-    if (widget.selectedArea != null)chips.add('📍 ${widget.selectedArea}'); 
-    if (widget.propertyType != null) chips.add(widget.propertyType!);
-    if (widget.propertyType != null) chips.add(widget.propertyType!);
-    if (widget.bedrooms != null) chips.add('${widget.bedrooms} Bed');
-    if (widget.bathrooms != null) chips.add('${widget.bathrooms} Bath');
-    if (widget.hasPool == true) chips.add('Pool');
-    if (widget.minPrice > 0) chips.add('Min ${_fmt(widget.minPrice)}');
-    if (widget.maxPrice < 100000000) chips.add('Max ${_fmt(widget.maxPrice)}');
-    if (widget.sortLabel != null) chips.add(widget.sortLabel!);
-    return chips;
-  }
+
+List<String> get _activeChips {
+  final chips = <String>[];
+  if (widget.selectedArea != null) chips.add('📍 ${widget.selectedArea}');
+  if (widget.propertyType != null) chips.add(widget.propertyType!); 
+  if (widget.bedrooms != null) chips.add('${widget.bedrooms} Bed');
+  if (widget.bathrooms != null) chips.add('${widget.bathrooms} Bath');
+  if (widget.hasPool == true) chips.add('Pool');
+  if (widget.minPrice > 0) chips.add('Min ${_fmt(widget.minPrice)}');
+  if (widget.maxPrice < 100000000) chips.add('Max ${_fmt(widget.maxPrice)}');
+  if (widget.sortLabel != null) chips.add(widget.sortLabel!);
+  return chips;
+}
 
   String _fmt(double v) {
     if (v >= 1000000) return 'EGP ${(v / 1000000).toStringAsFixed(1)}M';
