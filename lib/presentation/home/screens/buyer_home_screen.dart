@@ -261,38 +261,6 @@ class _BuyerHomeState extends State<BuyerHome> {
                       //count: "1,832",
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              BrowsePropertiesScreen(type: 'Commercial'),
-                        ),
-                      );
-                    },
-                    child: _propertyCard(
-                      icon: Icons.apartment_outlined,
-                      title: "Commercial",
-                      //count: "567",
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              BrowsePropertiesScreen(type: 'Investment'),
-                        ),
-                      );
-                    },
-                    child: _propertyCard(
-                      icon: Icons.show_chart_outlined,
-                      title: "Investments",
-                      //count: "342",
-                    ),
-                  ),
                 ],
               ),
             ),
