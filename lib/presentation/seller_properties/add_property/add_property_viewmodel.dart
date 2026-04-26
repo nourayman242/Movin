@@ -280,7 +280,7 @@ auctionDescriptionController.dispose();
       images: imageUrls,
       details: details,
       id: '',
-      status: '', isAuction: false,
+      status: '', isAuction: false, sellerName: '', sellerPhone: '', sellerLocation: '', views: 0,
     );
   }
 }

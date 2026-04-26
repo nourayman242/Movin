@@ -116,6 +116,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/data/api_services/property_services.dart';
 import 'package:movin/data/repositories/property_repository_impl.dart';
+import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
 import 'package:movin/presentation/browse_property/widgets/browse_property_card.dart';
@@ -150,12 +151,15 @@ class _ViewMoreListingState extends State<ViewMoreListing> {
   }
 
   void navigateToDetails(PropertyEntity property) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => PropertyDetailsScreen(property: property),
-      ),
-    );
+   Navigator.push(
+ context,
+ MaterialPageRoute(
+   builder: (_) => BlocProvider.value(
+     value: getIt<PropertyCubit>(),
+     child: PropertyDetailsScreen(propertyId: property.id),
+   ),
+ ),
+);
   }
 
   @override

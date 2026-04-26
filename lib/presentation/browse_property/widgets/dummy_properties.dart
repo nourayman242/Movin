@@ -195,6 +195,6 @@ List<PropertyEntity> dummyProperties = [
     details: {"bedrooms": "4", "bathrooms": "3"},
     size: "3500",
     type: 'Villa',
-    status: "approved",
+    status: "approved", sellerName: '', sellerPhone: '', sellerLocation: '', views: 0,
   ),
 ];

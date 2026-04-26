@@ -10,6 +10,12 @@ class PropertyEntity {
   String status;
   final Map<String, dynamic> details;
   final bool isAuction;
+  final int views;
+
+  final String sellerName;
+  final String sellerPhone;
+  final String sellerLocation;
+
 
   PropertyEntity({
     required this.isAuction,
@@ -23,6 +29,10 @@ class PropertyEntity {
     required this.images,
     required this.status,
     required this.details,
+    required this.sellerName,
+    required this.sellerPhone,
+    required this.sellerLocation,
+    required this.views,
   });
 
   Map<String, dynamic> toJson() => {
@@ -36,6 +46,10 @@ class PropertyEntity {
     "images": images,
     "status": status,
     "details": details,
-    "isAuction":isAuction
+    "isAuction": isAuction,
+    "sellerName": sellerName,
+    "sellerPhone": sellerPhone,
+    "sellerLocation": sellerLocation,
+    "views": views,
   };
 }

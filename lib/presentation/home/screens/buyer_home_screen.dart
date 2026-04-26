@@ -71,28 +71,32 @@ class _BuyerHomeState extends State<BuyerHome> {
           return const Center(
             child: Scaffold(
               backgroundColor: AppColors.background,
-              body: Center(child: CircularProgressIndicator(color: AppColors.gold))),
+              body: Center(
+                child: CircularProgressIndicator(color: AppColors.gold),
+              ),
+            ),
           );
         }
 
-        return _buildContent(context,state.profile);
+        return _buildContent(context, state.profile);
       },
     );
-    
   }
 
   Widget _buildContent(BuildContext context, ProfileModel? profile) {
-     final safeProfile = profile ??
-      ProfileModel(
-        name: "Guest",
-        bio: "",
-        email: "",
-        phone: "",
-        location: "",
-        isSeller: false,
-        isBuyer: true,
-        stats: {}, createdAt:  DateTime.now(),
-      );
+    final safeProfile =
+        profile ??
+        ProfileModel(
+          name: "Guest",
+          bio: "",
+          email: "",
+          phone: "",
+          location: "",
+          isSeller: false,
+          isBuyer: true,
+          stats: {},
+          createdAt: DateTime.now(),
+        );
 
     return Scaffold(
       drawer: CustomDrawer(profile: safeProfile),
@@ -180,9 +184,7 @@ class _BuyerHomeState extends State<BuyerHome> {
                   style: TextStyle(color: AppColors.gold, fontSize: 18),
                 ),
                 Text(
-                safeProfile.name.isNotEmpty
-                    ? safeProfile.name
-                    : "Guest",
+                  safeProfile.name.isNotEmpty ? safeProfile.name : "Guest",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 26,
@@ -372,8 +374,12 @@ class _BuyerHomeState extends State<BuyerHome> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) =>
-                                    PropertyDetailsScreen(property: property),
+                                builder: (_) => BlocProvider.value(
+                                  value: getIt<PropertyCubit>(),
+                                  child: PropertyDetailsScreen(
+                                    propertyId: property.id,
+                                  ),
+                                ),
                               ),
                             );
                           },
@@ -460,8 +466,12 @@ class _BuyerHomeState extends State<BuyerHome> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) =>
-                                    PropertyDetailsScreen(property: property),
+                                builder: (_) => BlocProvider.value(
+                                  value: getIt<PropertyCubit>(),
+                                  child: PropertyDetailsScreen(
+                                    propertyId: property.id,
+                                  ),
+                                ),
                               ),
                             );
                           },

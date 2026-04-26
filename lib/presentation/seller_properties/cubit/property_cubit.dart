@@ -130,4 +130,15 @@ class PropertyCubit extends Cubit<PropertyState> {
 
     loadingRecommended = false;
   }
+
+  Future<void> getPropertyDetails(String id) async {
+  emit(PropertyLoading());
+
+  try {
+    final property = await repository.getPropertyById(id);
+    emit(PropertyDetailsLoaded(property));
+  } catch (e) {
+    emit(PropertyError(e.toString()));
+  }
+}
 }

@@ -13,6 +13,10 @@ class PropertyModel {
   final Map<String, dynamic> details;
   final bool isAuction;
   final String? auctionStatus;
+  final String sellerName;
+  final String sellerPhone;
+  final String sellerLocation;
+  final int views;
 
   PropertyModel({
     required this.isAuction,
@@ -27,15 +31,21 @@ class PropertyModel {
     required this.status,
     required this.details,
     required this.auctionStatus,
+    required this.sellerName,
+    required this.sellerPhone,
+    required this.sellerLocation,
+    required this.views,
   });
-
   factory PropertyModel.fromJson(Map<String, dynamic> json) {
     final List<String> parsedImages = [];
 
+    // SAFE images parse
     if (json['images'] is List) {
       for (final img in json['images']) {
-        if (img is Map && img.containsKey('url')) {
-          parsedImages.add(img['url']);
+        if (img is Map<String, dynamic>) {
+          parsedImages.add(img['url']?.toString() ?? '');
+        } else if (img is String) {
+          parsedImages.add(img);
         }
       }
     }
@@ -43,34 +53,38 @@ class PropertyModel {
     final details = json['details'] is Map<String, dynamic>
         ? json['details']
         : {};
-        final auction = json['auction'];
+
+    final auction = json['auction'] is Map<String, dynamic>
+        ? json['auction']
+        : {};
+
+    final seller = json['seller'] is Map<String, dynamic> ? json['seller'] : {};
+
     return PropertyModel(
-       isAuction: auction != null
-        ? auction['isAuction'] == true
-        : false,
-        auctionStatus: auction != null ? auction['status'] : null,
       id: json['_id']?.toString() ?? '',
       location: json['location']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
-
-      price: json['price'] is int
-          ? json['price']
-          : int.tryParse(json['price'].toString()) ?? 0,
-
+      price: int.tryParse(json['price'].toString()) ?? 0,
       listingType: json['listingType']?.toString() ?? '',
       type: json['type']?.toString() ?? '',
-
-      size: details['size']?.toString() ?? '',
-
+      size: json['size']?.toString() ?? details['size']?.toString() ?? '',
       images: parsedImages,
       status: json['status']?.toString() ?? '',
-
       details: details,
+
+      isAuction: auction['isAuction'] == true,
+      views: int.tryParse(json['views'].toString()) ?? 0,
+
+      sellerName: seller['username']?.toString() ?? '',
+      sellerPhone: seller['phone']?.toString() ?? '',
+      sellerLocation: seller['location']?.toString() ?? '',
+
+      auctionStatus: auction['status']?.toString() ?? '',
     );
   }
   PropertyEntity toEntity() {
     return PropertyEntity(
-      isAuction:isAuction,
+      isAuction: isAuction,
       id: id,
       location: location,
       description: description,
@@ -81,6 +95,10 @@ class PropertyModel {
       images: images,
       status: status,
       details: details,
+      sellerName: sellerName,
+      sellerPhone: sellerPhone,
+      sellerLocation: sellerLocation,
+      views: views,
     );
   }
 }

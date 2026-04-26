@@ -28,21 +28,7 @@ class PropertyImageSlider extends StatelessWidget {
           child: PageView(
             controller: controller,
             children:  [
-              Image(
-                image: 
-                property.images.isNotEmpty?
-                NetworkImage(property.images.first):
-                AssetImage('assets/images/villa2.webp'),
-                fit: BoxFit.cover,
-              ),
-              Image(
-                image: AssetImage('assets/images/villa2.webp'),
-                fit: BoxFit.cover,
-              ),
-              Image(
-                image: AssetImage('assets/images/villa3.jpg'),
-                fit: BoxFit.cover,
-              ),
+              ...property.images.map((url) => Image.network(url, fit: BoxFit.cover)).toList(),
             ],
           ),
         ),
