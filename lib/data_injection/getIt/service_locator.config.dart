@@ -80,44 +80,40 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i87.SettingsLocalService());
     gh.lazySingleton<_i718.FavoriteHiveService>(
         () => _i718.FavoriteHiveService());
+    gh.lazySingleton<_i361.Dio>(
+      () => networkServices.provideAuthDio(),
+      instanceName: 'authDio',
+    );
     gh.lazySingleton<_i232.RegisterServices>(
         () => networkServices.registerServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i633.LoginServices>(
         () => networkServices.loginServices(gh<_i361.Dio>()));
-    gh.lazySingleton<_i753.ForgotPasswordService>(
-        () => networkServices.forgotPasswordService(gh<_i361.Dio>()));
     gh.lazySingleton<_i634.PropertyService>(
         () => networkServices.propertyService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i97.OtpServices>(
-        () => networkServices.otpServices(gh<_i361.Dio>()));
-    gh.lazySingleton<_i295.ResetPasswordService>(
-        () => networkServices.resetPasswordService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i467.AuctionListService>(
-        () => networkServices.auctionListService(gh<_i361.Dio>()));
     gh.lazySingleton<_i163.ProfileService>(
         () => networkServices.profileService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i574.OtpRepository>(
-        () => _i736.OtpRepositoryImpl(gh<_i97.OtpServices>()));
+    gh.lazySingleton<_i467.AuctionListService>(
+        () => networkServices.auctionListService(gh<_i361.Dio>()));
     gh.lazySingleton<_i935.ProfileRepository>(
         () => networkServices.profileRepository(gh<_i163.ProfileService>()));
     gh.lazySingleton<_i1021.AuthRepository>(
         () => _i373.AuthRepositoryImpl(gh<_i137.GoogleAuthService>()));
     gh.lazySingleton<_i772.LoginRepository>(
         () => _i107.LoginRepositoryImpl(gh<_i633.LoginServices>()));
-    gh.factory<_i898.OtpCubit>(
-        () => networkServices.otpCubit(gh<_i574.OtpRepository>()));
-    gh.lazySingleton<_i686.ForgotPasswordRepository>(() => networkServices
-        .forgotPasswordRepository(gh<_i753.ForgotPasswordService>()));
     gh.factory<_i617.SettingsBloc>(() => _i617.SettingsBloc(
           gh<_i87.SettingsLocalService>(),
           gh<_i282.AuthLocalService>(),
         ));
-    gh.factory<_i493.ForgotPasswordCubit>(() => networkServices
-        .forgotPasswordCubit(gh<_i686.ForgotPasswordRepository>()));
     gh.factory<_i981.ProfileCubit>(
         () => networkServices.profileCubit(gh<_i935.ProfileRepository>()));
     gh.lazySingleton<_i770.PropertyRepository>(
         () => networkServices.propertyRepository(gh<_i634.PropertyService>()));
+    gh.lazySingleton<_i753.ForgotPasswordService>(() => networkServices
+        .forgotPasswordService(gh<_i361.Dio>(instanceName: 'authDio')));
+    gh.lazySingleton<_i97.OtpServices>(() =>
+        networkServices.otpServices(gh<_i361.Dio>(instanceName: 'authDio')));
+    gh.lazySingleton<_i295.ResetPasswordService>(() => networkServices
+        .resetPasswordService(gh<_i361.Dio>(instanceName: 'authDio')));
     gh.factory<_i841.FavoriteBloc>(
         () => _i841.FavoriteBloc(gh<_i718.FavoriteHiveService>()));
     gh.lazySingleton<_i623.RegisterRepository>(
@@ -130,12 +126,20 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkServices.auctionListCubit(gh<_i467.AuctionListService>()));
     gh.factory<_i267.PropertyCubit>(
         () => networkServices.propertyCubit(gh<_i770.PropertyRepository>()));
+    gh.lazySingleton<_i574.OtpRepository>(
+        () => _i736.OtpRepositoryImpl(gh<_i97.OtpServices>()));
     gh.factory<_i288.AuthCubit>(
         () => _i288.AuthCubit(gh<_i1021.AuthRepository>()));
     gh.factory<_i473.AuctionCubit>(
         () => networkServices.auctionCubit(gh<_i701.AuctionRepository>()));
+    gh.factory<_i898.OtpCubit>(
+        () => networkServices.otpCubit(gh<_i574.OtpRepository>()));
+    gh.lazySingleton<_i686.ForgotPasswordRepository>(() => networkServices
+        .forgotPasswordRepository(gh<_i753.ForgotPasswordService>()));
     gh.factory<_i896.ResetPasswordCubit>(() => networkServices
         .resetPasswordCubit(gh<_i332.ResetPasswordRepository>()));
+    gh.factory<_i493.ForgotPasswordCubit>(() => networkServices
+        .forgotPasswordCubit(gh<_i686.ForgotPasswordRepository>()));
     return this;
   }
 }

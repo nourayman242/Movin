@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movin/presentation/seller_properties/add_property/widgets/map_section.dart';
 import 'package:provider/provider.dart';
 
 import 'package:movin/app_theme.dart';
@@ -153,6 +154,7 @@ class AddPropertyScreen extends StatelessWidget {
                             const PropertyDetailsSection(),
                             const ImagesSection(),
                             const DescriptionSection(),
+                            const MapSection(),
                             const AuctionSection(),
                             const SizedBox(height: 18),
 

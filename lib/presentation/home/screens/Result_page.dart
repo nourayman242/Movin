@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movin/data/api_services/filter_services.dart';
-import 'package:movin/data/models/property_model.dart'; 
-import 'package:movin/presentation/Heatmap/pages/heatmap_screen.dart';  
+import 'package:movin/data/models/property_model.dart';
+import 'package:movin/presentation/Heatmap/pages/heatmap_screen.dart';
 
 class ResultsPage extends StatefulWidget {
   final Color navy;
@@ -14,7 +14,7 @@ class ResultsPage extends StatefulWidget {
   final double minPrice;
   final double maxPrice;
   final String? sortLabel;
-
+  final String? selectedArea;
   const ResultsPage({
     super.key,
     required this.navy,
@@ -25,6 +25,7 @@ class ResultsPage extends StatefulWidget {
     required this.minPrice,
     required this.maxPrice,
     this.sortLabel,
+    this.selectedArea,
   });
 
   @override
@@ -40,30 +41,31 @@ class _ResultsPageState extends State<ResultsPage> {
     _future = _fetchProperties();
   }
 
-  Future<FilteredPropertiesResponse> _fetchProperties() {
-    return FilterService.fetchFilteredProperties(
-      type: widget.propertyType,
-      bedrooms: widget.bedrooms,
-      bathrooms: widget.bathrooms,
-      pool: widget.hasPool,
-      minPrice: widget.minPrice,
-      maxPrice: widget.maxPrice,
-      sort: FilterService.mapSortToApi(widget.sortLabel),
-    );
-  }
+ Future<FilteredPropertiesResponse> _fetchProperties() {
+  return FilterService.fetchFilteredProperties(
+    location: widget.selectedArea,   
+    type: widget.propertyType,
+    bedrooms: widget.bedrooms,
+    bathrooms: widget.bathrooms,
+    pool: widget.hasPool,
+    minPrice: widget.minPrice,
+    maxPrice: widget.maxPrice,
+    sort: FilterService.mapSortToApi(widget.sortLabel),
+  );
+}
 
-  // Build active filter chip labels for the AppBar
-  List<String> get _activeChips {
-    final chips = <String>[];
-    if (widget.propertyType != null) chips.add(widget.propertyType!);
-    if (widget.bedrooms != null) chips.add('${widget.bedrooms} Bed');
-    if (widget.bathrooms != null) chips.add('${widget.bathrooms} Bath');
-    if (widget.hasPool == true) chips.add('Pool');
-    if (widget.minPrice > 0) chips.add('Min ${_fmt(widget.minPrice)}');
-    if (widget.maxPrice < 100000000) chips.add('Max ${_fmt(widget.maxPrice)}');
-    if (widget.sortLabel != null) chips.add(widget.sortLabel!);
-    return chips;
-  }
+List<String> get _activeChips {
+  final chips = <String>[];
+  if (widget.selectedArea != null) chips.add('📍 ${widget.selectedArea}');
+  if (widget.propertyType != null) chips.add(widget.propertyType!); 
+  if (widget.bedrooms != null) chips.add('${widget.bedrooms} Bed');
+  if (widget.bathrooms != null) chips.add('${widget.bathrooms} Bath');
+  if (widget.hasPool == true) chips.add('Pool');
+  if (widget.minPrice > 0) chips.add('Min ${_fmt(widget.minPrice)}');
+  if (widget.maxPrice < 100000000) chips.add('Max ${_fmt(widget.maxPrice)}');
+  if (widget.sortLabel != null) chips.add(widget.sortLabel!);
+  return chips;
+}
 
   String _fmt(double v) {
     if (v >= 1000000) return 'EGP ${(v / 1000000).toStringAsFixed(1)}M';
@@ -87,8 +89,7 @@ class _ResultsPageState extends State<ResultsPage> {
             automaticallyImplyLeading: false,
             toolbarHeight: _activeChips.isNotEmpty ? 160 : 130,
             shape: const RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.vertical(bottom: Radius.circular(24)),
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
             ),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,8 +99,11 @@ class _ResultsPageState extends State<ResultsPage> {
                   children: [
                     IconButton(
                       onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.arrow_back,
-                          color: Colors.white, size: 28),
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: 28,
+                      ),
                     ),
                     const SizedBox(width: 4),
                     const Text(
@@ -117,13 +121,16 @@ class _ResultsPageState extends State<ResultsPage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 12),
                   child: isLoading
-                      ? const Text("Loading...",
-                          style: TextStyle(
-                              color: Colors.white70, fontSize: 15))
+                      ? const Text(
+                          "Loading...",
+                          style: TextStyle(color: Colors.white70, fontSize: 15),
+                        )
                       : Text(
                           "$total ${total == 1 ? 'result' : 'results'} found",
                           style: const TextStyle(
-                              color: Colors.white70, fontSize: 15),
+                            color: Colors.white70,
+                            fontSize: 15,
+                          ),
                         ),
                 ),
 
@@ -139,24 +146,25 @@ class _ResultsPageState extends State<ResultsPage> {
                         onTap: () => Navigator.pop(context),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 18, vertical: 10),
+                            horizontal: 18,
+                            vertical: 10,
+                          ),
                           decoration: BoxDecoration(
                             color: widget.navy.withOpacity(0.85),
                             borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                                color: Colors.white30, width: 1),
+                            border: Border.all(color: Colors.white30, width: 1),
                           ),
                           child: const Row(
                             children: [
-                              Icon(Icons.tune,
-                                  color: Colors.white, size: 18),
+                              Icon(Icons.tune, color: Colors.white, size: 18),
                               SizedBox(width: 6),
                               Text(
                                 "Edit Filter",
                                 style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
                               ),
                             ],
                           ),
@@ -165,19 +173,21 @@ class _ResultsPageState extends State<ResultsPage> {
                       if (widget.sortLabel != null)
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 18, vertical: 10),
+                            horizontal: 18,
+                            vertical: 10,
+                          ),
                           decoration: BoxDecoration(
                             color: widget.navy.withOpacity(0.85),
                             borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                                color: Colors.white30, width: 1),
+                            border: Border.all(color: Colors.white30, width: 1),
                           ),
                           child: Text(
                             widget.sortLabel!,
                             style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14),
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                     ],
@@ -191,25 +201,26 @@ class _ResultsPageState extends State<ResultsPage> {
                     height: 32,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
                       children: _activeChips.map((chip) {
                         return Container(
                           margin: const EdgeInsets.only(right: 8),
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.15),
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                                color: Colors.white38, width: 1),
+                            border: Border.all(color: Colors.white38, width: 1),
                           ),
                           child: Text(
                             chip,
                             style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600),
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         );
                       }).toList(),
@@ -222,9 +233,8 @@ class _ResultsPageState extends State<ResultsPage> {
           ),
 
           // ── Heatmap FAB ──────────────────────────────────────────────────────
-          floatingActionButton: _HeatmapFab(navy: widget.navy),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.endTop,
+          floatingActionButton: _HeatmapFab(navy: widget.navy,selectedArea: widget.selectedArea,),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
 
           body: _buildBody(snapshot),
         );
@@ -232,12 +242,10 @@ class _ResultsPageState extends State<ResultsPage> {
     );
   }
 
-  Widget _buildBody(
-      AsyncSnapshot<FilteredPropertiesResponse> snapshot) {
+  Widget _buildBody(AsyncSnapshot<FilteredPropertiesResponse> snapshot) {
     // Loading state
     if (snapshot.connectionState == ConnectionState.waiting) {
-      return Center(
-          child: CircularProgressIndicator(color: widget.navy));
+      return Center(child: CircularProgressIndicator(color: widget.navy));
     }
 
     // Error state
@@ -248,29 +256,24 @@ class _ResultsPageState extends State<ResultsPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.wifi_off_rounded,
-                  size: 64, color: Colors.grey[400]),
+              Icon(Icons.wifi_off_rounded, size: 64, color: Colors.grey[400]),
               const SizedBox(height: 16),
               const Text(
                 "Something went wrong",
-                style: TextStyle(
-                    fontSize: 18, fontWeight: FontWeight.w700),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 8),
               Text(
                 snapshot.error.toString(),
                 textAlign: TextAlign.center,
-                style:
-                    TextStyle(fontSize: 13, color: Colors.grey[600]),
+                style: TextStyle(fontSize: 13, color: Colors.grey[600]),
               ),
               const SizedBox(height: 24),
               ElevatedButton.icon(
-                onPressed: () =>
-                    setState(() => _future = _fetchProperties()),
+                onPressed: () => setState(() => _future = _fetchProperties()),
                 icon: const Icon(Icons.refresh),
                 label: const Text("Retry"),
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: widget.navy),
+                style: ElevatedButton.styleFrom(backgroundColor: widget.navy),
               ),
             ],
           ),
@@ -285,13 +288,11 @@ class _ResultsPageState extends State<ResultsPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.search_off_rounded,
-                size: 80, color: Colors.grey[400]),
+            Icon(Icons.search_off_rounded, size: 80, color: Colors.grey[400]),
             const SizedBox(height: 16),
             const Text(
               "No properties found",
-              style: TextStyle(
-                  fontSize: 20, fontWeight: FontWeight.w700),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 8),
             Text(
@@ -303,8 +304,7 @@ class _ResultsPageState extends State<ResultsPage> {
               onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.tune),
               label: const Text("Edit Filters"),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: widget.navy),
+              style: ElevatedButton.styleFrom(backgroundColor: widget.navy),
             ),
           ],
         ),
@@ -316,8 +316,7 @@ class _ResultsPageState extends State<ResultsPage> {
       padding: const EdgeInsets.all(16),
       itemCount: properties.length,
       itemBuilder: (context, index) {
-        return _PropertyCard(
-            property: properties[index], navy: widget.navy);
+        return _PropertyCard(property: properties[index], navy: widget.navy);
       },
     );
   }
@@ -326,7 +325,8 @@ class _ResultsPageState extends State<ResultsPage> {
 // ── Heatmap FAB ───────────────────────────────────────────────────────────────
 class _HeatmapFab extends StatelessWidget {
   final Color navy;
-  const _HeatmapFab({required this.navy});
+  final String? selectedArea;
+   const _HeatmapFab({required this.navy, this.selectedArea});
 
   @override
   Widget build(BuildContext context) {
@@ -337,13 +337,13 @@ class _HeatmapFab extends StatelessWidget {
         heroTag: 'heatmap_fab',
         backgroundColor: navy,
         elevation: 6,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(28),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const HeatmapPage()),
+            MaterialPageRoute(builder: (_) => HeatmapPage(
+              initialArea: selectedArea,
+            )),
           );
         },
         icon: Stack(
@@ -355,11 +355,7 @@ class _HeatmapFab extends StatelessWidget {
               color: Colors.white.withOpacity(0.25),
               size: 28,
             ),
-            const Icon(
-              Icons.map_rounded,
-              color: Colors.white,
-              size: 22,
-            ),
+            const Icon(Icons.map_rounded, color: Colors.white, size: 22),
             // Small flame/heat dot overlay
             Positioned(
               top: 0,
@@ -409,7 +405,9 @@ class _PropertyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final details = property.details;
     final isRent = property.listingType == 'rent';
-    final firstImage = property.images.isNotEmpty ? property.images.first : null;
+    final firstImage = property.images.isNotEmpty
+        ? property.images.first
+        : null;
 
     // Extract detail fields from the details map
     final String? bedrooms = details['bedrooms']?.toString();
@@ -428,9 +426,10 @@ class _PropertyCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: const [
           BoxShadow(
-              color: Colors.black12,
-              blurRadius: 12,
-              offset: Offset(0, 6)),
+            color: Colors.black12,
+            blurRadius: 12,
+            offset: Offset(0, 6),
+          ),
         ],
       ),
       child: Column(
@@ -438,8 +437,7 @@ class _PropertyCard extends StatelessWidget {
         children: [
           // ── Image ──
           ClipRRect(
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
             child: firstImage != null
                 ? Image.network(
                     firstImage,
@@ -454,8 +452,7 @@ class _PropertyCard extends StatelessWidget {
           ),
 
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -484,14 +481,14 @@ class _PropertyCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.location_on_rounded,
-                            color: navy, size: 18),
+                        Icon(Icons.location_on_rounded, color: navy, size: 18),
                         const SizedBox(width: 4),
                         Text(
                           property.location,
                           style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ],
                     ),
@@ -514,9 +511,10 @@ class _PropertyCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey[600],
-                      height: 1.4),
+                    fontSize: 13,
+                    color: Colors.grey[600],
+                    height: 1.4,
+                  ),
                 ),
 
                 const SizedBox(height: 12),
@@ -536,10 +534,8 @@ class _PropertyCard extends StatelessWidget {
                     if (hasGarden) _chip(Icons.park_rounded, 'Garden'),
                     if (floor != null)
                       _chip(Icons.layers_rounded, 'Floor $floor'),
-                    if (hasElevator)
-                      _chip(Icons.elevator_rounded, 'Elevator'),
-                    if (isFurnished)
-                      _chip(Icons.chair_rounded, 'Furnished'),
+                    if (hasElevator) _chip(Icons.elevator_rounded, 'Elevator'),
+                    if (isFurnished) _chip(Icons.chair_rounded, 'Furnished'),
                   ],
                 ),
               ],
@@ -552,8 +548,7 @@ class _PropertyCard extends StatelessWidget {
 
   Widget _badge(String label, Color color) {
     return Container(
-      padding:
-          const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(20),
@@ -571,8 +566,7 @@ class _PropertyCard extends StatelessWidget {
 
   Widget _chip(IconData icon, String label) {
     return Container(
-      padding:
-          const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: Colors.grey[100],
         borderRadius: BorderRadius.circular(20),
@@ -586,9 +580,10 @@ class _PropertyCard extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[800],
-                fontWeight: FontWeight.w600),
+              fontSize: 12,
+              color: Colors.grey[800],
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),
@@ -600,8 +595,7 @@ class _PropertyCard extends StatelessWidget {
       height: 200,
       width: double.infinity,
       color: Colors.grey[200],
-      child: Icon(Icons.home_rounded,
-          size: 60, color: Colors.grey[400]),
+      child: Icon(Icons.home_rounded, size: 60, color: Colors.grey[400]),
     );
   }
 }
