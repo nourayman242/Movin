@@ -1,0 +1,31 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
+import 'package:movin/data/api_services/user_response.dart';
+import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
+import 'package:movin/domain/repositories/auth_repository.dart';
+import 'package:movin/presentation/login/cubit/auth_state.dart';
+
+@injectable
+class AuthCubit extends Cubit<AuthState> {
+  final AuthRepository repo;
+
+  AuthCubit(this.repo) : super(AuthInitial());
+
+  Future<void> loginWithGoogle() async {
+    emit(AuthLoading());
+
+    try {
+      final result = await repo.loginWithGoogle();
+
+      final token = result['token'] as String;
+      final user = UserResponse.fromJson(result['user'] as Map<String, dynamic>);
+
+      await SharedHelper.saveToken(token);
+      await SharedHelper.saveUserId(user.id);
+
+      emit(AuthSuccess(token, user));
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
+  }
+}

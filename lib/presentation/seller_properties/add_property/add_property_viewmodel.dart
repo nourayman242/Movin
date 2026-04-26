@@ -1,13 +1,26 @@
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:movin/domain/entities/property_entity.dart';
 
 enum PropertyType { apartment, villa, office, townhouse, penthouse }
+
+enum ListingType { rent, sale }
 
 class AddPropertyViewModel extends ChangeNotifier {
   // Selected property type
   PropertyType? selectedType;
 
+  ListingType? selectedListingType;
+  AddPropertyViewModel() {
+    selectedListingType = ListingType.sale; // default
+  }
+  bool isAuction = false;
+
+  DateTime? auctionStart;
+  DateTime? auctionEnd;
+
+  final startingBidController = TextEditingController();
+  final auctionDescriptionController = TextEditingController();
   // Text controllers (shared across sections)
   final priceController = TextEditingController();
   final locationController = TextEditingController();
@@ -25,12 +38,12 @@ class AddPropertyViewModel extends ChangeNotifier {
   bool garden = false;
   bool parking = false;
 
-  // Office 
+  // Office
   final officeSizeController = TextEditingController();
   final workroomsController = TextEditingController();
   final meetingroomsController = TextEditingController();
   final officParkingController = TextEditingController();
-// penthouse specific
+  // penthouse specific
   final terraceController = TextEditingController();
 
   // Description
@@ -39,7 +52,34 @@ class AddPropertyViewModel extends ChangeNotifier {
   // Images (XFile objects returned by image_picker)
   List<XFile> images = [];
 
+  // BASIC INFO
+  String get location => locationController.text.trim();
+  String get description => descriptionController.text.trim();
+  int get price => int.parse(priceController.text.trim());
+  String get size => '${areaController.text.trim()} sqm';
+
+  // TYPE
+  String get type => selectedType!.name;
+  String get listingType => selectedListingType!.name;
+
+  // DETAILS
+  int? get bedrooms => int.tryParse(bedroomsController.text.trim());
+  int? get bathrooms => int.tryParse(bathroomsController.text.trim());
+
+  double? latitude;
+  double? longitude;
+  void setLocation(double lat, double lng) {
+    latitude = lat;
+    longitude = lng;
+    notifyListeners();
+  }
+
   // Setters that call notifyListeners()
+  void selectListingType(ListingType? t) {
+    selectedListingType = t;
+    notifyListeners();
+  }
+
   void selectType(PropertyType? t) {
     selectedType = t;
     notifyListeners();
@@ -78,6 +118,69 @@ class AddPropertyViewModel extends ChangeNotifier {
     }
   }
 
+  bool get isAuctionValid {
+    if (!isAuction) return true;
+
+    return auctionStart != null &&
+        auctionEnd != null &&
+        startingBidController.text.trim().isNotEmpty &&
+        auctionDescriptionController.text.trim().isNotEmpty;
+  }
+
+  void setAuction(bool value) {
+    isAuction = value;
+    notifyListeners();
+  }
+
+  void setAuctionStart(DateTime date) {
+    auctionStart = date;
+    notifyListeners();
+  }
+
+  void setAuctionEnd(DateTime date) {
+    auctionEnd = date;
+    notifyListeners();
+  }
+
+  Map<String, dynamic> get details {
+    if (selectedType == null) return {};
+
+    switch (selectedType!) {
+      case PropertyType.apartment:
+      case PropertyType.townhouse:
+        return {
+          "bedrooms": bedroomsController.text.trim(),
+          "bathrooms": bathroomsController.text.trim(),
+          "floor": floorController.text.trim(),
+          "elevator": elevator,
+        };
+
+      case PropertyType.villa:
+        return {
+          "bedrooms": bedroomsController.text.trim(),
+          "bathrooms": bathroomsController.text.trim(),
+          "land_area": landAreaController.text.trim(),
+          "floors": numOfFloorController.text.trim(),
+          "garden": garden,
+          "parking": parking,
+        };
+
+      case PropertyType.office:
+        return {
+          "work_rooms": workroomsController.text.trim(),
+          "meeting_rooms": meetingroomsController.text.trim(),
+          "parking": officParkingController.text.trim(),
+          "size": officeSizeController.text.trim(),
+        };
+
+      case PropertyType.penthouse:
+        return {
+          "bedrooms": bedroomsController.text.trim(),
+          "bathrooms": bathroomsController.text.trim(),
+          "terrace": terraceController.text.trim(),
+        };
+    }
+  }
 
   bool get isTypeSelected => selectedType != null;
 
@@ -114,7 +217,13 @@ class AddPropertyViewModel extends ChangeNotifier {
         bathroomsController.text.trim().isNotEmpty;
   }
 
-  bool get isFormValid => isTypeSelected && isBasicValid && isTypeSpecificValid;
+  //bool get isFormValid => isTypeSelected && isBasicValid && isTypeSpecificValid;
+  bool get isFormValid =>
+      selectedType != null &&
+      selectedListingType != null &&
+      isBasicValid &&
+      isTypeSpecificValid &&
+      isAuctionValid;
 
   // Reset form
   void reset() {
@@ -138,6 +247,14 @@ class AddPropertyViewModel extends ChangeNotifier {
     descriptionController.clear();
     images = [];
     notifyListeners();
+    isAuction = false;
+    auctionStart = null;
+    auctionEnd = null;
+    startingBidController.clear();
+    auctionDescriptionController.clear();
+    latitude = null;
+    longitude = null;
+    notifyListeners();
   }
 
   @override
@@ -156,6 +273,24 @@ class AddPropertyViewModel extends ChangeNotifier {
     officParkingController.dispose();
     terraceController.dispose();
     descriptionController.dispose();
+    startingBidController.dispose();
+    auctionDescriptionController.dispose();
     super.dispose();
+  }
+
+  PropertyEntity toEntity({required List<String> imageUrls}) {
+    return PropertyEntity(
+      location: locationController.text.trim(),
+      description: descriptionController.text.trim(),
+      price: int.parse(priceController.text.trim()),
+      listingType: listingType,
+      type: selectedType!.name,
+      size: '${areaController.text.trim()} sqm',
+      images: imageUrls,
+      details: details,
+      id: '',
+      status: '',
+      isAuction: false,
+    );
   }
 }

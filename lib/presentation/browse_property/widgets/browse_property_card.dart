@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/domain/entities/property_model.dart';
+import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_state.dart';
 
 class BrowsePropertyCard extends StatelessWidget {
-  final PropertyModel property;
+  final PropertyEntity property;
   final VoidCallback? onTap;
   //final VoidCallback? onFavoriteToggle;
 
@@ -45,12 +45,20 @@ class BrowsePropertyCard extends StatelessWidget {
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(20),
                   ),
-                  child: Image.asset(
-                    property.image,
+                  child: Image.network(
+                    property.images.isNotEmpty
+                        ? property.images.first
+                        : "https://via.placeholder.com/150",
                     height: 200,
                     width: double.infinity,
                     fit: BoxFit.cover,
                   ),
+                  // Image.network(
+                  //   property.images.first,
+                  //   height: 200,
+                  //   width: double.infinity,
+                  //   fit: BoxFit.cover,
+                  // ),
                 ),
                 //tag
                 Positioned(
@@ -62,11 +70,11 @@ class BrowsePropertyCard extends StatelessWidget {
                       vertical: 5,
                     ),
                     decoration: BoxDecoration(
-                      color: _getTagColor(property.tag),
+                      color: _getTagColor(property.listingType),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      _getTagText(property.tag),
+                      _getTagText(property.listingType),
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),
@@ -78,12 +86,12 @@ class BrowsePropertyCard extends StatelessWidget {
                   right: 10,
                   child: BlocBuilder<FavoriteBloc, FavoriteState>(
                     builder: (context, state) {
-                      final isFav = state.isFavorite(property.id);
+                      final isFav = state.isFavorite(property.id.toString());
 
                       return GestureDetector(
                         onTap: () {
                           context.read<FavoriteBloc>().add(
-                            FavoriteToggle(property.id),
+                            FavoriteToggle(property.id.toString()),
                           );
                         },
                         child: CircleAvatar(
@@ -105,7 +113,7 @@ class BrowsePropertyCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(property.title, style: AppTextStyles.label),
+                  Text(property.description, style: AppTextStyles.label),
                   const SizedBox(height: 5),
                   Row(
                     children: [
@@ -121,7 +129,7 @@ class BrowsePropertyCard extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   Text(
-                    property.price,
+                    '${property.price}',
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -134,15 +142,18 @@ class BrowsePropertyCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "${property.beds} beds",
+                        "${property.details["bedrooms"]?.toString() ?? "-"} beds",
                         style: AppTextStyles.smallText,
                       ),
                       Text(
-                        "${property.baths} baths",
+                        "${property.details["bathrooms"]?.toString() ?? "-"} baths",
                         style: AppTextStyles.smallText,
                       ),
                       Text(
-                        "${property.sqft} m²",
+
+
+
+                        property.size.isNotEmpty ? property.size : '-',
                         style: AppTextStyles.smallText,
                       ),
                     ],

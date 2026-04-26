@@ -5,7 +5,7 @@ part 'user_response.g.dart';
 
 @JsonSerializable()
 class UserResponse {
-  @JsonKey(name: 'id')
+  @JsonKey(name: '_id')
   final String id;
   final String name;
   final String email;

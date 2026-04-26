@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/data/models/profile_model.dart';
+import 'package:movin/presentation/auction/all%20proparties%20auctions/screens/property_auctions_screen.dart';
 import 'package:movin/presentation/home/widgets/custom_drawer.dart';
 import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
 import 'package:movin/presentation/notifications/screens/notifications_screen.dart';
+import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
+import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
+import 'package:movin/data/models/property_model.dart';
 
 class SellerHome extends StatefulWidget {
   //final ProfileModel currentProfile;
@@ -42,6 +48,10 @@ class _SellerHomeState extends State<SellerHome>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    context.read<ProfileCubit>().getProfile();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<PropertyCubit>().getAllSellerProperties();
+    });
   }
 
   @override
@@ -52,9 +62,42 @@ class _SellerHomeState extends State<SellerHome>
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<ProfileCubit, ProfileState>(
+      builder: (context, state) {
+        if (state.isLoading) {
+          return const Center(
+            child: Scaffold(
+              backgroundColor: AppColors.background,
+              body: Center(
+                child: CircularProgressIndicator(color: AppColors.gold),
+              ),
+            ),
+          );
+        }
+
+        return _buildContent(context, state.profile);
+      },
+    );
+  }
+
+  Widget _buildContent(BuildContext context, ProfileModel? profile) {
+    final safeProfile =
+        profile ??
+        ProfileModel(
+          name: "Guest",
+          bio: "",
+          email: "",
+          phone: "",
+          location: "",
+          isSeller: false,
+          isBuyer: true,
+          stats: {},
+          createdAt: DateTime.now(),
+        );
     return Scaffold(
       backgroundColor: AppColors.background,
-      drawer:  const CustomDrawer(),
+
+      drawer: CustomDrawer(profile: safeProfile),
       body: DefaultTabController(
         length: 3,
         child: NestedScrollView(
@@ -108,11 +151,18 @@ class _SellerHomeState extends State<SellerHome>
                                         "Add Property",
                                         style: TextStyle(color: Colors.black),
                                       ),
-                                      onPressed: () {
-                                        Navigator.pushNamed(
+
+                                      onPressed: () async {
+                                        await Navigator.pushNamed(
                                           context,
                                           '/addproperty',
                                         );
+
+                                        if (mounted) {
+                                          context
+                                              .read<PropertyCubit>()
+                                              .getAllSellerProperties();
+                                        }
                                       },
                                     ),
                                   ),
@@ -130,6 +180,19 @@ class _SellerHomeState extends State<SellerHome>
                                       Icons.notifications_none_outlined,
                                       hasBadge: true,
                                     ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              const PropertyAuctionsScreen(),
+                                        ),
+                                      );
+                                    },
+                                    child: iconContainer(Icons.gavel_outlined),
                                   ),
                                 ],
                               ),
@@ -200,7 +263,7 @@ class _SellerHomeState extends State<SellerHome>
             controller: _tabController,
             children: [
               SingleChildScrollView(child: _overviewContent()),
-              SingleChildScrollView(child: _myListingsContent()),
+              SingleChildScrollView(child: _myListingsContent(context)),
               SingleChildScrollView(child: _newsContent()),
             ],
           ),
@@ -209,43 +272,6 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
-  // Widget _statCard(String title, String value, IconData icon) {
-  //   return Container(
-  //     padding: const EdgeInsets.all(20),
-  //     decoration: BoxDecoration(
-  //       color: AppColors.grey.withOpacity(0.2),
-  //       borderRadius: BorderRadius.circular(15),
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: AppColors.navyLight.withOpacity(0.1),
-  //           blurRadius: 8,
-  //           offset: const Offset(0, 4),
-  //         ),
-  //       ],
-  //     ),
-  //     child: Column(
-  //       mainAxisAlignment: MainAxisAlignment.start,
-  //       children: [
-  //         Row(
-  //           mainAxisAlignment: MainAxisAlignment.start,
-  //           children: [
-  //             Icon(icon, color: AppColors.gold),
-  //             const SizedBox(width: 10),
-  //             Text(title, style: TextStyle(color: Colors.white)),
-  //           ],
-  //         ),
-  //         Text(
-  //           value,
-  //           style: TextStyle(
-  //             fontSize: 18,
-  //             fontWeight: FontWeight.bold,
-  //             color: Colors.white,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
   Widget _statCard(String title, String value, IconData icon) {
     return Container(
       padding: EdgeInsets.all(16),
@@ -261,16 +287,15 @@ class _SellerHomeState extends State<SellerHome>
         ],
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min, 
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisSize: MainAxisSize.min, 
+            mainAxisSize: MainAxisSize.min,
             children: [
               Icon(icon, color: AppColors.gold, size: 20),
               const SizedBox(width: 8),
 
-             
               Flexible(
                 fit: FlexFit.loose,
                 child: Text(
@@ -379,264 +404,137 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
-  // Widget _listingCard(Map<String, dynamic> item) {
-  //   final status = item['status'] as String;
-  //   return Container(
-  //     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-  //     padding: const EdgeInsets.all(12),
-  //     decoration: BoxDecoration(
-  //       color: AppColors.white,
-  //       borderRadius: BorderRadius.circular(16),
-  //       border: Border.all(color: Colors.grey.shade100),
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: Colors.black.withOpacity(0.03),
-  //           blurRadius: 10,
-  //           offset: const Offset(0, 4),
-  //         ),
-  //       ],
-  //     ),
-  //     child: Row(
-  //       children: [
-  //         ClipRRect(
-  //           borderRadius: BorderRadius.circular(12),
-  //           child: SizedBox(
-  //             width: 80,
-  //             height: 80,
-  //             child: Image.asset(item['image'], fit: BoxFit.cover),
-  //           ),
-  //         ),
-  //         const SizedBox(width: 12),
-  //         Expanded(
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Text(
-  //                 item['title'],
-  //                 style: const TextStyle(
-  //                   fontWeight: FontWeight.bold,
-  //                   fontSize: 15,
-  //                 ),
-  //               ),
-  //               const SizedBox(height: 6),
-  //               Text(
-  //                 item['location'],
-  //                 style: TextStyle(color: Colors.grey[600]),
-  //               ),
-  //               const SizedBox(height: 10),
-  //               Row(
-  //                 children: [
-  //                   const Icon(
-  //                     Icons.remove_red_eye,
-  //                     size: 16,
-  //                     color: Colors.grey,
-  //                   ),
-  //                   const SizedBox(width: 6),
-  //                   Text(
-  //                     '${item['views']}',
-  //                     style: const TextStyle(fontSize: 12, color: Colors.grey),
-  //                   ),
-  //                   const SizedBox(width: 12),
-  //                   const Icon(
-  //                     Icons.favorite_border,
-  //                     size: 16,
-  //                     color: Colors.grey,
-  //                   ),
-  //                   const SizedBox(width: 6),
-  //                   Text(
-  //                     '${item['likes']}',
-  //                     style: const TextStyle(fontSize: 12, color: Colors.grey),
-  //                   ),
-  //                   const SizedBox(width: 12),
-  //                   const Icon(
-  //                     Icons.chat_bubble_outline,
-  //                     size: 16,
-  //                     color: Colors.grey,
-  //                   ),
-  //                   const SizedBox(width: 6),
-  //                   Text(
-  //                     '${item['inquiries']}',
-  //                     style: const TextStyle(fontSize: 12, color: Colors.grey),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //         const SizedBox(width: 8),
-  //         Column(
-  //           crossAxisAlignment: CrossAxisAlignment.end,
-  //           children: [
-  //             Text(
-  //               item['price'],
-  //               style: const TextStyle(
-  //                 fontWeight: FontWeight.bold,
-  //                 color: AppColors.gold,
-  //               ),
-  //             ),
-  //             const SizedBox(height: 8),
-  //             Container(
-  //               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-  //               decoration: BoxDecoration(
-  //                 color: status == 'active'
-  //                     ? AppColors.gold.withOpacity(0.12)
-  //                     : Colors.grey.withOpacity(0.12),
-  //                 borderRadius: BorderRadius.circular(10),
-  //               ),
-  //               child: Text(
-  //                 status,
-  //                 style: TextStyle(
-  //                   color: status == 'active'
-  //                       ? AppColors.gold
-  //                       : Colors.grey[700],
-  //                   fontSize: 12,
-  //                 ),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
   Widget _listingCard(Map<String, dynamic> item) {
-  final String status = item['status'] ?? '';
+    final String status = item['status'] ?? '';
 
-  return Container(
-    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-    padding: const EdgeInsets.all(12),
-    decoration: BoxDecoration(
-      color: AppColors.white,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: Colors.grey.shade100),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.03),
-          blurRadius: 10,
-          offset: const Offset(0, 4),
-        ),
-      ],
-    ),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        
-        ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: SizedBox(
-            width: 72,
-            height: 72,
-            child: Image.asset(
-              item['image'],
-              fit: BoxFit.cover,
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade100),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: SizedBox(
+              width: 72,
+              height: 72,
+              child: Image.asset(item['image'], fit: BoxFit.cover),
             ),
           ),
-        ),
 
-        const SizedBox(width: 12),
+          const SizedBox(width: 12),
 
-        
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item['title'],
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
+
+                const SizedBox(height: 4),
+
+                Text(
+                  item['location'],
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                ),
+
+                const SizedBox(height: 8),
+
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 6,
+                  children: [
+                    _statItem(Icons.remove_red_eye, item['views']),
+                    _statItem(Icons.favorite_border, item['likes']),
+                    _statItem(Icons.chat_bubble_outline, item['inquiries']),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(width: 8),
+
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              
               Text(
-                item['title'],
-                maxLines: 2,
+                item['price'],
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
-              ),
-
-              const SizedBox(height: 4),
-
-              
-              Text(
-                item['location'],
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey[600],
+                  color: AppColors.gold,
+                  fontSize: 14,
                 ),
               ),
 
               const SizedBox(height: 8),
 
-              Wrap(
-                spacing: 12,
-                runSpacing: 6,
-                children: [
-                  _statItem(Icons.remove_red_eye, item['views']),
-                  _statItem(Icons.favorite_border, item['likes']),
-                  _statItem(Icons.chat_bubble_outline, item['inquiries']),
-                ],
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: status == 'active'
+                      ? AppColors.gold.withOpacity(0.12)
+                      : Colors.grey.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  status,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: status == 'active'
+                        ? AppColors.gold
+                        : Colors.grey[700],
+                  ),
+                ),
               ),
             ],
           ),
-        ),
+        ],
+      ),
+    );
+  }
 
-        const SizedBox(width: 8),
-
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              item['price'],
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: AppColors.gold,
-                fontSize: 14,
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: status == 'active'
-                    ? AppColors.gold.withOpacity(0.12)
-                    : Colors.grey.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                status,
-                maxLines: 1,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: status == 'active'
-                      ? AppColors.gold
-                      : Colors.grey[700],
-                ),
-              ),
-            ),
-          ],
+  Widget _statItem(IconData icon, dynamic value) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 14, color: Colors.grey),
+        const SizedBox(width: 4),
+        Text(
+          '$value',
+          style: const TextStyle(fontSize: 12, color: Colors.grey),
         ),
       ],
-    ),
-  );
-}
-Widget _statItem(IconData icon, dynamic value) {
-  return Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Icon(icon, size: 14, color: Colors.grey),
-      const SizedBox(width: 4),
-      Text(
-        '$value',
-        style: const TextStyle(fontSize: 12, color: Colors.grey),
-      ),
-    ],
-  );
-}
-
+    );
+  }
 
   Widget _overviewContent() {
     return Column(
@@ -675,65 +573,294 @@ Widget _statItem(IconData icon, dynamic value) {
     );
   }
 
-  Widget _myListingsContent() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 16),
+  Widget _myListingsContent(BuildContext context) {
+    return BlocBuilder<PropertyCubit, PropertyState>(
+      builder: (context, state) {
+        if (state is PropertyLoading) {
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.gold),
+          );
+        }
 
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Text(
-            "All Listings (${listings.length})",
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppColors.navyDark,
-            ),
-          ),
-        ),
+        if (state is PropertyError) {
+          return Center(child: Text(state.message));
+        }
 
-        const SizedBox(height: 10),
+        if (state is PropertyLoaded) {
+          if (state.properties.isEmpty) {
+            return Column(
+              children: [
+                const Center(child: Text("No properties yet")),
+                Center(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    icon: const Icon(Icons.add, color: Colors.black),
+                    label: const Text(
+                      "Add Property",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onPressed: () async {
+                      await Navigator.pushNamed(context, '/addproperty');
 
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [_filterButton("Filter"), _filterButton("Sort")],
-          ),
-        ),
-
-        const SizedBox(height: 10),
-
-        ...listings.map((item) => _fullListingCard(item)).toList(),
-
-        const SizedBox(height: 20),
-        Center(
-          child: Container(
-            margin: const EdgeInsets.only(right: 14),
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                      // if (mounted) {
+                      //   context.read<PropertyCubit>().getAllSellerProperties();
+                      // }
+                    },
+                  ),
                 ),
+              ],
+            );
+          }
+
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                ...state.properties.map(
+                  (property) => _fullListingCardFromModel(context, property),
+                ),
+
+                const SizedBox(height: 16),
+
+                Center(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    icon: const Icon(Icons.add, color: Colors.black),
+                    label: const Text(
+                      "Add Property",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/addproperty');
+                      if (mounted) {
+                        context.read<PropertyCubit>().getAllSellerProperties();
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return const SizedBox();
+      },
+    );
+  }
+
+  Widget _fullListingCardFromModel(
+    BuildContext context,
+    PropertyModel property,
+  ) {
+    final status = property.status;
+    String? imageUrl = property.images.isNotEmpty
+        ? property.images.first
+        : null;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 12),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(18),
+                ),
+                child: imageUrl != null
+                    ? Image.network(
+                        imageUrl,
+                        height: 180,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          // Use local placeholder if network image fails
+                          return Image.asset(
+                            'assets/images/placeholder.webp',
+                            height: 180,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      )
+                    : Image.asset(
+                        'assets/images/placeholder.webp',
+                        height: 180,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
               ),
-              icon: const Icon(Icons.add, color: Colors.black),
-              label: const Text(
-                "Add Property",
-                style: TextStyle(color: Colors.black),
+              positionedBadge(status),
+              Positioned(
+                top: 12,
+                right: 12,
+                child: CircleAvatar(
+                  backgroundColor: AppColors.white,
+                  child: _popupMenu(context, property)),
               ),
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  '/addproperty',
-                );
-              },
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  property.type,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(property.location),
+                const SizedBox(height: 8),
+                Text(
+                  "${property.price} EGP",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.gold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _popupMenu(BuildContext context, PropertyModel property) {
+    return PopupMenuButton<String>(
+      elevation: 4,
+      color: AppColors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      onSelected: (value) async {
+        if (value == 'edit') {
+          await Navigator.pushNamed(
+            context,
+            '/edit-property',
+            arguments: property,
+          );
+
+          if (mounted) {
+            context.read<PropertyCubit>().getAllSellerProperties();
+          }
+        } else if (value == 'delete') {
+          _confirmDelete(context, property.id);
+        } else if (value == 'create-auction') {
+          await Navigator.pushNamed(
+            context,
+            '/create-auction',
+            arguments: property,
+          );
+        }
+      },
+      itemBuilder: (_) => [
+        PopupMenuItem(
+          value: 'edit',
+          padding: EdgeInsets.zero,
+          child: InkWell(
+            splashColor: AppColors.gold,
+            highlightColor: AppColors.gold,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: const [
+                  Icon(Icons.edit, size: 20, color: AppColors.navyDark),
+                  SizedBox(width: 10),
+                  Text("Edit"),
+                ],
+              ),
             ),
           ),
         ),
-        const SizedBox(height: 40),
+        if (!property.isAuction)
+        PopupMenuItem(
+          value: 'create-auction',
+          padding: EdgeInsets.zero,
+          child: InkWell(
+            splashColor: AppColors.gold,
+            highlightColor: AppColors.gold,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: const [
+                  Icon(Icons.gavel, size: 20, color: AppColors.navyDark),
+                  SizedBox(width: 10),
+                  Text("Create Auction"),
+                ],
+              ),
+            ),
+          ),
+        ),
+        PopupMenuItem(
+          value: 'delete',
+          padding: EdgeInsets.zero,
+          child: InkWell(
+            splashColor: AppColors.gold,
+            highlightColor: AppColors.gold,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: const [
+                  Icon(Icons.delete_outline, size: 20, color: Colors.red),
+                  SizedBox(width: 10),
+                  Text("Delete"),
+                ],
+              ),
+            ),
+          ),
+        ),
       ],
+    );
+  }
+
+  void _confirmDelete(BuildContext context, String id) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: AppColors.background,
+        title: const Text('Delete Property'),
+        content: const Text('Are you sure you want to delete this property?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: AppColors.gold),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.read<PropertyCubit>().deleteProperty(id);
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
   }
 
@@ -957,7 +1084,7 @@ Widget _statItem(IconData icon, dynamic value) {
   }
 
   Widget positionedBadge(String status) {
-    final color = status == "active" ? AppColors.gold : Colors.orange;
+    final color = status == "approved" ? AppColors.gold : Colors.orange;
 
     return Positioned(
       top: 16,
@@ -1100,215 +1227,3 @@ Widget _statItem(IconData icon, dynamic value) {
     );
   }
 }
-
-
-// import 'package:flutter/material.dart';
-// import 'package:movin/app_theme.dart';
-// import 'package:movin/presentation/home/widgets/custom_drawer.dart';
-// import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
-// import 'viewmodels/seller_home_viewmodel.dart';
-// import 'widgets/tabs_section.dart';
-// import 'widgets/stat_card.dart';
-// import 'widgets/performance_card.dart';
-// import 'widgets/full_listing_card.dart';
-// import 'widgets/news_card.dart';
-
-// class SellerHome extends StatefulWidget {
-//   const SellerHome({super.key});
-
-//   @override
-//   State<SellerHome> createState() => _SellerHomeState();
-// }
-
-// class _SellerHomeState extends State<SellerHome>
-//     with SingleTickerProviderStateMixin {
-//   late TabController _tabController;
-//   final vm = SellerHomeViewModel();
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _tabController = TabController(length: 3, vsync: this);
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: AppColors.background,
-//       drawer: const CustomDrawer(),
-//       body: NestedScrollView(
-//         headerSliverBuilder: (context, _) => [buildHeader()],
-//         body: TabBarView(
-//           controller: _tabController,
-//           children: [
-//             _overviewContent(),
-//             _myListingsContent(),
-//             _newsContent(),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   SliverToBoxAdapter buildHeader() {
-//     return SliverToBoxAdapter(
-//       child: Column(
-//         children: [
-//           Container(
-//             padding: const EdgeInsets.fromLTRB(20, 50, 20, 30),
-//             color: AppColors.primaryNavy,
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 buildHeaderBar(),
-//                 const SizedBox(height: 30),
-//                 const Text(
-//                   "Seller Dashboard",
-//                   style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-//                 ),
-//                 const Text(
-//                   "Manage your properties and track performance",
-//                   style: TextStyle(color: Colors.white60, fontSize: 18),
-//                 ),
-//                 const SizedBox(height: 30),
-//                 Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                   children: const [
-//                     Padding(
-//                       padding: EdgeInsets.all(8.0),
-//                       child: StatCard(title: "Active Listings", value: "12", icon: Icons.home_outlined),
-//                     ),
-//                     SizedBox(width: 20),
-//                     StatCard(title: "Total Views", value: "8.4k", icon: Icons.remove_red_eye_outlined),
-//                   ],
-//                 ),
-//                 const SizedBox(height: 20),
-//                 Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                   children: const [
-//                     StatCard(title: "Inquiries", value: "156", icon: Icons.chat_bubble_outline),
-//                     SizedBox(width: 20),
-//                     StatCard(title: "Conversion", value: "18%", icon: Icons.trending_up),
-//                   ],
-//                 ),
-//               ],
-//             ),
-//           ),
-
-//           const SizedBox(height: 12),
-//           TabsSection(controller: _tabController),
-//           const SizedBox(height: 12),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Row buildHeaderBar() {
-//     return Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: [
-//         Builder(
-//           builder: (context) => InkWell(
-//             borderRadius: BorderRadius.circular(12),
-//             onTap: () => Scaffold.of(context).openDrawer(),
-//             child: iconContainer(Icons.menu),
-//           ),
-//         ),
-//         Row(
-//           children: [
-//             ElevatedButton.icon(
-//               style: ElevatedButton.styleFrom(
-//                 backgroundColor: AppColors.gold,
-//                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-//               ),
-//               icon: const Icon(Icons.add, color: Colors.black),
-//               label: const Text("Add Property", style: TextStyle(color: Colors.black)),
-//               onPressed: () {},
-//             ),
-//             const SizedBox(width: 14),
-//             iconContainer(Icons.notifications_none_outlined, hasBadge: true),
-//           ],
-//         )
-//       ],
-//     );
-//   }
-
-//   Widget _overviewContent() {
-//     return SingleChildScrollView(
-//       child: Column(
-//         children: [
-//           const PerformanceCard(),
-//           const SizedBox(height: 16),
-//           Container(
-//             margin: const EdgeInsets.all(16),
-//             padding: const EdgeInsets.symmetric(vertical: 10),
-//             decoration: BoxDecoration(
-//               color: AppColors.white,
-//               borderRadius: BorderRadius.circular(18),
-//               boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 14)],
-//             ),
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 const Padding(
-//                   padding: EdgeInsets.all(16),
-//                   child: Text("Top Performing Listings", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-//                 ),
-//                 ...vm.listings.map((l) => FullListingCard(item: l)).toList(),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-  
-
-//   Widget _myListingsContent() {
-//     return SingleChildScrollView(
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           const SizedBox(height: 16),
-//           Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 20),
-//             child: Text("All Listings (${vm.listings.length})",
-//                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.navyDark)),
-//           ),
-//           const SizedBox(height: 16),
-//           ...vm.listings.map((item) => FullListingCard(item: item)).toList(),
-//           const SizedBox(height: 20),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Widget _newsContent() {
-//     return SingleChildScrollView(
-//       child: Column(
-//         children: const [
-//           SizedBox(height: 16),
-//           Padding(
-//             padding: EdgeInsets.symmetric(horizontal: 16),
-//             child: Text("Latest Real Estate News",
-//                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-//           ),
-//           SizedBox(height: 12),
-//           NewsCard(
-//             image: "assets/images/building1.jpeg",
-//             title: "Dubai Real Estate Market Shows Strong Growth in Q4 2024",
-//             date: "2 days ago",
-//             description: "The Dubai property market continues to demonstrate resilience...",
-//           ),
-//           NewsCard(
-//             image: "assets/images/building2.jpeg",
-//             title: "New Sustainable Housing Projects Announced Across UAE",
-//             date: "1 week ago",
-//             description: "Developers are shifting towards eco-friendly architecture...",
-//           ),
-//           SizedBox(height: 40),
-//         ],
-//       ),
-//     );
-//   }
-// }

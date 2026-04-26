@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/profile/widget/custom_badge.dart';
-import '../model/profile_model.dart';
+import '../../../data/models/profile_model.dart';
 
 class ProfileHeader extends StatelessWidget {
   final ProfileModel profile;
@@ -57,7 +57,7 @@ class ProfileHeader extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                _initials(profile.name),
+                initials(profile.name),
                 style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -108,7 +108,7 @@ class ProfileHeader extends StatelessWidget {
     );
   }
 
-  String _initials(String name) {
+  String initials(String name) {
     final parts = name.trim().split(" ");
     if (parts.length >= 2) {
       return "${parts[0][0]}${parts[1][0]}".toUpperCase();

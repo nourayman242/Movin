@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/domain/entities/property_model.dart';
+import 'package:movin/domain/entities/property_entity.dart';
+
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_state.dart';
 
 class ViewHistoryCard extends StatelessWidget {
-  final PropertyModel property;
+  final PropertyEntity property;
   final VoidCallback? onTap;
 
   const ViewHistoryCard({
@@ -51,7 +52,7 @@ class ViewHistoryCard extends StatelessWidget {
                       SizedBox(
                         width: imageWidth,
                         height: cardHeight,
-                        child: Image.asset(property.image, fit: BoxFit.cover),
+                        child: Image.network(property.images.first, fit: BoxFit.cover),
                       ),
 
                       // Tag
@@ -64,13 +65,13 @@ class ViewHistoryCard extends StatelessWidget {
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: property.tag.toLowerCase().contains('rent')
+                            color: property.listingType.toLowerCase().contains('rent')
                                 ? AppColors.gold
                                 : AppColors.primaryNavy,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            property.tag,
+                            property.listingType,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 12,
@@ -86,12 +87,12 @@ class ViewHistoryCard extends StatelessWidget {
                         top: 8,
                         child: BlocBuilder<FavoriteBloc, FavoriteState>(
                           builder: (context, state) {
-                            final isFav = state.isFavorite(property.id);
+                            final isFav = state.isFavorite(property.id.toString());
 
                             return GestureDetector(
                               onTap: () {
                                 context.read<FavoriteBloc>().add(
-                                  FavoriteToggle(property.id),
+                                  FavoriteToggle(property.id.toString()),
                                 );
                               },
                               child: Container(
@@ -126,7 +127,7 @@ class ViewHistoryCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          property.title,
+                          property.description,
                           style: AppTextStyles.label,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -156,7 +157,7 @@ class ViewHistoryCard extends StatelessWidget {
                         const SizedBox(height: 10),
 
                         Text(
-                          property.price,
+                      '${property.price}',
                           style: TextStyle(
                             color: AppColors.gold,
                             fontSize: 18,
@@ -171,22 +172,22 @@ class ViewHistoryCard extends StatelessWidget {
                           children: [
                             Expanded(
                               child: _AttrItem(
-                                value: property.beds.toString(),
+                                value: property.details["bedrooms"].toString(),
                                 label: "Beds",
                               ),
                             ),
                             const _VerticalDivider(),
                             Expanded(
                               child: _AttrItem(
-                                value: property.baths.toString(),
+                                value: property.details["bathrooms"].toString(),
                                 label: "Baths",
                               ),
                             ),
                             const _VerticalDivider(),
                             Expanded(
                               child: _AttrItem(
-                                value: property.sqft.toString(),
-                                label: "m²",
+                                value: property.size.toString(),
+                                label: "",
                               ),
                             ),
                           ],

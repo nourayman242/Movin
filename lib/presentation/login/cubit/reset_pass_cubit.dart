@@ -12,8 +12,8 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
     emit(ResetPasswordLoading());
     try {
       final entity = ResetPasswordEntity(email: email, newPassword: newPassword);
-      await repository.resetPassword(entity);
-      emit(ResetPasswordSuccess());
+      final message = await repository.resetPassword(entity);
+      emit(ResetPasswordSuccess(message: message)); // ← pass actual backend message
     } catch (e) {
       emit(ResetPasswordFailure(e.toString()));
     }

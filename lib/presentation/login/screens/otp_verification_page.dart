@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/presentation/login/cubit/otp_cubit.dart';
 import 'package:movin/presentation/login/cubit/otp_state.dart';
+import 'package:movin/presentation/login/cubit/reset_pass_cubit.dart';
 import '../../../app_theme.dart';
 import 'reset_password_page.dart';
 
@@ -20,6 +22,8 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
   );
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
 
+  String get _otp => _otpControllers.map((c) => c.text).join().trim();
+
   void _onChanged(String value, int index) {
     if (value.isNotEmpty && index < 5) {
       _focusNodes[index + 1].requestFocus();
@@ -28,7 +32,12 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
     }
   }
 
-  String get _otp => _otpControllers.map((c) => c.text).join().trim();
+  @override
+  void dispose() {
+    for (var c in _otpControllers) c.dispose();
+    for (var f in _focusNodes) f.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,14 +109,13 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
             BlocConsumer<OtpCubit, OtpState>(
               listener: (context, state) {
                 if (state is OtpSuccess) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(state.message)));
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          ResetPasswordPage(email: widget.email),
+                      builder: (_) => BlocProvider(
+                        create: (_) => getIt<ResetPasswordCubit>(),
+                        child: ResetPasswordPage(email: widget.email),
+                      ),
                     ),
                   );
                 } else if (state is OtpFailure) {
