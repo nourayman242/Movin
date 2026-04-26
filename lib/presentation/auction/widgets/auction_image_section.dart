@@ -125,15 +125,4 @@ class AuctionImageSection extends StatelessWidget {
     );
   }
 }
-Widget networkImage(String? url) {
-  if (url == null || url.trim().isEmpty) {
-    return const Icon(Icons.image_not_supported);
-  }
 
-  return Image.network(
-    url,
-    errorBuilder: (context, error, stackTrace) {
-      return const Icon(Icons.broken_image);
-    },
-  );
-}
