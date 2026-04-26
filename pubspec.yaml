@@ -45,6 +45,7 @@ dependencies:
   image_picker: ^1.2.1
   injectable: ^2.1.0
   json_annotation: ^4.8.1
+  jwt_decoder: ^2.0.1
   provider: ^6.1.5+1
   retrofit: 4.4.1
   shared_preferences: ^2.1.0
