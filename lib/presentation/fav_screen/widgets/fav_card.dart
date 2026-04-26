@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/domain/entities/property_model.dart';
+import 'package:movin/domain/entities/property_entity.dart';
+
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 
 class FavCard extends StatelessWidget {
-  final PropertyModel property;
+  final PropertyEntity property;
   final VoidCallback? onFavoriteToggle;
   //final VoidCallback? onTap;
 
@@ -36,8 +37,8 @@ class FavCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(14)),
-                child: Image.asset(
-                  property.image,
+                child: Image.network(
+                  property.images.first,
                   height: 200,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -55,12 +56,12 @@ class FavCard extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     
-                    color: _getTagColor(property.tag),
+                    color: _getTagColor(property.listingType),
                     
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
-                    property.tag,
+                    property.listingType,
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -92,7 +93,7 @@ class FavCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  property.title,
+                  property.description,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
 
@@ -112,7 +113,7 @@ class FavCard extends StatelessWidget {
                 const SizedBox(height: 8),
 
                 Text(
-                  property.price,
+                  '${property.price}',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -124,9 +125,9 @@ class FavCard extends StatelessWidget {
 
                 Row(
                   children: [
-                    Text("${property.beds} beds"),
+                    Text("${property.details["bedrooms"]} beds"),
                     const SizedBox(width: 12),
-                    Text("${property.baths} baths"),
+                    Text("${property.details["bathrooms"]} baths"),
                   ],
                 ),
 
@@ -146,7 +147,7 @@ class FavCard extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (_) =>
-                                PropertyDetailsScreen(propertyId: property.id),
+                                PropertyDetailsScreen(property: property),
                           ),
                         );
                       },

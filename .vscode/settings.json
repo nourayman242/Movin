@@ -1,4 +1,9 @@
 {
+<<<<<<< HEAD
   "cmake.ignoreCMakeListsMissing": true,
   "dart.flutterSdkPath": ".fvm/versions/3.22.0"
+=======
+    "cmake.ignoreCMakeListsMissing": true,
+    "java.configuration.updateBuildConfiguration": "interactive"
+>>>>>>> c550f673ed09e443c2fdfc08675b08273a8400d3
 }

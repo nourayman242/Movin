@@ -1,5 +1,3 @@
-
 abstract class ForgotPasswordRepository {
-  Future<void> sendOtp({required String email});
-
+  Future<String> sendOtp({required String email}); // ← return String not void
 }

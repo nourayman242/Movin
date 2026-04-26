@@ -7,7 +7,7 @@ part of 'user_response.dart';
 // **************************************************************************
 
 UserResponse _$UserResponseFromJson(Map<String, dynamic> json) => UserResponse(
-      id: json['id'] as String,
+      id: json['_id'] as String,
       name: json['name'] as String,
       email: json['email'] as String,
       phone: UserResponse._phoneFromJson(json['phone']),
@@ -15,7 +15,7 @@ UserResponse _$UserResponseFromJson(Map<String, dynamic> json) => UserResponse(
 
 Map<String, dynamic> _$UserResponseToJson(UserResponse instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      '_id': instance.id,
       'name': instance.name,
       'email': instance.email,
       'phone': instance.phone,

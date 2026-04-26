@@ -1,13 +1,14 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/domain/repositories/property_repository.dart';
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
 import 'package:movin/presentation/browse_property/widgets/browse_property_card.dart';
-import 'package:movin/presentation/browse_property/widgets/dummy_properties.dart';
+import 'package:movin/presentation/browse_property/widgets/browser_property_viewmodel.dart';
 import 'package:movin/presentation/browse_property/widgets/search_widget.dart';
 
 class BrowsePropertiesScreen extends StatefulWidget {
-  final String type;// rent, sale, commercial, investment
+  final String type; // rent, sale
 
   const BrowsePropertiesScreen({required this.type, super.key});
 
@@ -17,6 +18,7 @@ class BrowsePropertiesScreen extends StatefulWidget {
 
 class _BrowsePropertiesScreenState extends State<BrowsePropertiesScreen> {
   String searchQuery = "";
+  late BrowseViewModel vm;
 
   void _onSearchChanged(String value) {
     setState(() {
@@ -28,24 +30,22 @@ class _BrowsePropertiesScreenState extends State<BrowsePropertiesScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => PropertyDetailsScreen(propertyId: property.id),
+        builder: (_) => PropertyDetailsScreen(property: property),
       ),
     );
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    vm = BrowseViewModel(context.read<PropertyRepository>());
+
+    vm.load(widget.type.toLowerCase());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final filtered = dummyProperties.where((property) {
-      final matchesType =
-          property.tag.toLowerCase() == widget.type.toLowerCase();
-
-      final matchesSearch = property.location.toLowerCase().contains(
-        searchQuery,
-      );
-
-      return matchesType && matchesSearch;
-    }).toList();
-
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -59,34 +59,45 @@ class _BrowsePropertiesScreenState extends State<BrowsePropertiesScreen> {
           children: [
             SearchHeader(onSearchChanged: _onSearchChanged),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              child: Text(
-                "${filtered.length} properties found",
-                style: AppTextStyles.label,
-              ),
-            ),
-
             const SizedBox(height: 10),
 
-            Expanded(
-              child: filtered.isEmpty
-                  ? const Center(
-                      child: Text(
-                        "No properties found",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    )
-                  : ListView.builder(
-                      itemCount: filtered.length,
-                      itemBuilder: (context, index) {
-                        final property = filtered[index];
-                        return BrowsePropertyCard(
-                          property: property,
-                          onTap: () => navigateToDetails(property),
-                        );
-                      },
-                    ),
+            AnimatedBuilder(
+              animation: vm,
+              builder: (context, _) {
+                if (vm.isLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: AppColors.navyDark),
+                  );
+                }
+
+                final filtered = vm.properties.where((property) {
+                  return property.location.toLowerCase().contains(searchQuery);
+                }).toList();
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: Text(
+                    "${filtered.length} properties found",
+
+                    style: AppTextStyles.label,
+                  ),
+                );
+
+                return Expanded(
+                  child: filtered.isEmpty
+                      ? const Center(child: Text("No properties found"))
+                      : ListView.builder(
+                          itemCount: filtered.length,
+                          itemBuilder: (context, index) {
+                            final property = filtered[index];
+
+                            return BrowsePropertyCard(
+                              property: property,
+                              onTap: () => navigateToDetails(property),
+                            );
+                          },
+                        ),
+                );
+              },
             ),
           ],
         ),

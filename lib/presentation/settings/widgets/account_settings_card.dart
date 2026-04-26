@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/profile/edit_profile_screen.dart';
-import 'package:movin/presentation/profile/model/profile_model.dart';
 
 class AccountSettingsCard extends StatelessWidget {
   //final ProfileModel profile;

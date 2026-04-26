@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../add_property_viewmodel.dart';
@@ -38,20 +37,40 @@ class BasicInfoSection extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            DropdownButtonFormField<String>(
+            // DropdownButtonFormField<String>(
+            //   iconEnabledColor: AppColors.gold,
+            //   borderRadius: BorderRadius.circular(14),
+            //   dropdownColor: AppColors.white,
+            //   //value: 'sale',
+            //   value: vm.selectedListingType,
+            //   decoration: AppInputDecoration.rounded(
+            //     hintText: 'Listing Type *',
+            //   ),
+            //   items: const [
+            //     DropdownMenuItem(value: 'sale', child: Text('For Sale')),
+            //     DropdownMenuItem(value: 'rent', child: Text('For Rent')),
+            //   ],
+            //   onChanged: vm.selectListingType,
+            // ),
+            DropdownButtonFormField<ListingType>(
               iconEnabledColor: AppColors.gold,
               borderRadius: BorderRadius.circular(14),
               dropdownColor: AppColors.white,
-              value: 'For Sale',
+              value: vm.selectedListingType,
               decoration: AppInputDecoration.rounded(
                 hintText: 'Listing Type *',
               ),
-              items: const [
-                DropdownMenuItem(value: 'For Sale', child: Text('For Sale')),
-                DropdownMenuItem(value: 'For Rent', child: Text('For Rent')),
-              ],
-              onChanged: (_) {},
+              items: ListingType.values.map((type) {
+                return DropdownMenuItem(
+                  value: type,
+                  child: Text(
+                    type == ListingType.sale ? 'For Sale' : 'For Rent',
+                  ),
+                );
+              }).toList(),
+              onChanged: vm.selectListingType,
             ),
+
             const SizedBox(height: 12),
             Text(
               'Price (Total) *',
