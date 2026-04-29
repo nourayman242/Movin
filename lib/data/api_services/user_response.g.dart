@@ -11,6 +11,9 @@ UserResponse _$UserResponseFromJson(Map<String, dynamic> json) => UserResponse(
       name: json['name'] as String,
       email: json['email'] as String,
       phone: UserResponse._phoneFromJson(json['phone']),
+      isAdmin: json['isAdmin'] as bool?,
+      isSeller: json['isSeller'] as bool?,
+      isBuyer: json['isBuyer'] as bool?,
     );
 
 Map<String, dynamic> _$UserResponseToJson(UserResponse instance) =>
@@ -19,4 +22,7 @@ Map<String, dynamic> _$UserResponseToJson(UserResponse instance) =>
       'name': instance.name,
       'email': instance.email,
       'phone': instance.phone,
+      'isAdmin': instance.isAdmin,
+      'isSeller': instance.isSeller,
+      'isBuyer': instance.isBuyer,
     };

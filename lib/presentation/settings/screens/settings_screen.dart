@@ -10,6 +10,9 @@ import 'package:movin/presentation/settings/widgets/notification_card.dart';
 import 'package:movin/presentation/settings/widgets/privacy_card.dart';
 import 'package:movin/presentation/settings/widgets/version_text.dart';
 
+import '../../login/cubit/auth_cubit.dart';
+import '../../login/cubit/auth_state.dart';
+
 class SettingsScreen extends StatefulWidget {
   //final ProfileModel currentProfile;
   const SettingsScreen({super.key, });
@@ -27,32 +30,46 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text('Settings'),
-        backgroundColor: AppColors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.medium),
-        child: Column(
-          children: [
-            LanguageCard(),
-            AppWidgets.verticalSpace(AppSpacing.medium),
-            NotificationCard(),
-            AppWidgets.verticalSpace(AppSpacing.medium),
-            AccountSettingsCard(),
-            AppWidgets.verticalSpace(AppSpacing.medium),
-            PrivacyLegalCard(),
-            AppWidgets.verticalSpace(AppSpacing.large),
-            LogoutButton(),
-            AppWidgets.verticalSpace(AppSpacing.small),
-            VersionText(),
-          ],
-        ),
-      ),
-    );
+    return
+    //   BlocListener<AuthCubit, AuthState>(
+    //     listener: (context, state) {
+    //   if (state is AuthLoggedOut) {
+    //     Navigator.pushNamedAndRemoveUntil(
+    //       context,
+    //       '/login',
+    //           (route) => false,
+    //     );
+    //   }
+    // },
+       // child :
+    Scaffold(
+          backgroundColor: AppColors.background,
+          appBar: AppBar(
+            title: const Text('Settings'),
+            backgroundColor: AppColors.white,
+            foregroundColor: Colors.black,
+            elevation: 0,
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(AppSpacing.medium),
+            child: Column(
+              children: [
+                LanguageCard(),
+                AppWidgets.verticalSpace(AppSpacing.medium),
+                NotificationCard(),
+                AppWidgets.verticalSpace(AppSpacing.medium),
+                AccountSettingsCard(),
+                AppWidgets.verticalSpace(AppSpacing.medium),
+                PrivacyLegalCard(),
+                AppWidgets.verticalSpace(AppSpacing.large),
+                LogoutButton(),
+                AppWidgets.verticalSpace(AppSpacing.small),
+                VersionText(),
+              ],
+            ),
+          ),
+        );
+      //);
+
   }
 }

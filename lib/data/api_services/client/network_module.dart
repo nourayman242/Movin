@@ -33,8 +33,13 @@ import 'package:movin/presentation/login/cubit/reset_pass_cubit.dart';
 import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
+import '../logout_services.dart';
+
 @module
-abstract class NetworkServices {
+abstract class NetworkModule {
+
+
+
   @lazySingleton
   Dio provideDio() {
     const base =
@@ -51,9 +56,22 @@ abstract class NetworkServices {
       ),
     );
 
-    dio.interceptors.add(AuthInterceptor());
 
-    dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
+    // 1️⃣ AUTH INTERCEPTOR (TOKEN)
+    dio.interceptors.add(AuthInterceptor(dio));
+
+    // 2️⃣ LOGGING INTERCEPTOR
+    dio.interceptors.add(
+      LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+      ),
+    );
+
+
+
+
+
 
     return dio;
   }
@@ -134,4 +152,10 @@ abstract class NetworkServices {
   @factory
   AuctionListCubit auctionListCubit(AuctionListService service) =>
       AuctionListCubit(service);
+
+
+  // @lazySingleton
+  // LogoutService logoutService(Dio dio) => LogoutService(dio);
 }
+
+

@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController userValue = TextEditingController();
   final TextEditingController passValue = TextEditingController();
-  final repo = getIt<LoginRepository>();
+  //final repo = getIt<LoginRepository>();
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +44,46 @@ class _LoginScreenState extends State<LoginScreen> {
           if (Navigator.canPop(context)) {
             Navigator.pop(context);
           }
+          //final token = state.token;
+          final user = state.user;
+           // if (user == null) {
+           //  // Google login
+           //   Navigator.pushReplacementNamed(context, '/role');
+           //   return;
+           // }
 
-          await SharedHelper.setLoggedIn(true);
-
-          Navigator.pushReplacementNamed(context, '/role');
+          if (user.isBuyer == true) {
+            Navigator.pushReplacementNamed(context, '/buyerhome');
+          } else if (user.isSeller == true) {
+            Navigator.pushReplacementNamed(context, '/sellerhome');
+          } else {
+            Navigator.pushReplacementNamed(context, '/role');
+          }
         }
+        //google
+        if (state is AuthGoogleSuccess) {
+          if (!context.mounted) return;
+
+
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
+
+          final user = state.profile;
+
+          //  same routing logic but from profile
+          if (user.isBuyer == true) {
+            Navigator.pushReplacementNamed(context, '/buyerhome');
+          }
+          else if (user.isSeller == true) {
+            Navigator.pushReplacementNamed(context, '/sellerhome');
+          }
+          else {
+            Navigator.pushReplacementNamed(context, '/role');
+          }
+        }
+
+
 
         if (state is AuthError) {
           if (!context.mounted) return;
@@ -141,37 +176,38 @@ class _LoginScreenState extends State<LoginScreen> {
                       final email = userValue.text.trim();
                       final password = passValue.text.trim();
 
-                      final entity = LoginEntity(
-                        email: email,
-                        password: password,
-                      );
+                      // final entity = LoginEntity(
+                      //   email: email,
+                      //   password: password,
+                      // );
+                      context.read<AuthCubit>().login(email, password);
 
-                      try {
-                        final response = await repo.loginUser(entity);
+                      // try {
+                      //   final response = await repo.loginUser(entity);
+                      //
+                      //   // ✅ Token saved here — role switch API will use this
+                      //   await SharedHelper.saveToken(response.token);
+                      //   await SharedHelper.saveUserId(response.user.id);
+                      //   print("USER ID: ${response.user.id}");
+                      //   await SharedHelper.setLoggedIn(true);
+                      //
+                      //   if (!context.mounted) return;
+                      //
+                      //   ScaffoldMessenger.of(context).showSnackBar(
+                      //     const SnackBar(content: Text('Login successful')),
+                      //   );
 
-                        // ✅ Token saved here — role switch API will use this
-                        await SharedHelper.saveToken(response.token);
-                        await SharedHelper.saveUserId(response.user.id);
-                        print("USER ID: ${response.user.id}");
-                        await SharedHelper.setLoggedIn(true);
+                        //Navigator.pushReplacementNamed(context, '/role');
 
-                        if (!context.mounted) return;
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Login successful')),
-                        );
-
-                        Navigator.pushReplacementNamed(context, '/role');
-
-                        userValue.clear();
-                        passValue.clear();
-                      } catch (e) {
-                        if (!context.mounted) return;
-
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(SnackBar(content: Text(e.toString())));
-                      }
+                      //   userValue.clear();
+                      //   passValue.clear();
+                      // } catch (e) {
+                      //   if (!context.mounted) return;
+                      //
+                      //   ScaffoldMessenger.of(
+                      //     context,
+                      //   ).showSnackBar(SnackBar(content: Text(e.toString())));
+                      // }
                     },
                     child: const Text(
                       'Login',

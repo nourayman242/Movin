@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../api_services/user_response.dart';
 
 class SharedHelper {
   static const String _onboardingKey = 'onboarding_seen';
@@ -6,8 +10,10 @@ class SharedHelper {
   static const String _userRoleKey = 'user_role';
 
   static const String _tokenKey = 'token';
-  static const String _userIdKey = 'user_id'; // ✅ added
+  static const String _userIdKey = 'user_id';
 
+  static const String _userKey = 'user';
+  static const String _refreshTokenKey = 'refresh_token';
   // ONBOARDING
 
   static Future<void> setOnboardingSeen(bool value) async {
@@ -72,6 +78,33 @@ class SharedHelper {
     return prefs.getString(_userIdKey);
   }
 
+  //USER
+
+  static Future<void> saveUser(UserResponse? user) async {
+    if (user == null) return;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userKey, jsonEncode(user.toJson()));
+  }
+
+  static Future<UserResponse?> getUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString(_userKey);
+
+    if (jsonString == null) return null;
+
+    return UserResponse.fromJson(jsonDecode(jsonString));
+  }
+  //REFRESH TOKEN
+  static Future<void> saveRefreshToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_refreshTokenKey, token);
+  }
+
+  static Future<String?> getRefreshToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_refreshTokenKey);
+  }
+
 
 
   // LOGOUT
@@ -80,9 +113,8 @@ class SharedHelper {
     final prefs = await SharedPreferences.getInstance();
     //may remove onboarding
     await prefs.remove(_onboardingKey);
-    // await prefs.remove(_isLoggedInKey);
-    // await prefs.remove(_userRoleKey);
-    await prefs.remove('token');
+    await prefs.remove(_tokenKey);
+    await prefs.remove(_refreshTokenKey);
     await prefs.setBool(_isLoggedInKey, false);
   }
 

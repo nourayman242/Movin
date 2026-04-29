@@ -16,6 +16,7 @@ import 'package:movin/presentation/home/screens/home.dart';
 
 import 'package:movin/domain/repositories/property_repository.dart';
 import 'package:movin/presentation/auction/create%20auction/screens/create_auction_screen.dart';
+import 'package:movin/presentation/login/cubit/auth_state.dart';
 
 
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
@@ -35,6 +36,7 @@ import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
 import 'package:movin/presentation/splash_screen/screens/splash.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ModeService.loadUserMode();
@@ -48,8 +50,6 @@ void main() async {
       splitScreenMode: true,
       builder: (_, __) => MultiBlocProvider(
         providers: [
-
-
           RepositoryProvider<PropertyRepository>(
             create: (_) => getIt<PropertyRepository>(),
           ),
@@ -76,9 +76,19 @@ class Movin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return MaterialApp(
-      // ← now MaterialApp is the direct root
-      debugShowCheckedModeBanner: false,
+    return BlocListener<AuthCubit, AuthState>(
+    listener: (context, state) {
+    if (state is AuthLoggedOut) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        navigatorKey.currentState?.pushNamedAndRemoveUntil(
+          '/login', (route) => false,
+        );
+      });
+    }
+    },
+      child:MaterialApp(
+        navigatorKey: navigatorKey,
+        debugShowCheckedModeBanner: false,
       home: const Splash(),
       routes: {
         '/onboarding': (_) => const OnboardingScreen(),
@@ -109,6 +119,7 @@ class Movin extends StatelessWidget {
         '/create-auction': (_) => const CreateAuctionScreen(),
 
       },
+      )
     );
   }
 }
