@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:movin/data/api_services/user_response.dart';
 import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
 import 'package:movin/domain/repositories/auth_repository.dart';
 import 'package:movin/presentation/login/cubit/auth_state.dart';
@@ -37,7 +38,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> loginWithGoogle() async {
-  emit(AuthLoading());
+    emit(AuthLoading());
 
     try {
       final result = await authRepo.loginWithGoogle();
