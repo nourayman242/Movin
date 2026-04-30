@@ -46,7 +46,12 @@ import 'package:movin/domain/repositories/profile_repository.dart' as _i935;
 import 'package:movin/domain/repositories/property_repository.dart' as _i770;
 import 'package:movin/domain/repositories/register_repository.dart' as _i623;
 import 'package:movin/domain/repositories/reset_pass_repository.dart' as _i332;
+
 import 'package:movin/domain/repositories/role_repository.dart' as _i166;
+
+import 'package:movin/presentation/auction/create%20auction/cubit/create_auction_cubit.dart'
+    as _i484;
+
 import 'package:movin/presentation/auction/cubit/auction_cubit.dart' as _i473;
 import 'package:movin/presentation/auction/cubit/auction_list_cubit.dart'
     as _i790;
@@ -99,6 +104,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i97.OtpServices>(
         () => networkModule.otpServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i295.ResetPasswordService>(
+
         () => networkModule.resetPasswordService(gh<_i361.Dio>()));
     gh.lazySingleton<_i163.ProfileService>(
         () => networkModule.profileService(gh<_i361.Dio>()));
@@ -106,6 +112,7 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkModule.auctionListService(gh<_i361.Dio>()));
     gh.lazySingleton<_i833.LogoutService>(
         () => _i833.LogoutService(gh<_i361.Dio>()));
+
     gh.lazySingleton<_i574.OtpRepository>(
         () => _i736.OtpRepositoryImpl(gh<_i97.OtpServices>()));
     gh.lazySingleton<_i935.ProfileRepository>(
@@ -144,6 +151,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i790.AuctionListCubit>(
         () => networkModule.auctionListCubit(gh<_i467.AuctionListService>()));
     gh.factory<_i267.PropertyCubit>(
+
         () => networkModule.propertyCubit(gh<_i770.PropertyRepository>()));
     gh.factory<_i571.RoleBloc>(
         () => _i571.RoleBloc(gh<_i166.RoleRepository>()));
@@ -151,6 +159,10 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i137.GoogleAuthService>(),
           gh<_i833.LogoutService>(),
         ));
+
+    gh.factory<_i484.CreateAuctionCubit>(
+        () => _i484.CreateAuctionCubit(gh<_i770.PropertyRepository>()));
+
     gh.factory<_i473.AuctionCubit>(
         () => networkModule.auctionCubit(gh<_i701.AuctionRepository>()));
     gh.factory<_i896.ResetPasswordCubit>(() =>

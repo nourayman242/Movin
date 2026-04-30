@@ -26,9 +26,7 @@ class PropertyAuctionsScreen extends StatelessWidget {
                 builder: (context, state) {
                   if (state is AuctionListLoading) {
                     return const Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.gold,
-                      ),
+                      child: CircularProgressIndicator(color: AppColors.gold),
                     );
                   }
 
@@ -37,8 +35,11 @@ class PropertyAuctionsScreen extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.error_outline,
-                              color: Colors.red, size: 48),
+                          const Icon(
+                            Icons.error_outline,
+                            color: Colors.red,
+                            size: 48,
+                          ),
                           const SizedBox(height: 12),
                           Text(
                             state.message,
@@ -50,9 +51,8 @@ class PropertyAuctionsScreen extends StatelessWidget {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.gold,
                             ),
-                            onPressed: () => context
-                                .read<AuctionListCubit>()
-                                .loadAuctions(),
+                            onPressed: () =>
+                                context.read<AuctionListCubit>().loadAuctions(),
                             child: const Text('Retry'),
                           ),
                         ],
@@ -74,15 +74,17 @@ class PropertyAuctionsScreen extends StatelessWidget {
                         final auction = state.auctions[index];
 
                         return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
+                          // },
+                          onTap: () async {
+                            await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => AuctionScreen(
-                                  property: _toEntity(auction),
-                                ),
+                                builder: (_) =>
+                                    AuctionScreen(property: _toEntity(auction)),
                               ),
                             );
+
+                            context.read<AuctionListCubit>().loadAuctions();
                           },
                           child: AuctionPropertyCard(
                             title: auction.type,
@@ -93,8 +95,7 @@ class PropertyAuctionsScreen extends StatelessWidget {
                             startingPrice:
                                 '${auction.startPrice.toStringAsFixed(0)} EGP',
                             bids: auction.totalBids.toString(),
-                            timeRemaining:
-                                _formatEndTime(auction.endTime),
+                            timeRemaining: _formatEndTime(auction.endTime),
                             status: auction.status,
                           ),
                         );
@@ -113,21 +114,21 @@ class PropertyAuctionsScreen extends StatelessWidget {
   }
 
   // Convert AuctionListModel → PropertyEntity
-PropertyEntity _toEntity(AuctionListModel a) {
-  return PropertyEntity(
-    id: a.id,
-    description: a.description,
-    location: a.location,
-    price: a.currentBid.toInt(),
-    listingType: a.listingType,
-    type: a.type,
-    size: a.size.toString(),
-    images: a.image != null ? [a.image!] : [],
-    details: {},
-    status: a.status,
-    isAuction: true, 
-  );
-}
+  PropertyEntity _toEntity(AuctionListModel a) {
+    return PropertyEntity(
+      id: a.id,
+      description: a.description,
+      location: a.location,
+      price: a.currentBid.toInt(),
+      listingType: a.listingType,
+      type: a.type,
+      size: a.size.toString(),
+      images: a.image != null ? [a.image!] : [],
+      details: {},
+      status: a.status,
+      isAuction: true,
+    );
+  }
 
   // Format ISO date → "2d 5h 32m"
   String _formatEndTime(String endTime) {

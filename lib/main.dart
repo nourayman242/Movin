@@ -6,6 +6,12 @@ import 'package:movin/data/models/property_model.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
 
 
+
+
+import 'package:movin/domain/repositories/property_repository.dart';
+import 'package:movin/presentation/auction/create%20auction/cubit/create_auction_cubit.dart';
+import 'package:movin/presentation/auction/create%20auction/screens/create_auction_screen.dart';
+
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 
@@ -14,8 +20,7 @@ import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
 import 'package:movin/presentation/home/screens/home.dart';
 
-import 'package:movin/domain/repositories/property_repository.dart';
-import 'package:movin/presentation/auction/create%20auction/screens/create_auction_screen.dart';
+
 import 'package:movin/presentation/login/cubit/auth_state.dart';
 
 
@@ -116,8 +121,16 @@ class Movin extends StatelessWidget {
             child: EditPropertyScreen(property: property),
           );
         },
-        '/create-auction': (_) => const CreateAuctionScreen(),
 
+        '/create-auction': (context) {
+          final property =
+              ModalRoute.of(context)!.settings.arguments as PropertyModel;
+
+          return BlocProvider(
+            create: (_) => getIt<CreateAuctionCubit>(),
+            child: CreateAuctionScreen(property: property),
+          );
+        },
       },
       )
     );

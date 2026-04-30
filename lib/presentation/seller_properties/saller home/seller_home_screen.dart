@@ -662,6 +662,10 @@ class _SellerHomeState extends State<SellerHome>
     PropertyModel property,
   ) {
     final status = property.status;
+    final auctionStatus = property.isAuction
+    ? property.auctionStatus ?? "pending"
+    : "unknown";
+
     String? imageUrl = property.images.isNotEmpty
         ? property.images.first
         : null;
@@ -675,74 +679,79 @@ class _SellerHomeState extends State<SellerHome>
           BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 12),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Stack(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(18),
-                ),
-                child: imageUrl != null
-                    ? Image.network(
-                        imageUrl,
-                        height: 180,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          // Use local placeholder if network image fails
-                          return Image.asset(
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(18),
+                    ),
+                    child: imageUrl != null
+                        ? Image.network(
+                            imageUrl,
+                            height: 180,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              // Use local placeholder if network image fails
+                              return Image.asset(
+                                'assets/images/placeholder.webp',
+                                height: 180,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          )
+                        : Image.asset(
                             'assets/images/placeholder.webp',
                             height: 180,
                             width: double.infinity,
                             fit: BoxFit.cover,
-                          );
-                        },
-                      )
-                    : Image.asset(
-                        'assets/images/placeholder.webp',
-                        height: 180,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
+                          ),
+                  ),
+                  positionedBadge(status),
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: CircleAvatar(
+                      backgroundColor: AppColors.white,
+                      child: _popupMenu(context, property)),
+                  ),
+                ],
               ),
-              positionedBadge(status),
-              Positioned(
-                top: 12,
-                right: 12,
-                child: CircleAvatar(
-                  backgroundColor: AppColors.white,
-                  child: _popupMenu(context, property)),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      property.type,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(property.location),
+                    const SizedBox(height: 8),
+                    Text(
+                      "${property.price} EGP",
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.gold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  property.type,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(property.location),
-                const SizedBox(height: 8),
-                Text(
-                  "${property.price} EGP",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.gold,
-                  ),
-                ),
-              ],
-            ),
-          ),
+           auctionPositionedBadge(auctionStatus),
         ],
       ),
     );
@@ -750,6 +759,7 @@ class _SellerHomeState extends State<SellerHome>
 
   Widget _popupMenu(BuildContext context, PropertyModel property) {
     return PopupMenuButton<String>(
+      iconColor: Colors.black,
       elevation: 4,
       color: AppColors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -1083,8 +1093,58 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
+  Widget auctionPositionedBadge(String status) {
+  Color color;
+
+  switch (status.toLowerCase()) {
+    case "pending":
+      color = Colors.orange;
+      break;
+    case "approved":
+      color = AppColors.gold;
+      break;
+    case "ended":
+      color = Colors.red;
+      break;
+    default:
+      color = Colors.grey;
+  }
+
+  return Positioned(
+    bottom: 30,
+    right: 30,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            status.toLowerCase() == "approved" || status.toLowerCase() == "pending"
+                ? Icons.gavel
+                : Icons.hourglass_top,
+            size: 14,
+            color: color,
+          ),
+          Text(
+            status,
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
   Widget positionedBadge(String status) {
-    final color = status == "approved" ? AppColors.gold : Colors.orange;
+    final color = status == "approved"|| status == "active" ? AppColors.gold : Colors.orange;
+
 
     return Positioned(
       top: 16,

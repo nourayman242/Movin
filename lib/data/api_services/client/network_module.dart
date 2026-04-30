@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +32,6 @@ import 'package:movin/presentation/login/cubit/reset_pass_cubit.dart';
 import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
-import '../logout_services.dart';
 
 @module
 abstract class NetworkModule {
@@ -152,10 +150,9 @@ abstract class NetworkModule {
   @factory
   AuctionListCubit auctionListCubit(AuctionListService service) =>
       AuctionListCubit(service);
-
-
-  // @lazySingleton
-  // LogoutService logoutService(Dio dio) => LogoutService(dio);
 }
+
+
+ 
 
 
