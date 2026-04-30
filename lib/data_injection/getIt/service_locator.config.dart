@@ -80,7 +80,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     final networkModule = _$NetworkModule();
     gh.factory<_i872.LoanCalcBloc>(() => _i872.LoanCalcBloc());
-    gh.lazySingleton<_i361.Dio>(() => networkModule.dio());
+    gh.lazySingleton<_i361.Dio>(() => networkModule.provideDio());
     gh.lazySingleton<_i731.SocketService>(() => networkModule.socketService());
     gh.lazySingleton<_i137.GoogleAuthService>(() => _i137.GoogleAuthService());
     gh.lazySingleton<_i282.AuthLocalService>(() => _i282.AuthLocalService());
@@ -94,10 +94,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkModule.loginServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i753.ForgotPasswordService>(
         () => networkModule.forgotPasswordService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i362.FavoriteApiService>(
-        () => networkModule.favoriteApiService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i515.RoleServices>(
-        () => networkModule.roleServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i634.PropertyService>(
         () => networkModule.propertyService(gh<_i361.Dio>()));
     gh.lazySingleton<_i97.OtpServices>(
