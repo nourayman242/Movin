@@ -13,10 +13,11 @@ abstract class PropertyRepository {
   Future<List<PropertyEntity>> getRecommendedProperties();
   Future<List<PropertyEntity>> getPropertiesByType(String type);
   Future<void> createAuction({
-  required String propertyId,
-  required int startPrice,
-  required String startTime,
-  required String endTime,
-});
-Future<PropertyEntity> getPropertyById(String id);
+    required String propertyId,
+    required int startPrice,
+    required String startTime,
+    required String endTime,
+  });
+  Future<PropertyEntity> getPropertyById(String id);
+  Future<List<PropertyEntity>> getMostViewedProperties();
 }

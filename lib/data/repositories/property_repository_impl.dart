@@ -74,4 +74,15 @@ Future<PropertyEntity> getPropertyById(String id) async {
   final model = await service.getPropertyById(id);
   return model.toEntity();
 }
+//  @override
+//   Future<List<PropertyModel>> getMostViewedProperties() async {
+//     final data = await service.getMostViewedProperties();
+
+//     return data.map<PropertyModel>((e) => PropertyModel.fromJson(e as Map<String, dynamic>)).toList();
+//   }
+@override
+Future<List<PropertyEntity>> getMostViewedProperties() async {
+  final models = await service.getMostViewedProperties();
+  return models.map((e) => e.toEntity()).toList();
+}
 }

@@ -180,4 +180,15 @@ class PropertyService {
 
   return PropertyModel.fromJson(data['property']);
 }
+
+Future<List<PropertyModel>> getMostViewedProperties() async {
+  final response = await dio.get('/api/seller/properties/most-viewed');
+
+  final List rawList = response.data['properties'] ?? [];
+
+  return rawList.map<PropertyModel>((e) {
+    final map = (e as Map).cast<String, dynamic>();
+    return PropertyModel.fromJson(map);
+  }).toList();
+}
 }

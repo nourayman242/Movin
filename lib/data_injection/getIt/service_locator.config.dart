@@ -66,6 +66,8 @@ import 'package:movin/presentation/role_selection/manager/role_bloc/role_bloc.da
     as _i571;
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart'
     as _i267;
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/most_viewed_cubit.dart'
+    as _i771;
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc.dart'
     as _i617;
 
@@ -149,6 +151,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkModule.propertyCubit(gh<_i770.PropertyRepository>()));
     gh.factory<_i484.CreateAuctionCubit>(
         () => _i484.CreateAuctionCubit(gh<_i770.PropertyRepository>()));
+    gh.factory<_i771.MostviewedCubit>(
+        () => _i771.MostviewedCubit(gh<_i770.PropertyRepository>()));
     gh.factory<_i571.RoleBloc>(
         () => _i571.RoleBloc(gh<_i166.RoleRepository>()));
     gh.lazySingleton<_i1021.AuthRepository>(() => _i373.AuthRepositoryImpl(

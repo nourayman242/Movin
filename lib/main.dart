@@ -5,9 +5,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:movin/data/models/property_model.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
 
-
-
-
 import 'package:movin/domain/repositories/property_repository.dart';
 import 'package:movin/presentation/auction/create%20auction/cubit/create_auction_cubit.dart';
 import 'package:movin/presentation/auction/create%20auction/screens/create_auction_screen.dart';
@@ -15,14 +12,11 @@ import 'package:movin/presentation/auction/create%20auction/screens/create_aucti
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 
-
 import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/home/screens/buyer_home_screen.dart';
 import 'package:movin/presentation/home/screens/home.dart';
 
-
 import 'package:movin/presentation/login/cubit/auth_state.dart';
-
 
 import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart';
 
@@ -36,6 +30,7 @@ import 'package:movin/presentation/role_selection/screens/role_selection.dart';
 import 'package:movin/presentation/seller_properties/add_property/add_property_screen.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 import 'package:movin/presentation/seller_properties/edit%20_property/edit_property_screen.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/most_viewed_cubit.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/seller_home_screen.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
@@ -48,7 +43,6 @@ void main() async {
   await Hive.initFlutter();
   await setUpServiceLocator();
   runApp(
-
     ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,
@@ -80,59 +74,66 @@ class Movin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return BlocListener<AuthCubit, AuthState>(
-    listener: (context, state) {
-    if (state is AuthLoggedOut) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        navigatorKey.currentState?.pushNamedAndRemoveUntil(
-          '/login', (route) => false,
-        );
-      });
-    }
-    },
-      child:MaterialApp(
+      listener: (context, state) {
+        if (state is AuthLoggedOut) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            navigatorKey.currentState?.pushNamedAndRemoveUntil(
+              '/login',
+              (route) => false,
+            );
+          });
+        }
+      },
+      child: MaterialApp(
         navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
-      home: const Splash(),
-      routes: {
-        '/onboarding': (_) => const OnboardingScreen(),
-        '/login': (_) => const LoginScreen(),
-        '/role': (_) => const RoleSelection(),
-        '/buyerhome': (_) => const BuyerHome(),
-        '/sellerhome': (_) => BlocProvider(
-          create: (_) => getIt<PropertyCubit>(),
-          child: const SellerHome(),
-        ),
-        '/forgotpassword': (_) => BlocProvider(
-          create: (_) => getIt<ForgotPasswordCubit>(),
-          child: const ForgotPasswordPage(),
-        ),
-        '/home': (_) => const HomePage(),
-        '/addproperty': (_) => BlocProvider(
-          create: (_) => getIt<PropertyCubit>(),
-          child: const AddPropertyScreen(),
-        ),
-        '/edit-property': (context) {
-          final property =
-              ModalRoute.of(context)!.settings.arguments as PropertyModel;
-          return BlocProvider(
+        home: const Splash(),
+        routes: {
+          '/onboarding': (_) => const OnboardingScreen(),
+          '/login': (_) => const LoginScreen(),
+          '/role': (_) => const RoleSelection(),
+          '/buyerhome': (_) => const BuyerHome(),
+          '/sellerhome': (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => getIt<ProfileCubit>()..getProfile()),
+              BlocProvider(create: (_) => getIt<PropertyCubit>()..getAllSellerProperties()),
+              BlocProvider(
+                create: (_) =>
+                    getIt<MostviewedCubit>()..getMostViewedProperties(),
+              ),
+            ],
+            child: const SellerHome(),
+          ),
+          '/forgotpassword': (_) => BlocProvider(
+            create: (_) => getIt<ForgotPasswordCubit>(),
+            child: const ForgotPasswordPage(),
+          ),
+          '/home': (_) => const HomePage(),
+          '/addproperty': (_) => BlocProvider(
             create: (_) => getIt<PropertyCubit>(),
-            child: EditPropertyScreen(property: property),
-          );
-        },
+            child: const AddPropertyScreen(),
+          ),
+          '/edit-property': (context) {
+            final property =
+                ModalRoute.of(context)!.settings.arguments as PropertyModel;
+            return BlocProvider(
+              create: (_) => getIt<PropertyCubit>(),
+              child: EditPropertyScreen(property: property),
+            );
+          },
 
-        '/create-auction': (context) {
-          final property =
-              ModalRoute.of(context)!.settings.arguments as PropertyModel;
+          '/create-auction': (context) {
+            final property =
+                ModalRoute.of(context)!.settings.arguments as PropertyModel;
 
-          return BlocProvider(
-            create: (_) => getIt<CreateAuctionCubit>(),
-            child: CreateAuctionScreen(property: property),
-          );
+            return BlocProvider(
+              create: (_) => getIt<CreateAuctionCubit>(),
+              child: CreateAuctionScreen(property: property),
+            );
+          },
         },
-      },
-      )
+      ),
     );
   }
 }

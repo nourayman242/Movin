@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/data/models/profile_model.dart';
+import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/presentation/auction/all%20proparties%20auctions/screens/property_auctions_screen.dart';
 import 'package:movin/presentation/home/widgets/custom_drawer.dart';
 import 'package:movin/presentation/home/widgets/custom_icon_containar.dart';
@@ -9,10 +10,12 @@ import 'package:movin/presentation/notifications/screens/notifications_screen.da
 import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 import 'package:movin/data/models/property_model.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/most_viewed_cubit.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/most_viewed_state.dart';
 
 class SellerHome extends StatefulWidget {
   //final ProfileModel currentProfile;
-  const SellerHome({super.key, });
+  const SellerHome({super.key});
 
   @override
   State<SellerHome> createState() => _SellerHomeState();
@@ -21,37 +24,11 @@ class SellerHome extends StatefulWidget {
 class _SellerHomeState extends State<SellerHome>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final List<Map<String, dynamic>> listings = [
-    {
-      'title': 'Modern Luxury Villa',
-      'location': 'Dubai Marina',
-      'price': '\$1,250,000',
-      'status': 'active',
-      'image': 'assets/images/villa2.webp',
-      'views': 1243,
-      'likes': 87,
-      'inquiries': 23,
-    },
-    {
-      'title': 'Contemporary Villa',
-      'location': 'Palm Jumeirah',
-      'price': '\$890,000',
-      'status': 'pending',
-      'image': 'assets/images/villa1.jpg',
-      'views': 856,
-      'likes': 52,
-      'inquiries': 15,
-    },
-  ];
-
+ 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    context.read<ProfileCubit>().getProfile();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<PropertyCubit>().getAllSellerProperties();
-    });
   }
 
   @override
@@ -404,8 +381,26 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
-  Widget _listingCard(Map<String, dynamic> item) {
-    final String status = item['status'] ?? '';
+
+  Widget _statItem(IconData icon, dynamic value) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 14, color: Colors.grey),
+        const SizedBox(width: 4),
+        Text(
+          '$value',
+          style: const TextStyle(fontSize: 12, color: Colors.grey),
+        ),
+      ],
+    );
+  }
+
+  Widget _listingCardFromModel(PropertyEntity property) {
+    //final String status = property.status;
+    final String? imageUrl = property.images.isNotEmpty
+        ? property.images.first
+        : null;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -430,7 +425,19 @@ class _SellerHomeState extends State<SellerHome>
             child: SizedBox(
               width: 72,
               height: 72,
-              child: Image.asset(item['image'], fit: BoxFit.cover),
+              child: imageUrl != null
+                  ? Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Image.asset(
+                        'assets/images/placeholder.webp',
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : Image.asset(
+                      'assets/images/placeholder.webp',
+                      fit: BoxFit.cover,
+                    ),
             ),
           ),
 
@@ -441,7 +448,7 @@ class _SellerHomeState extends State<SellerHome>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item['title'],
+                  property.type,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -449,127 +456,132 @@ class _SellerHomeState extends State<SellerHome>
                     fontSize: 15,
                   ),
                 ),
-
                 const SizedBox(height: 4),
-
                 Text(
-                  item['location'],
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  property.location,
                   style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                 ),
-
                 const SizedBox(height: 8),
 
                 Wrap(
                   spacing: 12,
-                  runSpacing: 6,
-                  children: [
-                    _statItem(Icons.remove_red_eye, item['views']),
-                    _statItem(Icons.favorite_border, item['likes']),
-                    _statItem(Icons.chat_bubble_outline, item['inquiries']),
-                  ],
+                  children: [_statItem(Icons.remove_red_eye, property.views)],
                 ),
               ],
             ),
           ),
 
-          const SizedBox(width: 8),
-
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                item['price'],
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+                "${property.price} EGP",
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: AppColors.gold,
                   fontSize: 14,
                 ),
               ),
-
               const SizedBox(height: 8),
-
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: status == 'active'
-                      ? AppColors.gold.withOpacity(0.12)
-                      : Colors.grey.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  status,
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: status == 'active'
-                        ? AppColors.gold
-                        : Colors.grey[700],
-                  ),
-                ),
-              ),
+              // Container(
+              //   padding: const EdgeInsets.symmetric(
+              //     horizontal: 10,
+              //     vertical: 6,
+              //   ),
+              //   decoration: BoxDecoration(
+              //     color: status == 'approved'
+              //         ? AppColors.gold.withOpacity(0.12)
+              //         : Colors.grey.withOpacity(0.12),
+              //     borderRadius: BorderRadius.circular(10),
+              //   ),
+              //   child: Text(
+              //     status,
+              //     style: TextStyle(
+              //       fontSize: 12,
+              //       color: status == 'approved'
+              //           ? AppColors.gold
+              //           : Colors.grey[700],
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ],
       ),
     );
   }
-
-  Widget _statItem(IconData icon, dynamic value) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 14, color: Colors.grey),
-        const SizedBox(width: 4),
-        Text(
-          '$value',
-          style: const TextStyle(fontSize: 12, color: Colors.grey),
-        ),
-      ],
-    );
-  }
-
   Widget _overviewContent() {
-    return Column(
-      children: [
-        _perfCard(),
-        const SizedBox(height: 16),
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10),
-          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-          alignment: Alignment.centerLeft,
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 14),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.large,
-                ),
-                child: const Text(
-                  'Top Performing Listings',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
+    return BlocBuilder<MostviewedCubit, MostviewedState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            _perfCard(),
+            const SizedBox(height: 16),
+
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 14,
+                  ),
+                ],
               ),
-              ...listings.map((l) => _listingCard(l)).toList(),
-              const SizedBox(height: 40),
-            ],
-          ),
-        ),
-      ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.large),
+                    child: Text(
+                      'Top Performing Listings',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  if (state is MostViewedLoading)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: CircularProgressIndicator(color: AppColors.gold),
+                      ),
+                    )
+                  else if (state is MostViewedLoaded &&
+                      state.properties.isNotEmpty)
+                    ...state.properties.map(
+                      (property) => _listingCardFromModel(property),
+                    )
+                  else if (state is MostViewedLoaded &&
+                      state.properties.isEmpty)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Text("No top viewed properties"),
+                      ),
+                    )
+                  else if (state is MostViewedError)
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(state.message),
+                      ),
+                    ),
+
+                  const SizedBox(height: 30),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -663,8 +675,8 @@ class _SellerHomeState extends State<SellerHome>
   ) {
     final status = property.status;
     final auctionStatus = property.isAuction
-    ? property.auctionStatus ?? "pending"
-    : "unknown";
+        ? property.auctionStatus ?? "pending"
+        : "unknown";
 
     String? imageUrl = property.images.isNotEmpty
         ? property.images.first
@@ -719,7 +731,8 @@ class _SellerHomeState extends State<SellerHome>
                     right: 12,
                     child: CircleAvatar(
                       backgroundColor: AppColors.white,
-                      child: _popupMenu(context, property)),
+                      child: _popupMenu(context, property),
+                    ),
                   ),
                 ],
               ),
@@ -751,7 +764,7 @@ class _SellerHomeState extends State<SellerHome>
               ),
             ],
           ),
-           auctionPositionedBadge(auctionStatus),
+          auctionPositionedBadge(auctionStatus),
         ],
       ),
     );
@@ -805,25 +818,28 @@ class _SellerHomeState extends State<SellerHome>
           ),
         ),
         if (!property.isAuction)
-        PopupMenuItem(
-          value: 'create-auction',
-          padding: EdgeInsets.zero,
-          child: InkWell(
-            splashColor: AppColors.gold,
-            highlightColor: AppColors.gold,
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                children: const [
-                  Icon(Icons.gavel, size: 20, color: AppColors.navyDark),
-                  SizedBox(width: 10),
-                  Text("Create Auction"),
-                ],
+          PopupMenuItem(
+            value: 'create-auction',
+            padding: EdgeInsets.zero,
+            child: InkWell(
+              splashColor: AppColors.gold,
+              highlightColor: AppColors.gold,
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Row(
+                  children: const [
+                    Icon(Icons.gavel, size: 20, color: AppColors.navyDark),
+                    SizedBox(width: 10),
+                    Text("Create Auction"),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
         PopupMenuItem(
           value: 'delete',
           padding: EdgeInsets.zero,
@@ -1094,57 +1110,59 @@ class _SellerHomeState extends State<SellerHome>
   }
 
   Widget auctionPositionedBadge(String status) {
-  Color color;
+    Color color;
 
-  switch (status.toLowerCase()) {
-    case "pending":
-      color = Colors.orange;
-      break;
-    case "approved":
-      color = AppColors.gold;
-      break;
-    case "ended":
-      color = Colors.red;
-      break;
-    default:
-      color = Colors.grey;
+    switch (status.toLowerCase()) {
+      case "pending":
+        color = Colors.orange;
+        break;
+      case "approved":
+        color = AppColors.gold;
+        break;
+      case "ended":
+        color = Colors.red;
+        break;
+      default:
+        color = Colors.grey;
+    }
+
+    return Positioned(
+      bottom: 30,
+      right: 30,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              status.toLowerCase() == "approved" ||
+                      status.toLowerCase() == "pending"
+                  ? Icons.gavel
+                  : Icons.hourglass_top,
+              size: 14,
+              color: color,
+            ),
+            Text(
+              status,
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  return Positioned(
-    bottom: 30,
-    right: 30,
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            status.toLowerCase() == "approved" || status.toLowerCase() == "pending"
-                ? Icons.gavel
-                : Icons.hourglass_top,
-            size: 14,
-            color: color,
-          ),
-          Text(
-            status,
-            style: TextStyle(
-              color: color,
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
   Widget positionedBadge(String status) {
-    final color = status == "approved"|| status == "active" ? AppColors.gold : Colors.orange;
-
+    final color = status == "approved" || status == "active"
+        ? AppColors.gold
+        : Colors.orange;
 
     return Positioned(
       top: 16,

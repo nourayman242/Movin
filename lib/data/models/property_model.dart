@@ -22,7 +22,6 @@ class PropertyModel {
   final String sellerLocation;
   final int views;
 
-
   PropertyModel({
     required this.isAuction,
     required this.id,
@@ -42,15 +41,66 @@ class PropertyModel {
     required this.sellerPhone,
     required this.sellerLocation,
     required this.views,
-
   });
-  factory PropertyModel.fromJson(Map<String, dynamic> json) {
-    final List<String> parsedImages = [];
+  // factory PropertyModel.fromJson(Map<String, dynamic> json) {
+  //   final List<String> parsedImages = [];
 
-    // SAFE images parse
+  //   // SAFE images parse
+  //   if (json['images'] is List) {
+  //     for (final img in json['images']) {
+  //       if (img is Map<String, dynamic>) {
+  //         parsedImages.add(img['url']?.toString() ?? '');
+  //       } else if (img is String) {
+  //         parsedImages.add(img);
+  //       }
+  //     }
+  //   }
+
+  //   final details = json['details'] is Map<String, dynamic>
+  //       ? json['details']
+  //       : {};
+
+  //   final auction = json['auction'] is Map<String, dynamic>
+  //       ? json['auction']
+  //       : {};
+
+  //   final seller = json['seller'] is Map<String, dynamic> ? json['seller'] : {};
+
+  //   return PropertyModel(
+  //     id: json['_id']?.toString() ?? '',
+  //     location: json['location']?.toString() ?? '',
+  //     description: json['description']?.toString() ?? '',
+  //     price: int.tryParse(json['price'].toString()) ?? 0,
+  //     listingType: json['listingType']?.toString() ?? '',
+  //     type: json['type']?.toString() ?? '',
+  //     size: json['size']?.toString() ?? details['size']?.toString() ?? '',
+  //     images: parsedImages,
+  //     status: json['status']?.toString() ?? '',
+  //     details: details,
+
+  //     isAuction: auction['isAuction'] == true,
+  //     views: int.tryParse(json['views'].toString()) ?? 0,
+
+  //     sellerName: seller['username']?.toString() ?? '',
+  //     sellerPhone: seller['phone']?.toString() ?? '',
+  //     sellerLocation: seller['location']?.toString() ?? '',
+
+  //     auctionStatus: auction['status']?.toString() ?? '',
+  //   );
+  // }
+  factory PropertyModel.fromJson(Map<String, dynamic> json) {
+    Map<String, dynamic> safeMap(dynamic data) {
+      return data is Map
+          ? Map<String, dynamic>.from(data)
+          : <String, dynamic>{};
+    }
+
+    List<String> parsedImages = [];
+
+    // ✅ SAFE images
     if (json['images'] is List) {
       for (final img in json['images']) {
-        if (img is Map<String, dynamic>) {
+        if (img is Map) {
           parsedImages.add(img['url']?.toString() ?? '');
         } else if (img is String) {
           parsedImages.add(img);
@@ -58,21 +108,16 @@ class PropertyModel {
       }
     }
 
-    final details = json['details'] is Map<String, dynamic>
-        ? json['details']
-        : {};
-
-    final auction = json['auction'] is Map<String, dynamic>
-        ? json['auction']
-        : {};
-
-    final seller = json['seller'] is Map<String, dynamic> ? json['seller'] : {};
+    // ✅ SAFE maps (THIS IS WHAT FIXES YOUR ERROR)
+    final details = safeMap(json['details']);
+    final auction = safeMap(json['auction']);
+    final seller = safeMap(json['seller']);
 
     return PropertyModel(
       id: json['_id']?.toString() ?? '',
       location: json['location']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
-      price: int.tryParse(json['price'].toString()) ?? 0,
+      price: int.tryParse(json['price']?.toString() ?? '0') ?? 0,
       listingType: json['listingType']?.toString() ?? '',
       type: json['type']?.toString() ?? '',
       size: json['size']?.toString() ?? details['size']?.toString() ?? '',
@@ -81,7 +126,7 @@ class PropertyModel {
       details: details,
 
       isAuction: auction['isAuction'] == true,
-      views: int.tryParse(json['views'].toString()) ?? 0,
+      views: int.tryParse(json['views']?.toString() ?? '0') ?? 0,
 
       sellerName: seller['username']?.toString() ?? '',
       sellerPhone: seller['phone']?.toString() ?? '',
