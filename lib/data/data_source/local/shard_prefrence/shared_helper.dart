@@ -115,6 +115,8 @@ class SharedHelper {
     await prefs.remove(_onboardingKey);
     await prefs.remove(_tokenKey);
     await prefs.remove(_refreshTokenKey);
+    await prefs.remove(_userKey);
+    await prefs.remove(_userIdKey);
     await prefs.setBool(_isLoggedInKey, false);
   }
 

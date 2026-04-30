@@ -129,24 +129,29 @@ class _RegisterScareenState extends State<RegisterScareen> {
                       );
                       try {
                         await repo.registerUser(user);
-                        await SharedHelper.setLoggedIn(true);
+                       // await SharedHelper.setLoggedIn(true);
 
                         if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Registered successfully')),
+                        Navigator.pushNamed(
+                          context,
+                          '/verify-email',
+                          arguments: user.email,
                         );
-                        Navigator.pushReplacementNamed(context, '/role').then((
-                          _,
-                        ) {
-                          nameValue.clear();
-                          userValue.clear();
-                          phoneValue.clear();
-                          passValue.clear();
-                        });
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //   SnackBar(content: Text('Registered successfully')),
+                        // );
+                        // Navigator.pushReplacementNamed(context, '/role').then((
+                        //   _,
+                        // ) {
+                        //   nameValue.clear();
+                        //   userValue.clear();
+                        //   phoneValue.clear();
+                        //   passValue.clear();
+                        // });
                       } catch (e, st) {
-                        if (!context.mounted) return;
-                        print('Exception: $e');
-                        print('StackTrace: $st');
+                        // if (!context.mounted) return;
+                        // print('Exception: $e');
+                        // print('StackTrace: $st');
                         ScaffoldMessenger.of(
                           context,
                         ).showSnackBar(SnackBar(content: Text(e.toString())));

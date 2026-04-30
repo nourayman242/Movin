@@ -8,7 +8,7 @@ import 'package:movin/domain/entities/login_entity.dart';
 import 'package:movin/domain/repositories/login_repositories.dart';
 import 'package:movin/presentation/login/cubit/auth_cubit.dart';
 import 'package:movin/presentation/login/cubit/auth_state.dart';
-import 'package:movin/presentation/login/screens/register_screen.dart';
+import 'package:movin/presentation/register/screens/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

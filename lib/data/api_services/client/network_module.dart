@@ -32,6 +32,17 @@ import 'package:movin/presentation/login/cubit/reset_pass_cubit.dart';
 import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
+
+import '../../../domain/repositories/verify_email_repository.dart';
+import '../../../presentation/register/managers/verify_email_bloc.dart';
+import '../../repositories/verify_email_repository_imp.dart';
+import '../favorite_api_service.dart';
+import '../logout_services.dart';
+import '../role_services.dart';
+import '../verify_email_service.dart';
+
+
+
 @module
 abstract class NetworkModule {
   @lazySingleton
@@ -135,4 +146,33 @@ abstract class NetworkModule {
   @factory
   AuctionListCubit auctionListCubit(AuctionListService service) =>
       AuctionListCubit(service);
+
+
+  @lazySingleton
+  VerifyEmailService verifyEmailService(Dio dio) =>
+      VerifyEmailService(dio);
+
+  @lazySingleton
+  FavoriteApiService favoriteApiService(Dio dio) =>
+      FavoriteApiService(dio);
+
+  @lazySingleton
+  RoleServices roleServices(Dio dio) =>
+      RoleServices(dio);
+
+  // @LazySingleton(as: VerifyEmailRepository)
+  // VerifyEmailRepository verifyEmailRepository(
+  //     VerifyEmailService service,
+  //     ) =>
+  //     VerifyEmailRepositoryImpl(service);
+  
+  // @factory
+  // VerifyEmailBloc verifyEmailBloc(
+  //     VerifyEmailRepository repo,
+  //     ) =>
+  //     VerifyEmailBloc(repo);
+
+  // @lazySingleton
+  // LogoutService logoutService(Dio dio) => LogoutService(dio);
+
 }

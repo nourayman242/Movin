@@ -26,6 +26,8 @@ import 'package:movin/presentation/login/screens/forgot_password_page.dart';
 import 'package:movin/presentation/login/screens/login_screen.dart';
 import 'package:movin/presentation/onboarding/screens/onboarding.dart';
 import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
+import 'package:movin/presentation/register/managers/verify_email_bloc.dart';
+import 'package:movin/presentation/register/screens/verify_email_screen.dart';
 import 'package:movin/presentation/role_selection/screens/role_selection.dart';
 import 'package:movin/presentation/seller_properties/add_property/add_property_screen.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
@@ -110,28 +112,46 @@ class Movin extends StatelessWidget {
             child: const ForgotPasswordPage(),
           ),
           '/home': (_) => const HomePage(),
+
           '/addproperty': (_) => BlocProvider(
             create: (_) => getIt<PropertyCubit>(),
-            child: const AddPropertyScreen(),
+           child: const AddPropertyScreen(),
+           // child: EditPropertyScreen(property: property),
           ),
-          '/edit-property': (context) {
+            '/edit-property': (context) {
             final property =
-                ModalRoute.of(context)!.settings.arguments as PropertyModel;
+            ModalRoute.of(context)!.settings.arguments as PropertyModel;
             return BlocProvider(
-              create: (_) => getIt<PropertyCubit>(),
-              child: EditPropertyScreen(property: property),
+            create: (_) => getIt<PropertyCubit>(),
+            child: EditPropertyScreen(property: property),
             );
-          },
+            },
 
+        //  '/create-auction': (_) => const CreateAuctionScreen(),
           '/create-auction': (context) {
             final property =
-                ModalRoute.of(context)!.settings.arguments as PropertyModel;
+            ModalRoute.of(context)!.settings.arguments as PropertyModel;
 
             return BlocProvider(
               create: (_) => getIt<CreateAuctionCubit>(),
               child: CreateAuctionScreen(property: property),
             );
           },
+        '/verify-email': (context) {
+          final email =
+          ModalRoute.of(context)!.settings.arguments as String;
+
+          return BlocProvider(
+            create: (_) => getIt<VerifyEmailBloc>(),
+            child: VerifyEmailScreen(email: email),
+          );
+        },
+
+
+
+
+
+
         },
       ),
     );

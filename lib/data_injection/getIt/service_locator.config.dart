@@ -11,65 +11,66 @@
 import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:movin/data/api_services/auction_list_services.dart' as _i467;
-import 'package:movin/data/api_services/client/network_module.dart' as _i324;
-import 'package:movin/data/api_services/favorite_api_service.dart' as _i362;
-import 'package:movin/data/api_services/forget_pass_services.dart' as _i753;
-import 'package:movin/data/api_services/google_auth_service.dart' as _i137;
-import 'package:movin/data/api_services/login_services.dart' as _i633;
-import 'package:movin/data/api_services/logout_services.dart' as _i833;
-import 'package:movin/data/api_services/otp_services.dart' as _i97;
-import 'package:movin/data/api_services/profile_services.dart' as _i163;
-import 'package:movin/data/api_services/property_services.dart' as _i634;
-import 'package:movin/data/api_services/register_services.dart' as _i232;
-import 'package:movin/data/api_services/reset_password_service.dart' as _i295;
-import 'package:movin/data/api_services/role_services.dart' as _i515;
-import 'package:movin/data/api_services/socket_service.dart' as _i731;
-import 'package:movin/data/data_source/local/auth_local_services.dart' as _i282;
-import 'package:movin/data/data_source/local/settings_local_services.dart'
-    as _i87;
-import 'package:movin/data/repositories/auth_repository_impl.dart' as _i373;
-import 'package:movin/data/repositories/fav_repository_imp.dart' as _i882;
-import 'package:movin/data/repositories/login_repository_imp.dart' as _i107;
-import 'package:movin/data/repositories/otp_repository_imp.dart' as _i736;
-import 'package:movin/data/repositories/register_repository_imp.dart' as _i666;
-import 'package:movin/data/repositories/reset_passwrod_repository_imp.dart'
-    as _i684;
-import 'package:movin/data/repositories/role_repository_imp.dart' as _i55;
-import 'package:movin/domain/repositories/auction_repository.dart' as _i701;
-import 'package:movin/domain/repositories/auth_repository.dart' as _i1021;
-import 'package:movin/domain/repositories/fav_repository.dart' as _i273;
-import 'package:movin/domain/repositories/forget_pass_repository.dart' as _i686;
-import 'package:movin/domain/repositories/login_repositories.dart' as _i772;
-import 'package:movin/domain/repositories/otp_repository.dart' as _i574;
-import 'package:movin/domain/repositories/profile_repository.dart' as _i935;
-import 'package:movin/domain/repositories/property_repository.dart' as _i770;
-import 'package:movin/domain/repositories/register_repository.dart' as _i623;
-import 'package:movin/domain/repositories/reset_pass_repository.dart' as _i332;
-import 'package:movin/domain/repositories/role_repository.dart' as _i166;
-import 'package:movin/presentation/auction/create%20auction/cubit/create_auction_cubit.dart'
+
+import '../../data/api_services/auction_list_services.dart' as _i655;
+import '../../data/api_services/client/network_module.dart' as _i979;
+import '../../data/api_services/favorite_api_service.dart' as _i653;
+import '../../data/api_services/forget_pass_services.dart' as _i959;
+import '../../data/api_services/google_auth_service.dart' as _i21;
+import '../../data/api_services/login_services.dart' as _i744;
+import '../../data/api_services/logout_services.dart' as _i800;
+import '../../data/api_services/otp_services.dart' as _i498;
+import '../../data/api_services/profile_services.dart' as _i825;
+import '../../data/api_services/property_services.dart' as _i409;
+import '../../data/api_services/register_services.dart' as _i702;
+import '../../data/api_services/reset_password_service.dart' as _i766;
+import '../../data/api_services/role_services.dart' as _i241;
+import '../../data/api_services/socket_service.dart' as _i380;
+import '../../data/api_services/verify_email_service.dart' as _i668;
+import '../../data/data_source/local/auth_local_services.dart' as _i401;
+import '../../data/data_source/local/settings_local_services.dart' as _i998;
+import '../../data/repositories/auth_repository_impl.dart' as _i895;
+import '../../data/repositories/fav_repository_imp.dart' as _i76;
+import '../../data/repositories/login_repository_imp.dart' as _i809;
+import '../../data/repositories/otp_repository_imp.dart' as _i870;
+import '../../data/repositories/register_repository_imp.dart' as _i146;
+import '../../data/repositories/reset_passwrod_repository_imp.dart' as _i886;
+import '../../data/repositories/role_repository_imp.dart' as _i853;
+import '../../data/repositories/verify_email_repository_imp.dart' as _i662;
+import '../../domain/repositories/auction_repository.dart' as _i892;
+import '../../domain/repositories/auth_repository.dart' as _i1073;
+import '../../domain/repositories/fav_repository.dart' as _i66;
+import '../../domain/repositories/forget_pass_repository.dart' as _i6;
+import '../../domain/repositories/login_repositories.dart' as _i386;
+import '../../domain/repositories/otp_repository.dart' as _i1046;
+import '../../domain/repositories/profile_repository.dart' as _i47;
+import '../../domain/repositories/property_repository.dart' as _i906;
+import '../../domain/repositories/register_repository.dart' as _i462;
+import '../../domain/repositories/reset_pass_repository.dart' as _i934;
+import '../../domain/repositories/role_repository.dart' as _i487;
+import '../../domain/repositories/verify_email_repository.dart' as _i661;
+import '../../presentation/auction/create%20auction/cubit/create_auction_cubit.dart'
+    as _i953;
+import '../../presentation/auction/cubit/auction_cubit.dart' as _i775;
+import '../../presentation/auction/cubit/auction_list_cubit.dart' as _i1061;
+import '../../presentation/budget_calculator/managers/bc_bloc/loan_calc_bloc.dart'
+    as _i882;
+import '../../presentation/fav_screen/manager/fav_bloc/fav_bloc.dart' as _i371;
+import '../../presentation/fav_screen/manager/fav_hive.dart' as _i588;
+import '../../presentation/login/cubit/auth_cubit.dart' as _i659;
+import '../../presentation/login/cubit/forget_pass_cubit.dart' as _i309;
+import '../../presentation/login/cubit/otp_cubit.dart' as _i225;
+import '../../presentation/login/cubit/reset_pass_cubit.dart' as _i817;
+import '../../presentation/profile/cubit/profile_cubit.dart' as _i107;
+import '../../presentation/register/managers/verify_email_bloc.dart' as _i1047;
+import '../../presentation/role_selection/manager/role_bloc/role_bloc.dart'
+    as _i355;
+import '../../presentation/seller_properties/cubit/property_cubit.dart'
     as _i484;
-import 'package:movin/presentation/auction/cubit/auction_cubit.dart' as _i473;
-import 'package:movin/presentation/auction/cubit/auction_list_cubit.dart'
-    as _i790;
-import 'package:movin/presentation/budget_calculator/managers/bc_bloc/loan_calc_bloc.dart'
-    as _i872;
-import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart'
-    as _i841;
-import 'package:movin/presentation/fav_screen/manager/fav_hive.dart' as _i718;
-import 'package:movin/presentation/login/cubit/auth_cubit.dart' as _i288;
-import 'package:movin/presentation/login/cubit/forget_pass_cubit.dart' as _i493;
-import 'package:movin/presentation/login/cubit/otp_cubit.dart' as _i898;
-import 'package:movin/presentation/login/cubit/reset_pass_cubit.dart' as _i896;
-import 'package:movin/presentation/profile/cubit/profile_cubit.dart' as _i981;
-import 'package:movin/presentation/role_selection/manager/role_bloc/role_bloc.dart'
-    as _i571;
-import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart'
-    as _i267;
-import 'package:movin/presentation/seller_properties/saller%20home/cubit/most_viewed_cubit.dart'
-    as _i771;
-import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc.dart'
-    as _i617;
+import '../../presentation/seller_properties/saller%20home/cubit/most_viewed_cubit.dart'
+    as _i625;
+import '../../presentation/settings/managers/settings_bloc/settings_bloc.dart'
+    as _i111;
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -83,92 +84,101 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     final networkModule = _$NetworkModule();
-    gh.factory<_i872.LoanCalcBloc>(() => _i872.LoanCalcBloc());
+    gh.factory<_i882.LoanCalcBloc>(() => _i882.LoanCalcBloc());
     gh.lazySingleton<_i361.Dio>(() => networkModule.provideDio());
-    gh.lazySingleton<_i731.SocketService>(() => networkModule.socketService());
-    gh.lazySingleton<_i137.GoogleAuthService>(() => _i137.GoogleAuthService());
-    gh.lazySingleton<_i282.AuthLocalService>(() => _i282.AuthLocalService());
-    gh.lazySingleton<_i87.SettingsLocalService>(
-        () => _i87.SettingsLocalService());
-    gh.lazySingleton<_i718.FavoriteHiveService>(
-        () => _i718.FavoriteHiveService());
-    gh.lazySingleton<_i232.RegisterServices>(
+    gh.lazySingleton<_i380.SocketService>(() => networkModule.socketService());
+    gh.lazySingleton<_i21.GoogleAuthService>(() => _i21.GoogleAuthService());
+    gh.lazySingleton<_i401.AuthLocalService>(() => _i401.AuthLocalService());
+    gh.lazySingleton<_i998.SettingsLocalService>(
+        () => _i998.SettingsLocalService());
+    gh.lazySingleton<_i588.FavoriteHiveService>(
+        () => _i588.FavoriteHiveService());
+    gh.lazySingleton<_i702.RegisterServices>(
         () => networkModule.registerServices(gh<_i361.Dio>()));
-    gh.lazySingleton<_i633.LoginServices>(
+    gh.lazySingleton<_i744.LoginServices>(
         () => networkModule.loginServices(gh<_i361.Dio>()));
-    gh.lazySingleton<_i753.ForgotPasswordService>(
+    gh.lazySingleton<_i959.ForgotPasswordService>(
         () => networkModule.forgotPasswordService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i634.PropertyService>(
+    gh.lazySingleton<_i409.PropertyService>(
         () => networkModule.propertyService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i97.OtpServices>(
+    gh.lazySingleton<_i498.OtpServices>(
         () => networkModule.otpServices(gh<_i361.Dio>()));
-    gh.lazySingleton<_i295.ResetPasswordService>(
+    gh.lazySingleton<_i766.ResetPasswordService>(
         () => networkModule.resetPasswordService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i163.ProfileService>(
+    gh.lazySingleton<_i825.ProfileService>(
         () => networkModule.profileService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i467.AuctionListService>(
+    gh.lazySingleton<_i655.AuctionListService>(
         () => networkModule.auctionListService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i833.LogoutService>(
-        () => _i833.LogoutService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i574.OtpRepository>(
-        () => _i736.OtpRepositoryImpl(gh<_i97.OtpServices>()));
-    gh.lazySingleton<_i935.ProfileRepository>(
-        () => networkModule.profileRepository(gh<_i163.ProfileService>()));
-    gh.lazySingleton<_i273.FavoriteRepository>(
-        () => _i882.FavoriteRepositoryImpl(
-              gh<_i362.FavoriteApiService>(),
-              gh<_i718.FavoriteHiveService>(),
-            ));
-    gh.lazySingleton<_i166.RoleRepository>(
-        () => _i55.RoleRepositoryImpl(gh<_i515.RoleServices>()));
-    gh.lazySingleton<_i772.LoginRepository>(
-        () => _i107.LoginRepositoryImpl(gh<_i633.LoginServices>()));
-    gh.factory<_i841.FavoriteBloc>(
-        () => _i841.FavoriteBloc(gh<_i273.FavoriteRepository>()));
-    gh.factory<_i898.OtpCubit>(
-        () => networkModule.otpCubit(gh<_i574.OtpRepository>()));
-    gh.lazySingleton<_i686.ForgotPasswordRepository>(() => networkModule
-        .forgotPasswordRepository(gh<_i753.ForgotPasswordService>()));
-    gh.factory<_i617.SettingsBloc>(() => _i617.SettingsBloc(
-          gh<_i87.SettingsLocalService>(),
-          gh<_i282.AuthLocalService>(),
+    gh.lazySingleton<_i668.VerifyEmailService>(
+        () => networkModule.verifyEmailService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i653.FavoriteApiService>(
+        () => networkModule.favoriteApiService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i241.RoleServices>(
+        () => networkModule.roleServices(gh<_i361.Dio>()));
+    gh.lazySingleton<_i800.LogoutService>(
+        () => _i800.LogoutService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i1046.OtpRepository>(
+        () => _i870.OtpRepositoryImpl(gh<_i498.OtpServices>()));
+    gh.lazySingleton<_i47.ProfileRepository>(
+        () => networkModule.profileRepository(gh<_i825.ProfileService>()));
+    gh.lazySingleton<_i66.FavoriteRepository>(() => _i76.FavoriteRepositoryImpl(
+          gh<_i653.FavoriteApiService>(),
+          gh<_i588.FavoriteHiveService>(),
         ));
-    gh.factory<_i493.ForgotPasswordCubit>(() => networkModule
-        .forgotPasswordCubit(gh<_i686.ForgotPasswordRepository>()));
-    gh.factory<_i981.ProfileCubit>(
-        () => networkModule.profileCubit(gh<_i935.ProfileRepository>()));
-    gh.lazySingleton<_i770.PropertyRepository>(
-        () => networkModule.propertyRepository(gh<_i634.PropertyService>()));
-    gh.lazySingleton<_i623.RegisterRepository>(
-        () => _i666.RegisterRepositoryImpl(gh<_i232.RegisterServices>()));
-    gh.lazySingleton<_i701.AuctionRepository>(
-        () => networkModule.auctionRepository(gh<_i731.SocketService>()));
-    gh.lazySingleton<_i332.ResetPasswordRepository>(() =>
-        _i684.ResetPasswordRepositoryImpl(gh<_i295.ResetPasswordService>()));
-    gh.factory<_i790.AuctionListCubit>(
-        () => networkModule.auctionListCubit(gh<_i467.AuctionListService>()));
-    gh.factory<_i267.PropertyCubit>(
-        () => networkModule.propertyCubit(gh<_i770.PropertyRepository>()));
-    gh.factory<_i484.CreateAuctionCubit>(
-        () => _i484.CreateAuctionCubit(gh<_i770.PropertyRepository>()));
-    gh.factory<_i771.MostviewedCubit>(
-        () => _i771.MostviewedCubit(gh<_i770.PropertyRepository>()));
-    gh.factory<_i571.RoleBloc>(
-        () => _i571.RoleBloc(gh<_i166.RoleRepository>()));
-    gh.lazySingleton<_i1021.AuthRepository>(() => _i373.AuthRepositoryImpl(
-          gh<_i137.GoogleAuthService>(),
-          gh<_i833.LogoutService>(),
+    gh.lazySingleton<_i487.RoleRepository>(
+        () => _i853.RoleRepositoryImpl(gh<_i241.RoleServices>()));
+    gh.lazySingleton<_i386.LoginRepository>(
+        () => _i809.LoginRepositoryImpl(gh<_i744.LoginServices>()));
+    gh.factory<_i371.FavoriteBloc>(
+        () => _i371.FavoriteBloc(gh<_i66.FavoriteRepository>()));
+    gh.factory<_i225.OtpCubit>(
+        () => networkModule.otpCubit(gh<_i1046.OtpRepository>()));
+    gh.lazySingleton<_i6.ForgotPasswordRepository>(() => networkModule
+        .forgotPasswordRepository(gh<_i959.ForgotPasswordService>()));
+    gh.factory<_i111.SettingsBloc>(() => _i111.SettingsBloc(
+          gh<_i998.SettingsLocalService>(),
+          gh<_i401.AuthLocalService>(),
         ));
-    gh.factory<_i473.AuctionCubit>(
-        () => networkModule.auctionCubit(gh<_i701.AuctionRepository>()));
-    gh.factory<_i896.ResetPasswordCubit>(() =>
-        networkModule.resetPasswordCubit(gh<_i332.ResetPasswordRepository>()));
-    gh.factory<_i288.AuthCubit>(() => _i288.AuthCubit(
-          gh<_i1021.AuthRepository>(),
-          gh<_i772.LoginRepository>(),
+    gh.factory<_i309.ForgotPasswordCubit>(() =>
+        networkModule.forgotPasswordCubit(gh<_i6.ForgotPasswordRepository>()));
+    gh.lazySingleton<_i661.VerifyEmailRepository>(
+        () => _i662.VerifyEmailRepositoryImpl(gh<_i668.VerifyEmailService>()));
+    gh.factory<_i1047.VerifyEmailBloc>(
+        () => _i1047.VerifyEmailBloc(gh<_i661.VerifyEmailRepository>()));
+    gh.factory<_i107.ProfileCubit>(
+        () => networkModule.profileCubit(gh<_i47.ProfileRepository>()));
+    gh.lazySingleton<_i906.PropertyRepository>(
+        () => networkModule.propertyRepository(gh<_i409.PropertyService>()));
+    gh.lazySingleton<_i462.RegisterRepository>(
+        () => _i146.RegisterRepositoryImpl(gh<_i702.RegisterServices>()));
+    gh.lazySingleton<_i892.AuctionRepository>(
+        () => networkModule.auctionRepository(gh<_i380.SocketService>()));
+    gh.lazySingleton<_i934.ResetPasswordRepository>(() =>
+        _i886.ResetPasswordRepositoryImpl(gh<_i766.ResetPasswordService>()));
+    gh.factory<_i1061.AuctionListCubit>(
+        () => networkModule.auctionListCubit(gh<_i655.AuctionListService>()));
+    gh.factory<_i484.PropertyCubit>(
+        () => networkModule.propertyCubit(gh<_i906.PropertyRepository>()));
+    gh.factory<_i953.CreateAuctionCubit>(
+        () => _i953.CreateAuctionCubit(gh<_i906.PropertyRepository>()));
+    gh.factory<_i625.MostviewedCubit>(
+        () => _i625.MostviewedCubit(gh<_i906.PropertyRepository>()));
+    gh.factory<_i355.RoleBloc>(
+        () => _i355.RoleBloc(gh<_i487.RoleRepository>()));
+    gh.lazySingleton<_i1073.AuthRepository>(() => _i895.AuthRepositoryImpl(
+          gh<_i21.GoogleAuthService>(),
+          gh<_i800.LogoutService>(),
+        ));
+    gh.factory<_i775.AuctionCubit>(
+        () => networkModule.auctionCubit(gh<_i892.AuctionRepository>()));
+    gh.factory<_i817.ResetPasswordCubit>(() =>
+        networkModule.resetPasswordCubit(gh<_i934.ResetPasswordRepository>()));
+    gh.factory<_i659.AuthCubit>(() => _i659.AuthCubit(
+          gh<_i1073.AuthRepository>(),
+          gh<_i386.LoginRepository>(),
         ));
     return this;
   }
 }
 
-class _$NetworkModule extends _i324.NetworkModule {}
+class _$NetworkModule extends _i979.NetworkModule {}

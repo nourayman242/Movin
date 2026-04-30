@@ -5,11 +5,10 @@ import '../models/register_dto.dart';
 
 part 'register_services.g.dart';
 
-@RestApi()
+@RestApi(baseUrl: "https://movin-app.vercel.app")
 abstract class RegisterServices {
   factory RegisterServices(Dio dio, {String baseUrl}) = _RegisterServices;
 
-  // POST /api/auth/register
   @POST('/api/auth/register')
   Future<RegisterResponse> registerUser(@Body() RegisterDto dto);
 }

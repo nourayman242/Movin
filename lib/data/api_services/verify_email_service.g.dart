@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'register_services.dart';
+part of 'verify_email_service.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,34 +8,32 @@ part of 'register_services.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
 
-class _RegisterServices implements RegisterServices {
-  _RegisterServices(
+class _VerifyEmailService implements VerifyEmailService {
+  _VerifyEmailService(
     this._dio, {
     this.baseUrl,
-  }) {
-    baseUrl ??= 'https://movin-app.vercel.app';
-  }
+  });
 
   final Dio _dio;
 
   String? baseUrl;
 
   @override
-  Future<RegisterResponse> registerUser(RegisterDto dto) async {
+  Future<VerifyEmailResponse> verifyEmail(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(dto.toJson());
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<RegisterResponse>(Options(
+    _data.addAll(body);
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<VerifyEmailResponse>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              '/api/auth/register',
+              '/api/auth/verify-email',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -44,7 +42,7 @@ class _RegisterServices implements RegisterServices {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final _value = RegisterResponse.fromJson(_result.data!);
+    final _value = VerifyEmailResponse.fromJson(_result.data!);
     return _value;
   }
 
