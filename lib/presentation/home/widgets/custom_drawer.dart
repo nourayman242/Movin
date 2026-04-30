@@ -22,6 +22,8 @@ import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
 import 'package:movin/presentation/settings/screens/settings_screen.dart';
 
+import '../../login/cubit/auth_cubit.dart';
+
 class CustomDrawer extends StatelessWidget {
 
   //final ProfileModel currentProfile;
@@ -167,11 +169,12 @@ class CustomDrawer extends StatelessWidget {
               color: AppColors.error,
               onTap: () {
                 //Navigator.pop(context);
-                context.read<SettingsBloc>().add(LogoutRequested());
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                  (route) => false,
-                );
+                // context.read<SettingsBloc>().add(LogoutRequested());
+                // Navigator.of(context).pushAndRemoveUntil(
+                //   MaterialPageRoute(builder: (_) => const LoginScreen()),
+                //   (route) => false,
+                // );
+                context.read<AuthCubit>().logout();
                 ScaffoldMessenger.of(
                   context,
                 ).showSnackBar(const SnackBar(content: Text('Logged out')));

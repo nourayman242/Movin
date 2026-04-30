@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:movin/data/api_services/user_response.dart';
 
+import '../../../data/models/profile_model.dart';
+
 
 abstract class AuthState extends Equatable {
   const AuthState();
@@ -24,6 +26,12 @@ class AuthSuccess extends AuthState {
   @override
   List<Object?> get props => [token,user];
 }
+class AuthGoogleSuccess extends AuthState {
+  final String token;
+  final ProfileModel profile;
+
+  AuthGoogleSuccess(this.token, this.profile);
+}
 
 /// Error state
 class AuthError extends AuthState {
@@ -34,3 +42,5 @@ class AuthError extends AuthState {
   @override
   List<Object?> get props => [message];
 }
+//logout
+class AuthLoggedOut extends AuthState {}

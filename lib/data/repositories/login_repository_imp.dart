@@ -41,7 +41,7 @@ Future<LoginResponse> loginUser(LoginEntity user) async {
   try {
     final response = await api.loginUser(dto);
 
-    if (response.token.isEmpty) {
+    if (response.accessToken.isEmpty) {
       throw Exception(response.message.isNotEmpty
           ? response.message
           : 'Invalid email or password');
@@ -52,6 +52,9 @@ Future<LoginResponse> loginUser(LoginEntity user) async {
   } on DioException catch (e) {
     final msg = e.response?.data?['message'] ?? 'Login failed';
     throw Exception(msg);
+  }
+  catch(e){
+    throw Exception('Unexpected error:$e');
   }
 }
 

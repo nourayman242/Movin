@@ -7,6 +7,8 @@ import 'package:movin/presentation/role_selection/manager/role_bloc/role_event.d
 import 'package:movin/presentation/role_selection/manager/role_bloc/role_state.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
 
+import '../../../data/data_source/local/shard_prefrence/shared_helper.dart';
+
 class RoleSelection extends StatefulWidget {
   const RoleSelection({super.key});
 
@@ -25,14 +27,15 @@ class _RoleSelectionState extends State<RoleSelection> {
     _roleBloc = getIt<RoleBloc>();
   }
 
-  void _confirmRole() {
+
+
+  void _confirmRole() async {
     if (_selectedRole == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select a role to continue')),
       );
       return;
     }
-
     _roleBloc.add(
       ChooseRoleEvent(_selectedRole!),
     );
@@ -160,12 +163,17 @@ class _RoleSelectionState extends State<RoleSelection> {
 
     return BlocListener<RoleBloc, RoleState>(
       bloc: _roleBloc,
-      listener: (context, state) {
+      listener: (context, state)async {
         if (state is RoleSuccess) {
-          ModeService.isSellerNotifier.value =
-              state.role.toLowerCase() == 'seller';
+          final role = state.role.toLowerCase();
 
-          Navigator.pushReplacementNamed(context, '/home');
+          await SharedHelper.setUserRole(role);
+
+          if (role == 'buyer') {
+            Navigator.pushReplacementNamed(context, '/buyerhome');
+          } else {
+            Navigator.pushReplacementNamed(context, '/sellerhome');
+          }
         }
 
         if (state is RoleError) {

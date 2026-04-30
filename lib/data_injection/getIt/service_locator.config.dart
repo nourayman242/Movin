@@ -17,6 +17,7 @@ import 'package:movin/data/api_services/favorite_api_service.dart' as _i362;
 import 'package:movin/data/api_services/forget_pass_services.dart' as _i753;
 import 'package:movin/data/api_services/google_auth_service.dart' as _i137;
 import 'package:movin/data/api_services/login_services.dart' as _i633;
+import 'package:movin/data/api_services/logout_services.dart' as _i833;
 import 'package:movin/data/api_services/otp_services.dart' as _i97;
 import 'package:movin/data/api_services/profile_services.dart' as _i163;
 import 'package:movin/data/api_services/property_services.dart' as _i634;
@@ -107,6 +108,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkModule.profileService(gh<_i361.Dio>()));
     gh.lazySingleton<_i467.AuctionListService>(
         () => networkModule.auctionListService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i833.LogoutService>(
+        () => _i833.LogoutService(gh<_i361.Dio>()));
     gh.lazySingleton<_i574.OtpRepository>(
         () => _i736.OtpRepositoryImpl(gh<_i97.OtpServices>()));
     gh.lazySingleton<_i935.ProfileRepository>(
@@ -116,8 +119,6 @@ extension GetItInjectableX on _i174.GetIt {
               gh<_i362.FavoriteApiService>(),
               gh<_i718.FavoriteHiveService>(),
             ));
-    gh.lazySingleton<_i1021.AuthRepository>(
-        () => _i373.AuthRepositoryImpl(gh<_i137.GoogleAuthService>()));
     gh.lazySingleton<_i166.RoleRepository>(
         () => _i55.RoleRepositoryImpl(gh<_i515.RoleServices>()));
     gh.lazySingleton<_i772.LoginRepository>(
@@ -150,12 +151,18 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkModule.propertyCubit(gh<_i770.PropertyRepository>()));
     gh.factory<_i571.RoleBloc>(
         () => _i571.RoleBloc(gh<_i166.RoleRepository>()));
-    gh.factory<_i288.AuthCubit>(
-        () => _i288.AuthCubit(gh<_i1021.AuthRepository>()));
+    gh.lazySingleton<_i1021.AuthRepository>(() => _i373.AuthRepositoryImpl(
+          gh<_i137.GoogleAuthService>(),
+          gh<_i833.LogoutService>(),
+        ));
     gh.factory<_i473.AuctionCubit>(
         () => networkModule.auctionCubit(gh<_i701.AuctionRepository>()));
     gh.factory<_i896.ResetPasswordCubit>(() =>
         networkModule.resetPasswordCubit(gh<_i332.ResetPasswordRepository>()));
+    gh.factory<_i288.AuthCubit>(() => _i288.AuthCubit(
+          gh<_i1021.AuthRepository>(),
+          gh<_i772.LoginRepository>(),
+        ));
     return this;
   }
 }

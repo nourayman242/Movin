@@ -3,7 +3,9 @@ import 'package:movin/data/data_source/local/auth_local_services.dart';
 import 'package:movin/data/data_source/local/settings_local_services.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
 import 'package:injectable/injectable.dart';
-import 'package:movin/presentation/settings/managers/settings_bloc/settings_state.dart';
+import 'package:movin/presentation/settings/managers/settings_bloc/settings_state.dart' hide AuthLoggedOut;
+
+import '../../../login/cubit/auth_state.dart';
 
 @injectable
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
@@ -63,5 +65,6 @@ on<TogglePropertyAlerts>((event, emit) async {
       await AuthLocalService.clearAll();
 
     });
+
   }
 }

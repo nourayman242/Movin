@@ -5,6 +5,8 @@ import 'package:movin/presentation/login/screens/login_screen.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
 
+import '../../login/cubit/auth_cubit.dart';
+
 class LogoutButton extends StatelessWidget {
   const LogoutButton({super.key});
 
@@ -17,11 +19,12 @@ class LogoutButton extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       ),
       onPressed: () {
-        context.read<SettingsBloc>().add(LogoutRequested());
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
-          (route) => false,
-        );
+        context.read<AuthCubit>().logout();
+        // context.read<SettingsBloc>().add(LogoutRequested());
+        // Navigator.of(context).pushAndRemoveUntil(
+        //   MaterialPageRoute(builder: (_) => const LoginScreen()),
+        //   (route) => false,
+        // );
       },
       child: const Text('Logout', style: TextStyle(color: AppColors.white)),
     );

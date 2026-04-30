@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:injectable/injectable.dart';
 
+import '../models/google_auth_response_model.dart';
+
 @lazySingleton
 class GoogleAuthService {
   
@@ -14,28 +16,39 @@ class GoogleAuthService {
       url: "https://movin-backend-production.up.railway.app/api/auth/google",
       callbackUrlScheme: "movin",
     );
-
+    print("🔥 GOOGLE RESULT → $result");
     final uri = Uri.parse(result);
 
-    final token = uri.queryParameters['token'];
+    final accessToken = uri.queryParameters['accessToken'];
+    final refreshToken = uri.queryParameters['refreshToken'];
 
-    if (token == null || token.isEmpty) {
-      throw Exception("Authentication failed");
+    print("🔥 accessToken → $accessToken");
+    print("🔥 refreshToken → $refreshToken");
+
+    if (accessToken == null || refreshToken==null) {
+      throw Exception("Google login failed - missing tokens");
     }
 
    
-    final response = await dio.get(
-      "/api/auth/google/callback",
-      options: Options(
-        headers: {
-          "Authorization": "Bearer $token",
-        },
-      ),
-    );
-
+    // final response = await dio.get(
+    //   "/api/auth/google/callback",
+    //   options: Options(
+    //     headers: {
+    //       "Authorization": "Bearer $token",
+    //     },
+    //   ),
+    // );
+    // final data = response.data;
+    //
+    // return {
+    //   "accessToken": data["accessToken"] ?? "",
+    //   "refreshToken": data["refreshToken"] ?? "",
+    //   "user": data["user"],
+    // };
     return {
-      "token": token,
-      "user": response.data['user'], 
+      "accessToken": accessToken,
+      "refreshToken": refreshToken,
+      //"user": null,
     };
   }
 }

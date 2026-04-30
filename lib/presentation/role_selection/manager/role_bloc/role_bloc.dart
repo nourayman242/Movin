@@ -22,20 +22,40 @@ class RoleBloc extends Bloc<RoleEvent, RoleState> {
     emit(RoleLoading());
 
     try {
+      final savedRole = await SharedHelper.getUserRole();
+      if (savedRole != null && savedRole.isNotEmpty) {
+        emit(RoleSuccess(savedRole));
+        return;
+      }
+
       await repo.chooseRole(event.role);
+
       await SharedHelper.setUserRole(event.role);
+
       emit(RoleSuccess(event.role));
-      // } catch (e) {
-      //   emit(RoleError('Failed to choose role'));
-      // }
+
     } catch (e) {
-      // print('ROLE ERROR => $e');
-      // emit(RoleError(e.toString()));
       if (e is Failure) {
         emit(RoleError(e.message));
       } else {
         emit(RoleError('Unknown error occurred'));
       }
     }
+    // try {
+    //   await repo.chooseRole(event.role);
+    //   await SharedHelper.setUserRole(event.role);
+    //   emit(RoleSuccess(event.role));
+    //   // } catch (e) {
+    //   //   emit(RoleError('Failed to choose role'));
+    //   // }
+    // } catch (e) {
+    //   // print('ROLE ERROR => $e');
+    //   // emit(RoleError(e.toString()));
+    //   if (e is Failure) {
+    //     emit(RoleError(e.message));
+    //   } else {
+    //     emit(RoleError('Unknown error occurred'));
+    //   }
+    // }
   }
 }
