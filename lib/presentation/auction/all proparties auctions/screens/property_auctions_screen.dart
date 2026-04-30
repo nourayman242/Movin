@@ -127,6 +127,9 @@ class PropertyAuctionsScreen extends StatelessWidget {
       details: {},
       status: a.status,
       isAuction: true,
+       sellerName: a.seller.username, 
+       sellerPhone: '', 
+       sellerLocation: '', views: 0,
     );
   }
 

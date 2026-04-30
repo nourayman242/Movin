@@ -1,6 +1,5 @@
 // import 'package:movin/domain/entities/property_model.dart';
 
-
 // List<PropertyModel> dummyProperties = [
 //   PropertyModel(
 //     id: "1",
@@ -374,6 +373,9 @@ List<PropertyEntity> dummyProperties = [
     size: "3500",
     type: 'Villa',
     status: "approved",
-
+    sellerName: '',
+    sellerPhone: '',
+    sellerLocation: '',
+    views: 0,
   ),
 ];

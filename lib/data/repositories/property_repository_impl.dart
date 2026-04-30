@@ -69,4 +69,9 @@ Future<void> createAuction({
     endTime: endTime,
   );
 }
+@override
+Future<PropertyEntity> getPropertyById(String id) async {
+  final model = await service.getPropertyById(id);
+  return model.toEntity();
+}
 }

@@ -18,4 +18,5 @@ abstract class PropertyRepository {
   required String startTime,
   required String endTime,
 });
+Future<PropertyEntity> getPropertyById(String id);
 }

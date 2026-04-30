@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/domain/entities/property_entity.dart';
 
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
 import 'package:movin/presentation/home/widgets/view_history_cards.dart';
+import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
 class ViewHistoryPage extends StatefulWidget {
   const ViewHistoryPage({super.key});
@@ -27,15 +30,14 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
       description: "Modern Luxury Villa",
       location: "Dubai Marina",
       images: [
-        "https://res.cloudinary.com/djknoinbe/image/upload/v1771860760/movin/properties/xsfzua8waxuj7hvq0qtg.jpg"
+        "https://res.cloudinary.com/djknoinbe/image/upload/v1771860760/movin/properties/xsfzua8waxuj7hvq0qtg.jpg",
       ],
       listingType: "sale",
       price: 1250000,
-     details: {
-        "bedrooms": "4",
-        "bathrooms": "3"
-      },
-      size: "3500", type: 'Villa', status: "approved",
+      details: {"bedrooms": "4", "bathrooms": "3"},
+      size: "3500",
+      type: 'Villa',
+      status: "approved", sellerName: '', sellerPhone: '', sellerLocation: '', views: 0,
     ),
     // PropertyEntity(
     //   id: "1",
@@ -151,8 +153,12 @@ class _ViewHistoryPageState extends State<ViewHistoryPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              PropertyDetailsScreen(property: property),
+                          builder: (_) => BlocProvider.value(
+                            value: getIt<PropertyCubit>(),
+                            child: PropertyDetailsScreen(
+                              propertyId: property.id,
+                            ),
+                          ),
                         ),
                       );
                     },

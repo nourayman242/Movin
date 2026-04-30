@@ -12,6 +12,10 @@ class PropertyLoaded extends PropertyState {
   final List<PropertyModel> properties;
   PropertyLoaded(this.properties);
 }
+class PropertyDetailsLoaded extends PropertyState {
+  final PropertyEntity property;
+  PropertyDetailsLoaded(this.property);
+}
 
 class PropertySuccess extends PropertyState {}
 

@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:injectable/injectable.dart';
 
-import '../models/google_auth_response_model.dart';
 
 @lazySingleton
 class GoogleAuthService {

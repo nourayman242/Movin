@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:movin/app_theme.dart';
 import 'package:movin/domain/entities/property_entity.dart';
+
+import 'package:movin/presentation/controllers/property_details_controller.dart';
+
 
 import 'features_tab.dart';
 import 'location_tab.dart';
 import 'description_tab.dart';
-import 'package:movin/presentation/controllers/property_details_controller.dart';
+
 
 class PropertyTabs extends StatelessWidget {
   final PropertyDetailsController controller;
-  final PropertyEntity property; 
-
-  const PropertyTabs({
-    super.key,
-    required this.controller,
-    required this.property,
-  });
+  final PropertyEntity property;
+  const PropertyTabs({super.key, required this.controller, required this.property});
 
   @override
   Widget build(BuildContext context) {

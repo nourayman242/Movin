@@ -4,7 +4,7 @@ import 'package:movin/domain/repositories/auth_repository.dart';
 
 
 import '../api_services/logout_services.dart';
-import '../models/google_auth_response_model.dart';
+
 @LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
   final GoogleAuthService googleService;

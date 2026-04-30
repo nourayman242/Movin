@@ -168,4 +168,16 @@ class PropertyService {
       },
     );
   }
+
+  Future<PropertyModel> getPropertyById(String id) async {
+  final response = await dio.get('/api/seller/properties/$id');
+
+  final data = response.data;
+
+  if (data == null || data['property'] == null) {
+    throw Exception("Property not found");
+  }
+
+  return PropertyModel.fromJson(data['property']);
+}
 }

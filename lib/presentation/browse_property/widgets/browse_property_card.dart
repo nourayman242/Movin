@@ -52,13 +52,25 @@ class BrowsePropertyCard extends StatelessWidget {
                     height: 200,
                     width: double.infinity,
                     fit: BoxFit.cover,
+
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+
+                      return SizedBox(
+                        height: 200,
+                        child: const Center(child: CircularProgressIndicator(color: AppColors.primaryNavy)),
+                      );
+                    },
+
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/images/placeholder.webp',
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      );
+                    },
                   ),
-                  // Image.network(
-                  //   property.images.first,
-                  //   height: 200,
-                  //   width: double.infinity,
-                  //   fit: BoxFit.cover,
-                  // ),
                 ),
                 //tag
                 Positioned(
