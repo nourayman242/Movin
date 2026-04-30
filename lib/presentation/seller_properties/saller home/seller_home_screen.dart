@@ -24,7 +24,7 @@ class SellerHome extends StatefulWidget {
 class _SellerHomeState extends State<SellerHome>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
- 
+
   @override
   void initState() {
     super.initState();
@@ -381,7 +381,6 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
-
   Widget _statItem(IconData icon, dynamic value) {
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -510,6 +509,7 @@ class _SellerHomeState extends State<SellerHome>
       ),
     );
   }
+
   Widget _overviewContent() {
     return BlocBuilder<MostviewedCubit, MostviewedState>(
       builder: (context, state) {
@@ -675,7 +675,8 @@ class _SellerHomeState extends State<SellerHome>
   ) {
     final status = property.status;
     final auctionStatus = property.isAuction
-        ? property.auctionStatus ?? "pending"
+        ? property.auctionStatus 
+        ?? "pending"
         : "unknown";
 
     String? imageUrl = property.images.isNotEmpty
@@ -795,6 +796,9 @@ class _SellerHomeState extends State<SellerHome>
             '/create-auction',
             arguments: property,
           );
+          if (mounted) {
+            context.read<PropertyCubit>().getAllSellerProperties();
+          }
         }
       },
       itemBuilder: (_) => [
@@ -817,7 +821,7 @@ class _SellerHomeState extends State<SellerHome>
             ),
           ),
         ),
-        if (!property.isAuction)
+        if (!property.isAuction && property.status == "approved")
           PopupMenuItem(
             value: 'create-auction',
             padding: EdgeInsets.zero,
@@ -884,225 +888,6 @@ class _SellerHomeState extends State<SellerHome>
               context.read<PropertyCubit>().deleteProperty(id);
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _filterButton(String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(color: Colors.black12.withOpacity(0.05), blurRadius: 6),
-        ],
-      ),
-      child: Row(
-        children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 14, color: AppColors.navyDark),
-          ),
-          const SizedBox(width: 6),
-          const Icon(Icons.keyboard_arrow_down, size: 18),
-        ],
-      ),
-    );
-  }
-
-  Widget _fullListingCard(Map<String, dynamic> item) {
-    final status = item['status'];
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(18),
-                  topRight: Radius.circular(18),
-                ),
-                child: Image.asset(
-                  item['image'],
-                  height: 180,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              positionedBadge(status),
-
-              Positioned(
-                top: 12,
-                right: 12,
-                child: PopupMenuButton<String>(
-                  elevation: 4,
-                  color: AppColors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  onSelected: (value) {
-                    if (value == "edit") {
-                      // TODO: add your edit navigation / logic
-                      print("Edit clicked");
-                    } else if (value == "delete") {
-                      // TODO: add your delete logic
-                      print("Delete clicked");
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      padding: EdgeInsets.zero,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                          print("Edit clicked");
-                        },
-                        splashColor: AppColors.gold,
-                        highlightColor: AppColors.gold,
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.edit,
-                                size: 20,
-                                color: AppColors.navyDark,
-                              ),
-                              SizedBox(width: 10),
-                              Text("Edit"),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    PopupMenuItem(
-                      padding: EdgeInsets.zero,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                          print("Delete clicked");
-                        },
-                        splashColor: AppColors.gold,
-                        highlightColor: AppColors.gold,
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.delete_outline,
-                                size: 20,
-                                color: Colors.red,
-                              ),
-                              SizedBox(width: 10),
-                              Text("Delete"),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: AppColors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.more_vert,
-                      color: Colors.black54,
-                      size: 22,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item['title'],
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-
-                const SizedBox(height: 4),
-                Text(
-                  item['location'],
-                  style: const TextStyle(color: Colors.black45),
-                ),
-
-                const SizedBox(height: 10),
-                Text(
-                  item['price'],
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: AppColors.gold,
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.remove_red_eye_outlined,
-                      size: 18,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(width: 6),
-                    Text("${item['views']}"),
-                    const SizedBox(width: 16),
-                    const Icon(
-                      Icons.favorite_border,
-                      size: 18,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(width: 6),
-                    Text("${item['likes']}"),
-                    const SizedBox(width: 16),
-                    const Icon(
-                      Icons.chat_bubble_outline,
-                      size: 18,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(width: 6),
-                    Text("${item['inquiries']}"),
-                  ],
-                ),
-              ],
-            ),
           ),
         ],
       ),
