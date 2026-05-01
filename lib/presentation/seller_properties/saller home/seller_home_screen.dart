@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
@@ -12,6 +13,8 @@ import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 import 'package:movin/data/models/property_model.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/most_viewed_cubit.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/most_viewed_state.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/views_chart_cubit.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/views_chart_state.dart';
 
 class SellerHome extends StatefulWidget {
   //final ProfileModel currentProfile;
@@ -332,52 +335,253 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
+  
   Widget _perfCard() {
-    return Container(
-      margin: const EdgeInsets.only(top: 12, left: 16, right: 16),
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 14),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Performance Overview',
-            style: TextStyle(fontSize: 16, color: AppColors.navyDark),
+    return BlocBuilder<ViewsChartCubit, ViewsChartState>(
+      builder: (context, state) {
+        return Container(
+          margin: const EdgeInsets.only(top: 12, left: 16, right: 16),
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(22),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primaryNavy.withOpacity(.05),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade50,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.trending_up, color: AppColors.gold, size: 36),
-                  SizedBox(height: 8),
-                  Text(
-                    'Performance Chart',
-                    style: TextStyle(color: Colors.black54),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// HEADER
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            'Performance Overview',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.navyDark,
+                            ),
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            'Seller property views in last months',
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Views, likes, and inquiries over time',
-                    style: TextStyle(color: Colors.black38, fontSize: 12),
-                  ),
+
+                  if (state is ViewsChartLoaded)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryNavy,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Text(
+                        "${state.chart.data.fold(0, (a, b) => a + b)} Views",
+                        style: const TextStyle(
+                          color: AppColors.gold,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
                 ],
               ),
-            ),
+
+              const SizedBox(height: 25),
+
+              if (state is ViewsChartLoading)
+                const SizedBox(
+                  height: 220,
+                  child: Center(
+                    child: CircularProgressIndicator(color: AppColors.gold),
+                  ),
+                )
+              else if (state is ViewsChartLoaded)
+                Container(
+                  height: 240,
+                  padding: const EdgeInsets.only(
+                    top: 20,
+                    right: 12,
+                    left: 0,
+                    bottom: 0,
+                  ),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.gold.withOpacity(.03),
+                        AppColors.primaryNavy.withOpacity(.015),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: LineChart(
+                    LineChartData(
+                      minY: 0,
+                      gridData: FlGridData(
+                        show: true,
+                        drawVerticalLine: false,
+                        horizontalInterval: 2,
+                        getDrawingHorizontalLine: (value) {
+                          return FlLine(
+                            color: Colors.grey.withOpacity(.12),
+                            strokeWidth: 1,
+                          );
+                        },
+                      ),
+                      borderData: FlBorderData(show: false),
+
+                      titlesData: FlTitlesData(
+                        topTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        rightTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            reservedSize: 28,
+                            showTitles: true,
+                            interval: 2,
+                            getTitlesWidget: (value, meta) {
+                              return Text(
+                                value.toInt().toString(),
+                                style: TextStyle(
+                                  color: Colors.grey.shade500,
+                                  fontSize: 11,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 24,
+                            getTitlesWidget: (value, meta) {
+                              int index = value.toInt();
+                              if (index >= 0 &&
+                                  index < state.chart.labels.length) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  child: Text(
+                                    state.chart.labels[index],
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.navyDark,
+                                    ),
+                                  ),
+                                );
+                              }
+                              return const SizedBox();
+                            },
+                          ),
+                        ),
+                      ),
+
+                      lineTouchData: LineTouchData(
+                        touchTooltipData: LineTouchTooltipData(
+                          tooltipRoundedRadius: 12,
+                          getTooltipItems: (spots) {
+                            return spots.map((spot) {
+                              return LineTooltipItem(
+                                "${spot.y.toInt()} views",
+                                const TextStyle(
+                                  color: AppColors.navyDark,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            }).toList();
+                          },
+                        ),
+                      ),
+
+                      lineBarsData: [
+                        LineChartBarData(
+                          isCurved: true,
+                          curveSmoothness: .35,
+                          barWidth: 4,
+                          color: AppColors.gold,
+
+                          belowBarData: BarAreaData(
+                            show: true,
+                            gradient: LinearGradient(
+                              colors: [
+                                AppColors.gold.withOpacity(.25),
+                                AppColors.gold.withOpacity(.02),
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                          ),
+
+                          dotData: FlDotData(
+                            show: true,
+                            getDotPainter: (spot, percent, bar, index) {
+                              return FlDotCirclePainter(
+                                radius: 4.5,
+                                color: AppColors.gold,
+                                strokeWidth: 2,
+                                strokeColor: AppColors.white,
+                              );
+                            },
+                          ),
+
+                          spots: List.generate(
+                            state.chart.data.length,
+                            (index) => FlSpot(
+                              index.toDouble(),
+                              state.chart.data[index].toDouble(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else if (state is ViewsChartError)
+                SizedBox(
+                  height: 220,
+                  child: Center(
+                    child: Text(
+                      state.message,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ),
+                )
+              else
+                const SizedBox(
+                  height: 220,
+                  child: Center(child: Text("No chart data")),
+                ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -675,8 +879,7 @@ class _SellerHomeState extends State<SellerHome>
   ) {
     final status = property.status;
     final auctionStatus = property.isAuction
-        ? property.auctionStatus 
-        ?? "pending"
+        ? property.auctionStatus ?? "pending"
         : "unknown";
 
     String? imageUrl = property.images.isNotEmpty

@@ -27,6 +27,7 @@ import '../../data/api_services/reset_password_service.dart' as _i766;
 import '../../data/api_services/role_services.dart' as _i241;
 import '../../data/api_services/socket_service.dart' as _i380;
 import '../../data/api_services/verify_email_service.dart' as _i668;
+import '../../data/api_services/views_chart_service.dart' as _i54;
 import '../../data/data_source/local/auth_local_services.dart' as _i401;
 import '../../data/data_source/local/settings_local_services.dart' as _i998;
 import '../../data/repositories/auth_repository_impl.dart' as _i895;
@@ -37,6 +38,7 @@ import '../../data/repositories/register_repository_imp.dart' as _i146;
 import '../../data/repositories/reset_passwrod_repository_imp.dart' as _i886;
 import '../../data/repositories/role_repository_imp.dart' as _i853;
 import '../../data/repositories/verify_email_repository_imp.dart' as _i662;
+import '../../data/repositories/views_chart_repository_impl.dart' as _i225;
 import '../../domain/repositories/auction_repository.dart' as _i892;
 import '../../domain/repositories/auth_repository.dart' as _i1073;
 import '../../domain/repositories/fav_repository.dart' as _i66;
@@ -49,6 +51,7 @@ import '../../domain/repositories/register_repository.dart' as _i462;
 import '../../domain/repositories/reset_pass_repository.dart' as _i934;
 import '../../domain/repositories/role_repository.dart' as _i487;
 import '../../domain/repositories/verify_email_repository.dart' as _i661;
+import '../../domain/repositories/views_chart_repository.dart' as _i782;
 import '../../presentation/auction/create%20auction/cubit/create_auction_cubit.dart'
     as _i953;
 import '../../presentation/auction/cubit/auction_cubit.dart' as _i775;
@@ -69,6 +72,8 @@ import '../../presentation/seller_properties/cubit/property_cubit.dart'
     as _i484;
 import '../../presentation/seller_properties/saller%20home/cubit/most_viewed_cubit.dart'
     as _i625;
+import '../../presentation/seller_properties/saller%20home/cubit/views_chart_cubit.dart'
+    as _i126;
 import '../../presentation/settings/managers/settings_bloc/settings_bloc.dart'
     as _i111;
 
@@ -93,18 +98,16 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i998.SettingsLocalService());
     gh.lazySingleton<_i588.FavoriteHiveService>(
         () => _i588.FavoriteHiveService());
+    gh.lazySingleton<_i361.Dio>(
+      () => networkModule.provideVercelDio(),
+      instanceName: 'vercelDio',
+    );
     gh.lazySingleton<_i702.RegisterServices>(
         () => networkModule.registerServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i744.LoginServices>(
         () => networkModule.loginServices(gh<_i361.Dio>()));
-    gh.lazySingleton<_i959.ForgotPasswordService>(
-        () => networkModule.forgotPasswordService(gh<_i361.Dio>()));
     gh.lazySingleton<_i409.PropertyService>(
         () => networkModule.propertyService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i498.OtpServices>(
-        () => networkModule.otpServices(gh<_i361.Dio>()));
-    gh.lazySingleton<_i766.ResetPasswordService>(
-        () => networkModule.resetPasswordService(gh<_i361.Dio>()));
     gh.lazySingleton<_i825.ProfileService>(
         () => networkModule.profileService(gh<_i361.Dio>()));
     gh.lazySingleton<_i655.AuctionListService>(
@@ -117,8 +120,10 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkModule.roleServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i800.LogoutService>(
         () => _i800.LogoutService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i1046.OtpRepository>(
-        () => _i870.OtpRepositoryImpl(gh<_i498.OtpServices>()));
+    gh.lazySingleton<_i54.ViewsChartService>(
+        () => _i54.ViewsChartService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i782.ViewsChartRepository>(
+        () => _i225.ViewsChartRepositoryImpl(gh<_i54.ViewsChartService>()));
     gh.lazySingleton<_i47.ProfileRepository>(
         () => networkModule.profileRepository(gh<_i825.ProfileService>()));
     gh.lazySingleton<_i66.FavoriteRepository>(() => _i76.FavoriteRepositoryImpl(
@@ -131,20 +136,22 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i809.LoginRepositoryImpl(gh<_i744.LoginServices>()));
     gh.factory<_i371.FavoriteBloc>(
         () => _i371.FavoriteBloc(gh<_i66.FavoriteRepository>()));
-    gh.factory<_i225.OtpCubit>(
-        () => networkModule.otpCubit(gh<_i1046.OtpRepository>()));
-    gh.lazySingleton<_i6.ForgotPasswordRepository>(() => networkModule
-        .forgotPasswordRepository(gh<_i959.ForgotPasswordService>()));
+    gh.factory<_i126.ViewsChartCubit>(
+        () => _i126.ViewsChartCubit(gh<_i782.ViewsChartRepository>()));
     gh.factory<_i111.SettingsBloc>(() => _i111.SettingsBloc(
           gh<_i998.SettingsLocalService>(),
           gh<_i401.AuthLocalService>(),
         ));
-    gh.factory<_i309.ForgotPasswordCubit>(() =>
-        networkModule.forgotPasswordCubit(gh<_i6.ForgotPasswordRepository>()));
     gh.lazySingleton<_i661.VerifyEmailRepository>(
         () => _i662.VerifyEmailRepositoryImpl(gh<_i668.VerifyEmailService>()));
     gh.factory<_i1047.VerifyEmailBloc>(
         () => _i1047.VerifyEmailBloc(gh<_i661.VerifyEmailRepository>()));
+    gh.lazySingleton<_i959.ForgotPasswordService>(() => networkModule
+        .forgotPasswordService(gh<_i361.Dio>(instanceName: 'vercelDio')));
+    gh.lazySingleton<_i498.OtpServices>(() =>
+        networkModule.otpServices(gh<_i361.Dio>(instanceName: 'vercelDio')));
+    gh.lazySingleton<_i766.ResetPasswordService>(() => networkModule
+        .resetPasswordService(gh<_i361.Dio>(instanceName: 'vercelDio')));
     gh.factory<_i107.ProfileCubit>(
         () => networkModule.profileCubit(gh<_i47.ProfileRepository>()));
     gh.lazySingleton<_i906.PropertyRepository>(
@@ -169,10 +176,18 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i21.GoogleAuthService>(),
           gh<_i800.LogoutService>(),
         ));
+    gh.lazySingleton<_i1046.OtpRepository>(
+        () => _i870.OtpRepositoryImpl(gh<_i498.OtpServices>()));
     gh.factory<_i775.AuctionCubit>(
         () => networkModule.auctionCubit(gh<_i892.AuctionRepository>()));
+    gh.factory<_i225.OtpCubit>(
+        () => networkModule.otpCubit(gh<_i1046.OtpRepository>()));
+    gh.lazySingleton<_i6.ForgotPasswordRepository>(() => networkModule
+        .forgotPasswordRepository(gh<_i959.ForgotPasswordService>()));
     gh.factory<_i817.ResetPasswordCubit>(() =>
         networkModule.resetPasswordCubit(gh<_i934.ResetPasswordRepository>()));
+    gh.factory<_i309.ForgotPasswordCubit>(() =>
+        networkModule.forgotPasswordCubit(gh<_i6.ForgotPasswordRepository>()));
     gh.factory<_i659.AuthCubit>(() => _i659.AuthCubit(
           gh<_i1073.AuthRepository>(),
           gh<_i386.LoginRepository>(),

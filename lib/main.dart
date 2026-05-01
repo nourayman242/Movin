@@ -33,6 +33,7 @@ import 'package:movin/presentation/seller_properties/add_property/add_property_s
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 import 'package:movin/presentation/seller_properties/edit%20_property/edit_property_screen.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/most_viewed_cubit.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/views_chart_cubit.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/seller_home_screen.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
@@ -58,8 +59,11 @@ void main() async {
           BlocProvider(create: (_) => getIt<PropertyCubit>()),
           BlocProvider(create: (_) => getIt<ProfileCubit>()..getProfile()),
           BlocProvider<MostviewedCubit>(
-          create: (_) => getIt<MostviewedCubit>()..getMostViewedProperties(),
-        ),
+            create: (_) => getIt<MostviewedCubit>()..getMostViewedProperties(),
+          ),
+          BlocProvider(
+            create: (_) => getIt<ViewsChartCubit>()..getSellerViewsChart(),
+          ),
           BlocProvider(
             create: (_) => getIt<FavoriteBloc>()..add(FavoriteLoad()),
           ),
@@ -102,7 +106,9 @@ class Movin extends StatelessWidget {
           '/sellerhome': (_) => MultiBlocProvider(
             providers: [
               BlocProvider(create: (_) => getIt<ProfileCubit>()..getProfile()),
-              BlocProvider(create: (_) => getIt<PropertyCubit>()..getAllSellerProperties()),
+              BlocProvider(
+                create: (_) => getIt<PropertyCubit>()..getAllSellerProperties(),
+              ),
               BlocProvider(
                 create: (_) =>
                     getIt<MostviewedCubit>()..getMostViewedProperties(),
@@ -118,43 +124,36 @@ class Movin extends StatelessWidget {
 
           '/addproperty': (_) => BlocProvider(
             create: (_) => getIt<PropertyCubit>(),
-           child: const AddPropertyScreen(),
-           // child: EditPropertyScreen(property: property),
+            child: const AddPropertyScreen(),
+            // child: EditPropertyScreen(property: property),
           ),
-            '/edit-property': (context) {
+          '/edit-property': (context) {
             final property =
-            ModalRoute.of(context)!.settings.arguments as PropertyModel;
+                ModalRoute.of(context)!.settings.arguments as PropertyModel;
             return BlocProvider(
-            create: (_) => getIt<PropertyCubit>(),
-            child: EditPropertyScreen(property: property),
+              create: (_) => getIt<PropertyCubit>(),
+              child: EditPropertyScreen(property: property),
             );
-            },
+          },
 
-        //  '/create-auction': (_) => const CreateAuctionScreen(),
+          //  '/create-auction': (_) => const CreateAuctionScreen(),
           '/create-auction': (context) {
             final property =
-            ModalRoute.of(context)!.settings.arguments as PropertyModel;
+                ModalRoute.of(context)!.settings.arguments as PropertyModel;
 
             return BlocProvider(
               create: (_) => getIt<CreateAuctionCubit>(),
               child: CreateAuctionScreen(property: property),
             );
           },
-        '/verify-email': (context) {
-          final email =
-          ModalRoute.of(context)!.settings.arguments as String;
+          '/verify-email': (context) {
+            final email = ModalRoute.of(context)!.settings.arguments as String;
 
-          return BlocProvider(
-            create: (_) => getIt<VerifyEmailBloc>(),
-            child: VerifyEmailScreen(email: email),
-          );
-        },
-
-
-
-
-
-
+            return BlocProvider(
+              create: (_) => getIt<VerifyEmailBloc>(),
+              child: VerifyEmailScreen(email: email),
+            );
+          },
         },
       ),
     );
