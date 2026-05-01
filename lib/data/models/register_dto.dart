@@ -13,14 +13,14 @@ class RegisterDto {
     required this.phone,
   });
 
-  factory RegisterDto.fromJson(Map<String, dynamic> json) {
-  return RegisterDto(
-    username: json['username'] ?? '',
-    email: json['email'] ?? '',
-    password: '',
-    phone: json['phone']?.toString() ?? '',
-  );
-}
+  // factory RegisterDto.fromJson(Map<String, dynamic> json) {
+  // return RegisterDto(
+  //   username: json['username'] ?? '',
+  //   email: json['email'] ?? '',
+  //   password: '',
+  //   phone: json['phone']?.toString() ?? '',
+  // );
+// }
 
 
   RegisterEntity toEntity() {
