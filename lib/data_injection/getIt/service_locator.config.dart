@@ -93,18 +93,16 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i998.SettingsLocalService());
     gh.lazySingleton<_i588.FavoriteHiveService>(
         () => _i588.FavoriteHiveService());
+    gh.lazySingleton<_i361.Dio>(
+      () => networkModule.provideVercelDio(),
+      instanceName: 'vercelDio',
+    );
     gh.lazySingleton<_i702.RegisterServices>(
         () => networkModule.registerServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i744.LoginServices>(
         () => networkModule.loginServices(gh<_i361.Dio>()));
-    gh.lazySingleton<_i959.ForgotPasswordService>(
-        () => networkModule.forgotPasswordService(gh<_i361.Dio>()));
     gh.lazySingleton<_i409.PropertyService>(
         () => networkModule.propertyService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i498.OtpServices>(
-        () => networkModule.otpServices(gh<_i361.Dio>()));
-    gh.lazySingleton<_i766.ResetPasswordService>(
-        () => networkModule.resetPasswordService(gh<_i361.Dio>()));
     gh.lazySingleton<_i825.ProfileService>(
         () => networkModule.profileService(gh<_i361.Dio>()));
     gh.lazySingleton<_i655.AuctionListService>(
@@ -117,8 +115,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkModule.roleServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i800.LogoutService>(
         () => _i800.LogoutService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i1046.OtpRepository>(
-        () => _i870.OtpRepositoryImpl(gh<_i498.OtpServices>()));
     gh.lazySingleton<_i47.ProfileRepository>(
         () => networkModule.profileRepository(gh<_i825.ProfileService>()));
     gh.lazySingleton<_i66.FavoriteRepository>(() => _i76.FavoriteRepositoryImpl(
@@ -131,20 +127,20 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i809.LoginRepositoryImpl(gh<_i744.LoginServices>()));
     gh.factory<_i371.FavoriteBloc>(
         () => _i371.FavoriteBloc(gh<_i66.FavoriteRepository>()));
-    gh.factory<_i225.OtpCubit>(
-        () => networkModule.otpCubit(gh<_i1046.OtpRepository>()));
-    gh.lazySingleton<_i6.ForgotPasswordRepository>(() => networkModule
-        .forgotPasswordRepository(gh<_i959.ForgotPasswordService>()));
     gh.factory<_i111.SettingsBloc>(() => _i111.SettingsBloc(
           gh<_i998.SettingsLocalService>(),
           gh<_i401.AuthLocalService>(),
         ));
-    gh.factory<_i309.ForgotPasswordCubit>(() =>
-        networkModule.forgotPasswordCubit(gh<_i6.ForgotPasswordRepository>()));
     gh.lazySingleton<_i661.VerifyEmailRepository>(
         () => _i662.VerifyEmailRepositoryImpl(gh<_i668.VerifyEmailService>()));
     gh.factory<_i1047.VerifyEmailBloc>(
         () => _i1047.VerifyEmailBloc(gh<_i661.VerifyEmailRepository>()));
+    gh.lazySingleton<_i959.ForgotPasswordService>(() => networkModule
+        .forgotPasswordService(gh<_i361.Dio>(instanceName: 'vercelDio')));
+    gh.lazySingleton<_i498.OtpServices>(() =>
+        networkModule.otpServices(gh<_i361.Dio>(instanceName: 'vercelDio')));
+    gh.lazySingleton<_i766.ResetPasswordService>(() => networkModule
+        .resetPasswordService(gh<_i361.Dio>(instanceName: 'vercelDio')));
     gh.factory<_i107.ProfileCubit>(
         () => networkModule.profileCubit(gh<_i47.ProfileRepository>()));
     gh.lazySingleton<_i906.PropertyRepository>(
@@ -169,10 +165,18 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i21.GoogleAuthService>(),
           gh<_i800.LogoutService>(),
         ));
+    gh.lazySingleton<_i1046.OtpRepository>(
+        () => _i870.OtpRepositoryImpl(gh<_i498.OtpServices>()));
     gh.factory<_i775.AuctionCubit>(
         () => networkModule.auctionCubit(gh<_i892.AuctionRepository>()));
+    gh.factory<_i225.OtpCubit>(
+        () => networkModule.otpCubit(gh<_i1046.OtpRepository>()));
+    gh.lazySingleton<_i6.ForgotPasswordRepository>(() => networkModule
+        .forgotPasswordRepository(gh<_i959.ForgotPasswordService>()));
     gh.factory<_i817.ResetPasswordCubit>(() =>
         networkModule.resetPasswordCubit(gh<_i934.ResetPasswordRepository>()));
+    gh.factory<_i309.ForgotPasswordCubit>(() =>
+        networkModule.forgotPasswordCubit(gh<_i6.ForgotPasswordRepository>()));
     gh.factory<_i659.AuthCubit>(() => _i659.AuthCubit(
           gh<_i1073.AuthRepository>(),
           gh<_i386.LoginRepository>(),
