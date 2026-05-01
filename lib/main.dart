@@ -57,6 +57,9 @@ void main() async {
           BlocProvider(create: (_) => getIt<AuthCubit>()),
           BlocProvider(create: (_) => getIt<PropertyCubit>()),
           BlocProvider(create: (_) => getIt<ProfileCubit>()..getProfile()),
+          BlocProvider<MostviewedCubit>(
+          create: (_) => getIt<MostviewedCubit>()..getMostViewedProperties(),
+        ),
           BlocProvider(
             create: (_) => getIt<FavoriteBloc>()..add(FavoriteLoad()),
           ),
