@@ -8,6 +8,7 @@ class AuctionTextField extends StatelessWidget {
   final String? subtitle;
   final String? prefix;
   final int maxLines;
+  final TextEditingController? controller;
 
   const AuctionTextField({
     super.key,
@@ -16,6 +17,7 @@ class AuctionTextField extends StatelessWidget {
     this.subtitle,
     this.prefix,
     this.maxLines = 1,
+    this.controller,
   });
 
   @override
@@ -26,6 +28,8 @@ class AuctionTextField extends StatelessWidget {
         if (label != null) Text("$label *"),
         SizedBox(height: 6.h),
         TextField(
+          keyboardType: TextInputType.number,
+          controller: controller,
           maxLines: maxLines,
           decoration: InputDecoration(
             prefixText: prefix,

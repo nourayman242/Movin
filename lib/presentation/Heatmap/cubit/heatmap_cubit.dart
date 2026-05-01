@@ -5,8 +5,6 @@ import 'package:movin/domain/entities/area_score.dart';
 import 'package:movin/domain/repositories/heatmap_repository.dart';
 import 'package:movin/presentation/Heatmap/widgets/area_marker_layer.dart';
 
-// ── State ─────────────────────────────────────────────────────────────────────
-
 enum HeatmapStatus { initial, loading, loaded, error }
 
 class HeatmapState {
@@ -41,8 +39,6 @@ class HeatmapState {
   }
 }
 
-// ── Cubit ─────────────────────────────────────────────────────────────────────
-
 class HeatmapCubit extends Cubit<HeatmapState> {
   final HeatmapRepository repository;
   List<AreaScore> _baseAreas = [];
@@ -50,55 +46,60 @@ class HeatmapCubit extends Cubit<HeatmapState> {
   HeatmapCubit(this.repository) : super(const HeatmapState());
 
   Future<void> loadHeatmap({String? initialArea}) async {
-  emit(state.copyWith(status: HeatmapStatus.loading));
-  try {
-    _baseAreas = await repository.getAreaScores();
+    emit(state.copyWith(status: HeatmapStatus.loading));
+    try {
+      _baseAreas = await repository.getAreaScores();
 
-    // If an area was pre-selected from the filter screen, apply it immediately
-    if (initialArea != null &&
-        _baseAreas.any((a) => a.name == initialArea)) {
-      await selectArea(initialArea);
-    } else {
-      final markers = await AreaMarkerLayer.buildMarkers(_baseAreas);
+      if (initialArea != null &&
+          _baseAreas.any((a) => a.name == initialArea)) {
+        await selectArea(initialArea);
+      } else {
+        // ✅ Pass onTap so markers are interactive from the start
+        final markers = await AreaMarkerLayer.buildMarkers(
+          _baseAreas,
+          onTap: (area) => selectArea(area.name),
+        );
+        emit(state.copyWith(
+          status: HeatmapStatus.loaded,
+          areas: _baseAreas,
+          markers: markers,
+        ));
+      }
+    } catch (e) {
       emit(state.copyWith(
-        status: HeatmapStatus.loaded,
-        areas: _baseAreas,
-        markers: markers,
+        status: HeatmapStatus.error,
+        errorMessage: e.toString(),
       ));
     }
-  } catch (e) {
+  }
+
+  Future<void> selectArea(String areaName) async {
+    final origin = _baseAreas.firstWhere((a) => a.name == areaName);
+
+    final rescored = _baseAreas.map((area) {
+      final distKm = _haversineKm(origin.center, area.center);
+      return AreaScore(
+        name: area.name,
+        center: area.center,
+        listingCount: area.listingCount,
+        distanceKm: distKm,
+      );
+    }).toList();
+
+    // ✅ Pass onTap here too so re-tapping another area still works
+    final markers = await AreaMarkerLayer.buildMarkers(
+      rescored,
+      selectedAreaName: areaName,
+      onTap: (area) => selectArea(area.name),
+    );
+
     emit(state.copyWith(
-      status: HeatmapStatus.error,
-      errorMessage: e.toString(),
+      status: HeatmapStatus.loaded,
+      areas: rescored,
+      markers: markers,
+      selectedAreaName: areaName,
     ));
   }
-}
-
-Future<void> selectArea(String areaName) async {
-  final origin = _baseAreas.firstWhere((a) => a.name == areaName);
-
-  final rescored = _baseAreas.map((area) {
-    final distKm = _haversineKm(origin.center, area.center);
-    return AreaScore(
-      name: area.name,
-      center: area.center,
-      listingCount: area.listingCount,
-      distanceKm: distKm,
-    );
-  }).toList();
-
-  final markers = await AreaMarkerLayer.buildMarkers(
-    rescored,
-    selectedAreaName: areaName,
-  );
-
-  emit(state.copyWith(
-    status: HeatmapStatus.loaded,
-    areas: rescored,
-    markers: markers,
-    selectedAreaName: areaName,
-  ));
-}
 
   double _haversineKm(LatLng a, LatLng b) {
     const R = 6371.0;

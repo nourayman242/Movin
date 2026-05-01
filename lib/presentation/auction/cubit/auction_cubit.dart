@@ -56,38 +56,76 @@ class AuctionCubit extends Cubit<AuctionState> {
 
     repo.listenAuctionData((data) {
       print("auctionData: $data");
-      
+
+      final auction = data["property"]?["auction"];
 
       emit(
         state.copyWith(
-          currentBid: data["currentBid"] ?? 0,
-          totalBids: data["totalBids"] ?? 0,
-          endTime: data["endTime"] ?? "",
-          status: data["status"] ?? "live",
-          //bids: data["bidsResponse"] ?? [],
+          startPrice: data["startPrice"] ?? auction?["startPrice"] ?? 0,
+
+          currentBid: data["currentBid"] ?? auction?["currentBid"] ?? 0,
+
+          totalBids: data["totalBids"] ?? auction?["totalBids"] ?? 0,
+
+          endTime: data["endTime"] ?? auction?["endTime"] ?? "",
+
+          status: data["status"] ?? auction?["status"] ?? "live",
+
           bids: List.from(data["bidsResponse"] ?? []),
         ),
       );
     });
 
-    repo.listenNewBid((data) {
-      print("newBid: $data");
+    // repo.listenNewBid((data) {
+    //   print("newBid: $data");
 
-      final newBids = List.from(state.bids)..insert(0, data["bid"]);
+    //   final newBids = List.from(state.bids)..insert(0, data["bid"]);
 
-      emit(
-        state.copyWith(
-          currentBid: data["currentBid"] ?? state.currentBid,
-          totalBids: data["totalBids"] ?? state.totalBids,
-          endTime: data["endTime"] ?? state.endTime,
-          status: data["status"] ?? state.status,
-          bids: newBids,
-          bidSuccess: true,
-          errorMessage: null,
-        ),
-      );
-      emit(state.copyWith(bidSuccess: false));
-    });
+    //   emit(
+    //     state.copyWith(
+    //       currentBid: data["currentBid"] ?? state.currentBid,
+    //       totalBids: data["totalBids"] ?? state.totalBids,
+    //       endTime: data["endTime"] ?? state.endTime,
+    //       status: data["status"] ?? state.status,
+    //       bids: newBids,
+    //       bidSuccess: true,
+    //       errorMessage: null,
+    //     ),
+    //   );
+    //   emit(state.copyWith(bidSuccess: false));
+    // });
+
+
+
+repo.listenNewBid((data) {
+  print("newBid: $data");
+
+  final newBid = data["bid"];
+
+  final exists = state.bids.any(
+    (b) => b["_id"] == newBid["_id"],
+  );
+
+  if (!exists) {
+    final newBids = List.from(state.bids)..insert(0, newBid);
+
+    emit(
+      state.copyWith(
+        currentBid: data["currentBid"] ?? state.currentBid,
+        totalBids: data["totalBids"] ?? state.totalBids,
+        endTime: data["endTime"] ?? state.endTime,
+        status: data["status"] ?? state.status,
+        bids: newBids,
+        bidSuccess: true,
+        errorMessage: null,
+      ),
+    );
+
+    emit(state.copyWith(bidSuccess: false));
+  }
+});
+
+
     repo.listenBidError((msg) {
       emit(state.copyWith(bidSuccess: false, errorMessage: msg.toString()));
       emit(state.copyWith(errorMessage: null));

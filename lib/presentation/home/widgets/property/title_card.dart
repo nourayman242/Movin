@@ -51,7 +51,7 @@ class TitleCard extends StatelessWidget {
               Spacer(),
               Icon(Icons.star, color: AppColors.gold, size: 20.sp),
               SizedBox(width: 4.w),
-              Text('4.8 (24 reviews)', style: TextStyle(fontSize: 14.sp)),
+              Text('${property.views} views', style: TextStyle(fontSize: 14.sp)),
             ],
           ),
           SizedBox(height: 12.h),

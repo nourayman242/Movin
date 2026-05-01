@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/domain/repositories/property_repository.dart';
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
 import 'package:movin/presentation/browse_property/widgets/browse_property_card.dart';
 import 'package:movin/presentation/browse_property/widgets/browser_property_viewmodel.dart';
 import 'package:movin/presentation/browse_property/widgets/search_widget.dart';
+import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
 class BrowsePropertiesScreen extends StatefulWidget {
   final String type; // rent, sale
@@ -27,12 +29,15 @@ class _BrowsePropertiesScreenState extends State<BrowsePropertiesScreen> {
   }
 
   void navigateToDetails(property) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => PropertyDetailsScreen(property: property),
-      ),
-    );
+   Navigator.push(
+ context,
+ MaterialPageRoute(
+   builder: (_) => BlocProvider.value(
+     value: getIt<PropertyCubit>(),
+     child: PropertyDetailsScreen(propertyId: property.id),
+   ),
+ ),
+);
   }
 
   @override

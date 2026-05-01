@@ -291,6 +291,10 @@ class AddPropertyViewModel extends ChangeNotifier {
       id: '',
       status: '',
       isAuction: false,
+      sellerName: '',
+      sellerPhone: '',
+      sellerLocation: '',
+      views: 0,
     );
   }
 }

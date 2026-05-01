@@ -49,6 +49,8 @@ import '../../domain/repositories/register_repository.dart' as _i462;
 import '../../domain/repositories/reset_pass_repository.dart' as _i934;
 import '../../domain/repositories/role_repository.dart' as _i487;
 import '../../domain/repositories/verify_email_repository.dart' as _i661;
+import '../../presentation/auction/create%20auction/cubit/create_auction_cubit.dart'
+    as _i953;
 import '../../presentation/auction/cubit/auction_cubit.dart' as _i775;
 import '../../presentation/auction/cubit/auction_list_cubit.dart' as _i1061;
 import '../../presentation/budget_calculator/managers/bc_bloc/loan_calc_bloc.dart'
@@ -65,6 +67,8 @@ import '../../presentation/role_selection/manager/role_bloc/role_bloc.dart'
     as _i355;
 import '../../presentation/seller_properties/cubit/property_cubit.dart'
     as _i484;
+import '../../presentation/seller_properties/saller%20home/cubit/most_viewed_cubit.dart'
+    as _i625;
 import '../../presentation/settings/managers/settings_bloc/settings_bloc.dart'
     as _i111;
 
@@ -155,6 +159,10 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkModule.auctionListCubit(gh<_i655.AuctionListService>()));
     gh.factory<_i484.PropertyCubit>(
         () => networkModule.propertyCubit(gh<_i906.PropertyRepository>()));
+    gh.factory<_i953.CreateAuctionCubit>(
+        () => _i953.CreateAuctionCubit(gh<_i906.PropertyRepository>()));
+    gh.factory<_i625.MostviewedCubit>(
+        () => _i625.MostviewedCubit(gh<_i906.PropertyRepository>()));
     gh.factory<_i355.RoleBloc>(
         () => _i355.RoleBloc(gh<_i487.RoleRepository>()));
     gh.lazySingleton<_i1073.AuthRepository>(() => _i895.AuthRepositoryImpl(

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/presentation/controllers/property_details_controller.dart';
 import 'package:movin/presentation/home/inner_pages/rate_properties_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AgentCard extends StatefulWidget {
   final PropertyDetailsController controller;
-  const AgentCard({super.key, required this.controller});
+  final PropertyEntity property;
+  const AgentCard({super.key, required this.controller, required this.property});
 
   @override
   State<AgentCard> createState() => _AgentCardState();
@@ -18,8 +20,8 @@ class _AgentCardState extends State<AgentCard> {
   bool isRatePressed = false;
 
   Future<void> _callAgent() async {
-    final Uri phoneUri = Uri(scheme: 'tel', path: '+201141229586');
-
+    final Uri phoneUri = Uri(scheme: 'tel', path:'+20${widget.property.sellerPhone}' );
+//'+201141229586'
     if (await canLaunchUrl(phoneUri)) {
       await launchUrl(phoneUri);
     } else {
@@ -28,7 +30,7 @@ class _AgentCardState extends State<AgentCard> {
   }
 
   Future<void> _openWhatsApp() async {
-    String phone = "201141229586";
+    String phone = '+20${widget.property.sellerPhone}';
 
     String message =
         "Hello, I saw your property on the Movin app and I'm interested. Can you provide more details?";
@@ -66,7 +68,7 @@ class _AgentCardState extends State<AgentCard> {
             radius: 28.r,
             backgroundColor: AppColors.primaryNavy,
             child: Text(
-              'JS',
+              initials(widget.property.sellerName),
               style: TextStyle(
                 color: AppColors.white,
                 fontWeight: FontWeight.bold,
@@ -74,8 +76,8 @@ class _AgentCardState extends State<AgentCard> {
             ),
           ),
           SizedBox(height: 10.h),
-          Text('John Smith', style: TextStyle(fontSize: 18.sp)),
-          Text('Premium Agent', style: TextStyle(color: AppColors.grey)),
+          Text(widget.property.sellerName, style: TextStyle(fontSize: 18.sp)),
+         // Text('Premium Agent', style: TextStyle(color: AppColors.grey)),
           SizedBox(height: 6.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -93,7 +95,7 @@ class _AgentCardState extends State<AgentCard> {
             children: [
               Icon(Icons.phone, size: 18.sp),
               SizedBox(width: 6.w),
-              Text('+201 114 122 9586'),
+              Text('+2 0${widget.property.sellerPhone}'),
             ],
           ),
           SizedBox(height: 6.h),
@@ -102,7 +104,7 @@ class _AgentCardState extends State<AgentCard> {
             children: [
               Icon(Icons.location_on_outlined, size: 18.sp),
               SizedBox(width: 6.w),
-              Text('Cairo, EGY'),
+              Text(widget.property.sellerLocation),
             ],
           ),
           SizedBox(height: 20.h),
@@ -193,5 +195,12 @@ class _AgentCardState extends State<AgentCard> {
         ),
       ),
     );
+  }
+  String initials(String name) {
+    final parts = name.trim().split(" ");
+    if (parts.length >= 2) {
+      return "${parts[0][0]}${parts[1][0]}".toUpperCase();
+    }
+    return name.isNotEmpty ? name[0].toUpperCase() : "";
   }
 }

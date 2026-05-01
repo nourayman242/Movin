@@ -26,21 +26,7 @@ class AuctionImageSection extends StatelessWidget {
               child: PageView(
                 controller: controller,
                 children: [
-                  Image(
-                    image: property.images.isNotEmpty
-                        ? NetworkImage(property.images.first)
-                        : AssetImage('assets/images/villa2.webp'),
-                    fit: BoxFit.cover,
-                  ),
-                  //networkImage(property.images.first),
-                  Image(
-                    image: AssetImage('assets/images/villa2.webp'),
-                    fit: BoxFit.cover,
-                  ),
-                  Image(
-                    image: AssetImage('assets/images/villa3.jpg'),
-                    fit: BoxFit.cover,
-                  ),
+                  ...property.images.map((url) => Image.network(url, fit: BoxFit.cover)).toList(),
                 ],
               ),
             ),
@@ -82,27 +68,27 @@ class AuctionImageSection extends StatelessWidget {
             ),
 
             // image counter
-            Positioned(
-              bottom: 16,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.black54,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Text(
-                    "1 / 3",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
+            // Positioned(
+            //   bottom: 16,
+            //   left: 0,
+            //   right: 0,
+            //   child: Center(
+            //     child: Container(
+            //       padding: const EdgeInsets.symmetric(
+            //         horizontal: 12,
+            //         vertical: 4,
+            //       ),
+            //       decoration: BoxDecoration(
+            //         color: Colors.black54,
+            //         borderRadius: BorderRadius.circular(20),
+            //       ),
+            //       child:  Text(
+            //         "${controller.page?.round() ?? 0 + 1} / ${property.images.map((url) => Image.network(url, fit: BoxFit.cover)).toList().length}",
+            //         style: TextStyle(color: Colors.white),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Positioned(
               left: 10,
               top: 130,
@@ -139,15 +125,4 @@ class AuctionImageSection extends StatelessWidget {
     );
   }
 }
-Widget networkImage(String? url) {
-  if (url == null || url.trim().isEmpty) {
-    return const Icon(Icons.image_not_supported);
-  }
 
-  return Image.network(
-    url,
-    errorBuilder: (context, error, stackTrace) {
-      return const Icon(Icons.broken_image);
-    },
-  );
-}
