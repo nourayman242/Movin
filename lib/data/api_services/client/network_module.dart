@@ -33,60 +33,67 @@ import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
 
-import '../../../domain/repositories/verify_email_repository.dart';
-import '../../../presentation/register/managers/verify_email_bloc.dart';
-import '../../repositories/verify_email_repository_imp.dart';
 import '../favorite_api_service.dart';
-import '../logout_services.dart';
 import '../role_services.dart';
 import '../verify_email_service.dart';
 
-
-
 @module
 abstract class NetworkModule {
+
+
   @lazySingleton
   Dio provideDio() {
-    const base =
-        //'https://movin-oipd650to-malakkhaled22s-projects.vercel.app';
-        //'https://movin-app.vercel.app';
-        //'https://movin-backend.fly.dev';
-        'https://movin-backend-production.up.railway.app';
+    const base = 'https://movin-backend-production.up.railway.app';
 
     final dio = Dio(
       BaseOptions(
         baseUrl: base,
-        connectTimeout: const Duration(seconds: 15),
-        receiveTimeout: const Duration(seconds: 15),
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
       ),
     );
-
-    // 1️⃣ AUTH INTERCEPTOR (TOKEN)
     dio.interceptors.add(AuthInterceptor(dio));
-
-    // 2️⃣ LOGGING INTERCEPTOR
+    dio.interceptors.add(_RetryInterceptor(dio));
     dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
-
     return dio;
   }
 
+
+  @Named('vercelDio')
   @lazySingleton
-  RegisterServices registerServices(Dio dio) {
-    return RegisterServices(dio);
+  Dio provideVercelDio() {
+    const base = 'https://movin-app.vercel.app';
+
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: base,
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+      ),
+    );
+    dio.interceptors.add(_RetryInterceptor(dio));
+    dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
+    return dio;
   }
+
+
+  @lazySingleton
+  ForgotPasswordService forgotPasswordService(@Named('vercelDio') Dio dio) {
+    return ForgotPasswordService(dio);
+  }
+
+  @lazySingleton
+  OtpServices otpServices(@Named('vercelDio') Dio dio) => OtpServices(dio);
+
+
+  @lazySingleton
+  RegisterServices registerServices(Dio dio) => RegisterServices(dio);
 
   @lazySingleton
   LoginServices loginServices(Dio dio) => LoginServices(dio);
 
   @lazySingleton
-  ForgotPasswordService forgotPasswordService(Dio dio) {
-    return ForgotPasswordService(dio);
-  }
-
-  @lazySingleton
-  ForgotPasswordRepository forgotPasswordRepository(
-    ForgotPasswordService service,
-  ) {
+  ForgotPasswordRepository forgotPasswordRepository(ForgotPasswordService service) {
     return ForgotPasswordRepositoryImpl(service);
   }
 
@@ -101,16 +108,15 @@ abstract class NetworkModule {
   @lazySingleton
   PropertyRepository propertyRepository(PropertyService service) =>
       PropertyRepositoryImpl(service);
+
   @factory
   PropertyCubit propertyCubit(PropertyRepository repo) => PropertyCubit(repo);
 
-  @lazySingleton
-  OtpServices otpServices(Dio dio) => OtpServices(dio);
-
   @factory
   OtpCubit otpCubit(OtpRepository repo) => OtpCubit(repo);
-  @lazySingleton
-  ResetPasswordService resetPasswordService(Dio dio) =>
+
+  @lazySingleton                                                     
+  ResetPasswordService resetPasswordService(@Named('vercelDio') Dio dio) =>
       ResetPasswordService(dio);
 
   @factory
@@ -140,6 +146,7 @@ abstract class NetworkModule {
 
   @factory
   ProfileCubit profileCubit(ProfileRepository repo) => ProfileCubit(repo);
+
   @lazySingleton
   AuctionListService auctionListService(Dio dio) => AuctionListService(dio);
 
@@ -147,32 +154,36 @@ abstract class NetworkModule {
   AuctionListCubit auctionListCubit(AuctionListService service) =>
       AuctionListCubit(service);
 
+  @lazySingleton
+  VerifyEmailService verifyEmailService(Dio dio) => VerifyEmailService(dio);
 
   @lazySingleton
-  VerifyEmailService verifyEmailService(Dio dio) =>
-      VerifyEmailService(dio);
+  FavoriteApiService favoriteApiService(Dio dio) => FavoriteApiService(dio);
 
   @lazySingleton
-  FavoriteApiService favoriteApiService(Dio dio) =>
-      FavoriteApiService(dio);
+  RoleServices roleServices(Dio dio) => RoleServices(dio);
+}
 
-  @lazySingleton
-  RoleServices roleServices(Dio dio) =>
-      RoleServices(dio);
+class _RetryInterceptor extends Interceptor {
+  final Dio dio;
+  _RetryInterceptor(this.dio);
 
-  // @LazySingleton(as: VerifyEmailRepository)
-  // VerifyEmailRepository verifyEmailRepository(
-  //     VerifyEmailService service,
-  //     ) =>
-  //     VerifyEmailRepositoryImpl(service);
-  
-  // @factory
-  // VerifyEmailBloc verifyEmailBloc(
-  //     VerifyEmailRepository repo,
-  //     ) =>
-  //     VerifyEmailBloc(repo);
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    final isTimeout =
+        err.type == DioExceptionType.receiveTimeout ||
+        err.type == DioExceptionType.connectionTimeout;
+    final alreadyRetried = err.requestOptions.extra['retried'] == true;
 
-  // @lazySingleton
-  // LogoutService logoutService(Dio dio) => LogoutService(dio);
-
+    if (isTimeout && !alreadyRetried) {
+      final opts = err.requestOptions..extra['retried'] = true;
+      try {
+        final response = await dio.fetch(opts);
+        return handler.resolve(response);
+      } catch (e) {
+        // fall through to original error
+      }
+    }
+    handler.next(err);
+  }
 }
