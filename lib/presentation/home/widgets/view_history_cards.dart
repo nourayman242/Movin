@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/domain/entities/property_entity.dart';
-
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_state.dart';
@@ -17,9 +16,22 @@ class ViewHistoryCard extends StatelessWidget {
     required this.onTap,
   });
 
+  // Returns the best available display title
+  String get _displayTitle {
+    if (property.description.trim().isNotEmpty) return property.description;
+    if (property.type.trim().isNotEmpty) {
+      return '${property.type[0].toUpperCase()}${property.type.substring(1)}';
+    }
+    return property.location;
+  }
+
   @override
   Widget build(BuildContext context) {
     const cardHeight = 160.0;
+
+    // Guard: use a placeholder when images list is empty
+    final bool hasImage = property.images.isNotEmpty &&
+        property.images.first.trim().isNotEmpty;
 
     return GestureDetector(
       onTap: onTap,
@@ -52,7 +64,14 @@ class ViewHistoryCard extends StatelessWidget {
                       SizedBox(
                         width: imageWidth,
                         height: cardHeight,
-                        child: Image.network(property.images.first, fit: BoxFit.cover),
+                        child: hasImage
+                            ? Image.network(
+                                property.images.first,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) =>
+                                    _placeholderImage(),
+                              )
+                            : _placeholderImage(),
                       ),
 
                       // Tag
@@ -65,7 +84,9 @@ class ViewHistoryCard extends StatelessWidget {
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: property.listingType.toLowerCase().contains('rent')
+                            color: property.listingType
+                                    .toLowerCase()
+                                    .contains('rent')
                                 ? AppColors.gold
                                 : AppColors.primaryNavy,
                             borderRadius: BorderRadius.circular(12),
@@ -87,13 +108,15 @@ class ViewHistoryCard extends StatelessWidget {
                         top: 8,
                         child: BlocBuilder<FavoriteBloc, FavoriteState>(
                           builder: (context, state) {
-                            final isFav = state.isFavorite(property.id.toString());
+                            final isFav =
+                                state.isFavorite(property.id.toString());
 
                             return GestureDetector(
                               onTap: () {
                                 context.read<FavoriteBloc>().add(
-                                  FavoriteToggle(property.id.toString()),
-                                );
+                                      FavoriteToggle(
+                                          property.id.toString()),
+                                    );
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(6),
@@ -126,9 +149,14 @@ class ViewHistoryCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        // ── Fixed title ──
                         Text(
-                          property.description,
-                          style: AppTextStyles.label,
+                          _displayTitle,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primaryNavy,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -157,8 +185,8 @@ class ViewHistoryCard extends StatelessWidget {
                         const SizedBox(height: 10),
 
                         Text(
-                      '${property.price}',
-                          style: TextStyle(
+                          '${property.price} EGP',
+                          style: const TextStyle(
                             color: AppColors.gold,
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -172,22 +200,28 @@ class ViewHistoryCard extends StatelessWidget {
                           children: [
                             Expanded(
                               child: _AttrItem(
-                                value: property.details["bedrooms"].toString(),
+                                value: property.details["bedrooms"]
+                                        ?.toString() ??
+                                    '-',
                                 label: "Beds",
                               ),
                             ),
                             const _VerticalDivider(),
                             Expanded(
                               child: _AttrItem(
-                                value: property.details["bathrooms"].toString(),
+                                value: property.details["bathrooms"]
+                                        ?.toString() ??
+                                    '-',
                                 label: "Baths",
                               ),
                             ),
                             const _VerticalDivider(),
                             Expanded(
                               child: _AttrItem(
-                                value: property.size.toString(),
-                                label: "",
+                                value: property.size.isNotEmpty
+                                    ? property.size
+                                    : '-',
+                                label: "m²",
                               ),
                             ),
                           ],
@@ -200,6 +234,15 @@ class ViewHistoryCard extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _placeholderImage() {
+    return Container(
+      color: AppColors.background,
+      child: const Center(
+        child: Icon(Icons.home_outlined, size: 40, color: AppColors.grey),
       ),
     );
   }

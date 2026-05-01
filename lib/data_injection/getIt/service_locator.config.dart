@@ -57,6 +57,7 @@ import '../../presentation/budget_calculator/managers/bc_bloc/loan_calc_bloc.dar
     as _i882;
 import '../../presentation/fav_screen/manager/fav_bloc/fav_bloc.dart' as _i371;
 import '../../presentation/fav_screen/manager/fav_hive.dart' as _i588;
+import '../../presentation/home/cubit/view_history_cubit.dart' as _i216;
 import '../../presentation/login/cubit/auth_cubit.dart' as _i659;
 import '../../presentation/login/cubit/forget_pass_cubit.dart' as _i309;
 import '../../presentation/login/cubit/otp_cubit.dart' as _i225;
@@ -167,6 +168,8 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.lazySingleton<_i1046.OtpRepository>(
         () => _i870.OtpRepositoryImpl(gh<_i498.OtpServices>()));
+    gh.singleton<_i216.ViewHistoryCubit>(
+        () => _i216.ViewHistoryCubit(gh<_i906.PropertyRepository>()));
     gh.factory<_i775.AuctionCubit>(
         () => networkModule.auctionCubit(gh<_i892.AuctionRepository>()));
     gh.factory<_i225.OtpCubit>(
