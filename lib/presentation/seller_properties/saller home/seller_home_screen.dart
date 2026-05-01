@@ -335,7 +335,6 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
-  
   Widget _perfCard() {
     return BlocBuilder<ViewsChartCubit, ViewsChartState>(
       builder: (context, state) {
@@ -362,7 +361,6 @@ class _SellerHomeState extends State<SellerHome>
                 children: [
                   Row(
                     children: [
-                      
                       const SizedBox(width: 12),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -481,8 +479,14 @@ class _SellerHomeState extends State<SellerHome>
                           sideTitles: SideTitles(
                             showTitles: true,
                             reservedSize: 24,
+                            interval: 1, // VERY IMPORTANT
                             getTitlesWidget: (value, meta) {
+                              if (value % 1 != 0) {
+                                return const SizedBox();
+                              }
+
                               int index = value.toInt();
+
                               if (index >= 0 &&
                                   index < state.chart.labels.length) {
                                 return Padding(
@@ -497,6 +501,7 @@ class _SellerHomeState extends State<SellerHome>
                                   ),
                                 );
                               }
+
                               return const SizedBox();
                             },
                           ),
@@ -523,6 +528,7 @@ class _SellerHomeState extends State<SellerHome>
                       lineBarsData: [
                         LineChartBarData(
                           isCurved: true,
+                          preventCurveOverShooting: true,
                           curveSmoothness: .35,
                           barWidth: 4,
                           color: AppColors.gold,
