@@ -20,6 +20,9 @@ class PropertyEntity {
   final String sellerPhone;
   final String sellerLocation;
 
+  //to control time
+  final DateTime? createdAt;
+
   PropertyEntity({
     required this.isAuction,
     required this.id,
@@ -38,6 +41,9 @@ class PropertyEntity {
     required this.sellerPhone,
     required this.sellerLocation,
     required this.views,
+
+    //time
+    this.createdAt,
   });
 
   Map<String, dynamic> toJson() => {
