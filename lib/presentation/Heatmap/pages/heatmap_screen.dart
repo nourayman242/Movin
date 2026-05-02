@@ -30,10 +30,12 @@ class _HeatmapView extends StatefulWidget {
 
 class _HeatmapViewState extends State<_HeatmapView> {
   GoogleMapController? _mapController;
-String? _pendingAnimateTo;
+  String? _pendingAnimateTo;
+
   void _animateTo(LatLng target) {
     _mapController?.animateCamera(
-      CameraUpdate.newCameraPosition(CameraPosition(target: target, zoom: 12)),
+      CameraUpdate.newCameraPosition(
+          CameraPosition(target: target, zoom: 12)),
     );
   }
 
@@ -42,37 +44,50 @@ String? _pendingAnimateTo;
     return Scaffold(
       body: BlocBuilder<HeatmapCubit, HeatmapState>(
         builder: (context, state) {
+          // Animate camera when selected area changes
           if (_mapController != null &&
-            state.selectedAreaName != null &&
-            _pendingAnimateTo != state.selectedAreaName) {
-          _pendingAnimateTo = state.selectedAreaName;
-          final area = state.areas.firstWhere(
+              state.selectedAreaName != null &&
+              _pendingAnimateTo != state.selectedAreaName) {
+            _pendingAnimateTo = state.selectedAreaName;
+            final area = state.areas.firstWhere(
               (a) => a.name == state.selectedAreaName,
-              orElse: () => state.areas.first);
-          WidgetsBinding.instance.addPostFrameCallback(
-              (_) => _animateTo(area.center));
-        }
-          // ── Loading ──
-          if (state.status == HeatmapStatus.loading) {
-            return const Center(child: CircularProgressIndicator());
+              orElse: () => state.areas.first,
+            );
+            WidgetsBinding.instance
+                .addPostFrameCallback((_) => _animateTo(area.center));
           }
 
-          // ── Error ──
+          // ── Loading ──────────────────────────────────────────────────────
+          if (state.status == HeatmapStatus.loading) {
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text(
+                    'Loading listing data…',
+                    style: TextStyle(color: Colors.grey, fontSize: 13),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          // ── Error ────────────────────────────────────────────────────────
           if (state.status == HeatmapStatus.error) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
-                    Icons.wifi_off_rounded,
-                    size: 64,
-                    color: Colors.grey,
-                  ),
+                  const Icon(Icons.wifi_off_rounded,
+                      size: 64, color: Colors.grey),
                   const SizedBox(height: 16),
                   Text(state.errorMessage ?? 'Failed to load heatmap'),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () => context.read<HeatmapCubit>().loadHeatmap(),
+                    onPressed: () =>
+                        context.read<HeatmapCubit>().loadHeatmap(),
                     child: const Text('Retry'),
                   ),
                 ],
@@ -80,9 +95,10 @@ String? _pendingAnimateTo;
             );
           }
 
+          // ── Loaded ───────────────────────────────────────────────────────
           return Stack(
             children: [
-              // ── Map ──
+              // Map
               GoogleMap(
                 initialCameraPosition: const CameraPosition(
                   target: LatLng(30.0444, 31.3500),
@@ -94,7 +110,7 @@ String? _pendingAnimateTo;
                 onMapCreated: (c) => _mapController = c,
               ),
 
-              // ── Back button ──
+              // Back button
               Positioned(
                 top: 48,
                 left: 16,
@@ -102,15 +118,15 @@ String? _pendingAnimateTo;
                   child: CircleAvatar(
                     backgroundColor: Colors.white,
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.black87),
+                      icon: const Icon(Icons.arrow_back,
+                          color: Colors.black87),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
                 ),
               ),
 
-              // ── Area Selector Dropdown ──
-              // ── Selected area label (top-center) ──
+              // Selected area label (top-center)
               if (state.selectedAreaName != null)
                 Positioned(
                   top: 48,
@@ -120,24 +136,20 @@ String? _pendingAnimateTo;
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
+                            horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: const [
-                            BoxShadow(color: Colors.black26, blurRadius: 6),
+                            BoxShadow(
+                                color: Colors.black26, blurRadius: 6),
                           ],
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
-                              Icons.location_on_rounded,
-                              size: 16,
-                              color: Colors.red,
-                            ),
+                            const Icon(Icons.location_on_rounded,
+                                size: 16, color: Colors.red),
                             const SizedBox(width: 6),
                             Text(
                               state.selectedAreaName!,
@@ -153,7 +165,7 @@ String? _pendingAnimateTo;
                   ),
                 ),
 
-              // ── Banner (below label) ──
+              // Stats banner (below label) — only shown when area selected
               if (state.selectedAreaName != null)
                 Positioned(
                   top: 110,
@@ -167,8 +179,13 @@ String? _pendingAnimateTo;
                   ),
                 ),
 
-              // ── Legend ──
-              Positioned(bottom: 32, left: 16, right: 16, child: _Legend()),
+              // Legend
+              Positioned(
+                bottom: 32,
+                left: 16,
+                right: 16,
+                child: _Legend(),
+              ),
             ],
           );
         },
@@ -177,88 +194,85 @@ String? _pendingAnimateTo;
   }
 }
 
-// ── Area Selector ─────────────────────────────────────────────────────────────
-
-class _AreaSelector extends StatelessWidget {
-  final List<String> areas;
-  final String? selected;
-  final ValueChanged<String> onChanged;
-
-  const _AreaSelector({
-    required this.areas,
-    required this.selected,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 6)],
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          isExpanded: true,
-          hint: const Text('Select your area'),
-          value: selected,
-          items: areas
-              .map((a) => DropdownMenuItem(value: a, child: Text(a)))
-              .toList(),
-          onChanged: (v) {
-            if (v != null) onChanged(v);
-          },
-        ),
-      ),
-    );
-  }
-}
-
-// ── Selected Area Info Banner ─────────────────────────────────────────────────
-
+// ── Selected Area Stats Banner ────────────────────────────────────────────────
+// Shows real listing counts split by proximity to the selected area.
 class _SelectedAreaBanner extends StatelessWidget {
   final List<AreaScore> areas;
   final String selectedName;
 
-  const _SelectedAreaBanner({required this.areas, required this.selectedName});
+  const _SelectedAreaBanner(
+      {required this.areas, required this.selectedName});
 
   @override
   Widget build(BuildContext context) {
-    // Use score getter (computed from distanceKm) — NOT a stored field
-    final nearby = areas
-        .where((a) => a.score >= 70 && a.name != selectedName)
-        .length;
-    final moderate = areas.where((a) => a.score >= 40 && a.score < 70).length;
-    final far = areas.where((a) => a.score < 40).length;
-    final totalListings = areas.fold<int>(0, (sum, a) => sum + a.listingCount);
+    // The selected area itself
+    final selected = areas.firstWhere((a) => a.name == selectedName,
+        orElse: () => areas.first);
+
+    // Listings in areas scored as Nearby (≤ 3 km), excluding selected area
+    final nearbyListings = areas
+        .where((a) => a.name != selectedName && a.score >= 70)
+        .fold<int>(0, (sum, a) => sum + a.listingCount);
+
+    // Listings in Moderate areas (3–8 km)
+    final moderateListings = areas
+        .where((a) => a.score >= 40 && a.score < 70)
+        .fold<int>(0, (sum, a) => sum + a.listingCount);
+
+    // Listings in Far areas (> 8 km)
+    final farListings = areas
+        .where((a) => a.score < 40)
+        .fold<int>(0, (sum, a) => sum + a.listingCount);
+
+    // Grand total across all areas
+    final totalListings =
+        areas.fold<int>(0, (sum, a) => sum + a.listingCount);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding:
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 6)],
+        boxShadow: const [
+            BoxShadow(color: Colors.black26, blurRadius: 6)],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _BannerStat(
-            label: 'Nearby',
-            count: nearby,
-            color: ScoreColorMapper.green,
+          // Selected area's own listing count prominently
+          Text(
+            '${selected.listingCount} listings in $selectedName',
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 13,
+            ),
           ),
-          _BannerStat(
-            label: 'Moderate',
-            count: moderate,
-            color: ScoreColorMapper.orange,
-          ),
-          _BannerStat(label: 'Far', count: far, color: ScoreColorMapper.red),
-          _BannerStat(
-            label: 'Total listings',
-            count: totalListings,
-            color: Colors.blueGrey,
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _BannerStat(
+                label: 'Nearby',
+                count: nearbyListings,
+                color: ScoreColorMapper.green,
+              ),
+              _BannerStat(
+                label: 'Moderate',
+                count: moderateListings,
+                color: ScoreColorMapper.orange,
+              ),
+              _BannerStat(
+                label: 'Far',
+                count: farListings,
+                color: ScoreColorMapper.red,
+              ),
+              _BannerStat(
+                label: 'Total',
+                count: totalListings,
+                color: Colors.blueGrey,
+              ),
+            ],
           ),
         ],
       ),
@@ -271,11 +285,8 @@ class _BannerStat extends StatelessWidget {
   final int count;
   final Color color;
 
-  const _BannerStat({
-    required this.label,
-    required this.count,
-    required this.color,
-  });
+  const _BannerStat(
+      {required this.label, required this.count, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -284,24 +295,22 @@ class _BannerStat extends StatelessWidget {
         Text(
           '$count',
           style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: color,
-          ),
+              fontSize: 16, fontWeight: FontWeight.bold, color: color),
         ),
-        Text(label, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+        Text(label,
+            style: const TextStyle(fontSize: 10, color: Colors.grey)),
       ],
     );
   }
 }
 
 // ── Legend ────────────────────────────────────────────────────────────────────
-
 class _Legend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding:
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
@@ -310,12 +319,13 @@ class _Legend extends StatelessWidget {
       child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _LegendItem(color: ScoreColorMapper.green, label: 'Nearby (≤ 3 km)'),
           _LegendItem(
-            color: ScoreColorMapper.orange,
-            label: 'Moderate (≤ 8 km)',
-          ),
-          _LegendItem(color: ScoreColorMapper.red, label: 'Far (> 8 km)'),
+              color: ScoreColorMapper.green, label: 'Nearby (≤ 3 km)'),
+          _LegendItem(
+              color: ScoreColorMapper.orange,
+              label: 'Moderate (≤ 8 km)'),
+          _LegendItem(
+              color: ScoreColorMapper.red, label: 'Far (> 8 km)'),
         ],
       ),
     );
@@ -334,7 +344,8 @@ class _LegendItem extends StatelessWidget {
         Container(
           width: 10,
           height: 10,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          decoration:
+              BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 6),
         Text(label, style: const TextStyle(fontSize: 11)),

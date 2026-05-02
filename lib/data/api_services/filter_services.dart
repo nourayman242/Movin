@@ -2,6 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:movin/data/models/property_model.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
 
+
+const bool _apiSortSupported = false;
+
 class FilteredPropertiesResponse {
   final int page;
   final int limit;
@@ -28,27 +31,57 @@ class FilteredPropertiesResponse {
           .toList(),
     );
   }
+
+ 
+  FilteredPropertiesResponse withSortedProperties(String sortLabel) {
+    final sorted = List<PropertyModel>.from(properties);
+
+    switch (sortLabel) {
+      case 'Price: Low to High':
+        sorted.sort((a, b) => a.price.compareTo(b.price));
+        break;
+      case 'Price: High to Low':
+        sorted.sort((a, b) => b.price.compareTo(a.price));
+        break;
+      case 'Newest First':
+        sorted.sort((a, b) {
+          final aDate = a.createdAt ?? DateTime(2000);
+          final bDate = b.createdAt ?? DateTime(2000);
+          return bDate.compareTo(aDate);
+        });
+        break;
+      case 'Most Popular':
+        sorted.sort((a, b) => b.views.compareTo(a.views));
+        break;
+    }
+
+    return FilteredPropertiesResponse(
+      page: page,
+      limit: limit,
+      total: total,
+      totalPages: totalPages,
+      properties: sorted,
+    );
+  }
 }
 
 class FilterService {
-  
   static const String _endpoint = '/api/seller/properties/filter';
 
   static Future<FilteredPropertiesResponse> fetchFilteredProperties({
-    String? location,       
+    String? location,
     String? type,
     String? bedrooms,
     String? bathrooms,
     bool? pool,
     double? minPrice,
     double? maxPrice,
-    String? sort,
+    String? sort, 
     int page = 1,
   }) async {
     final dio = getIt<Dio>();
     final Map<String, dynamic> queryParams = {};
 
-    
     if (location != null && location.isNotEmpty) {
       queryParams['location'] = location.toLowerCase();
     }
@@ -67,12 +100,16 @@ class FilterService {
     if (minPrice != null && minPrice > 0) {
       queryParams['minPrice'] = minPrice.toInt();
     }
-    if (maxPrice != null && maxPrice < 100000000) {
+
+    if (maxPrice != null && maxPrice < 10000000) {
       queryParams['maxPrice'] = maxPrice.toInt();
     }
-    if (sort != null && sort.isNotEmpty) {
+
+   
+    if (_apiSortSupported && sort != null && sort.isNotEmpty) {
       queryParams['sort'] = sort;
     }
+
     queryParams['page'] = page;
 
     try {
@@ -82,9 +119,18 @@ class FilterService {
       );
 
       if (response.statusCode == 200) {
-        return FilteredPropertiesResponse.fromJson(
+        var result = FilteredPropertiesResponse.fromJson(
           response.data as Map<String, dynamic>,
         );
+
+      
+        if (!_apiSortSupported && sort != null && sort.isNotEmpty) {
+          result = result.withSortedProperties(
+            _apiSortToUiLabel(sort),
+          );
+        }
+
+        return result;
       } else {
         throw Exception(
             'Failed to load properties. Status: ${response.statusCode}');
@@ -98,16 +144,35 @@ class FilterService {
     }
   }
 
+
   static String? mapSortToApi(String? uiSort) {
     switch (uiSort) {
-      case 'Newest':
-        return 'newest';
       case 'Price: Low to High':
         return 'price-asc';
       case 'Price: High to Low':
         return 'price-desc';
+      case 'Newest First':
+        return 'newest';
+      case 'Most Popular':
+        return 'popular';
       default:
         return null;
+    }
+  }
+
+  
+  static String _apiSortToUiLabel(String apiSort) {
+    switch (apiSort) {
+      case 'price-asc':
+        return 'Price: Low to High';
+      case 'price-desc':
+        return 'Price: High to Low';
+      case 'newest':
+        return 'Newest First';
+      case 'popular':
+        return 'Most Popular';
+      default:
+        return '';
     }
   }
 }
