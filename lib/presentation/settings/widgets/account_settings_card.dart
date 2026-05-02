@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/data/models/profile_model.dart';
+import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/profile/edit_profile_screen.dart';
 
 class AccountSettingsCard extends StatelessWidget {
-  //final ProfileModel profile;
-  const AccountSettingsCard({super.key, });
+  final ProfileModel profile;
+  const AccountSettingsCard({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +61,24 @@ class AccountSettingsCard extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               title: const Text('Edit Profile'),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (_) => EditProfileScreen(profile: profile),
-                //   ),
-                // );
+              onTap: () async {
+                final updated = await Navigator.push<ProfileModel>(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<ProfileCubit>(),
+                      child: EditProfileScreen(profile: profile),
+                    ),
+                  ),
+                );
+                if (updated != null) {
+                  context.read<ProfileCubit>().updateProfile(
+                    username: updated.name,
+                    bio: updated.bio,
+                    location: updated.location,
+                    phone: updated.phone,
+                  );
+                }
               },
             ),
             ListTile(
