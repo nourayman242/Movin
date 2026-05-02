@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/data/models/profile_model.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
 import 'package:movin/presentation/settings/widgets/account_settings_card.dart';
@@ -10,12 +11,10 @@ import 'package:movin/presentation/settings/widgets/notification_card.dart';
 import 'package:movin/presentation/settings/widgets/privacy_card.dart';
 import 'package:movin/presentation/settings/widgets/version_text.dart';
 
-import '../../login/cubit/auth_cubit.dart';
-import '../../login/cubit/auth_state.dart';
 
 class SettingsScreen extends StatefulWidget {
-  //final ProfileModel currentProfile;
-  const SettingsScreen({super.key, });
+  final ProfileModel currentProfile;
+  const SettingsScreen({super.key, required this.currentProfile});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -58,7 +57,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 AppWidgets.verticalSpace(AppSpacing.medium),
                 NotificationCard(),
                 AppWidgets.verticalSpace(AppSpacing.medium),
-                AccountSettingsCard(),
+                AccountSettingsCard(profile: widget.currentProfile),
                 AppWidgets.verticalSpace(AppSpacing.medium),
                 PrivacyLegalCard(),
                 AppWidgets.verticalSpace(AppSpacing.large),

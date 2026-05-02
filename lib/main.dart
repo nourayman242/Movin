@@ -33,6 +33,7 @@ import 'package:movin/presentation/seller_properties/add_property/add_property_s
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 import 'package:movin/presentation/seller_properties/edit%20_property/edit_property_screen.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/most_viewed_cubit.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/seller_dashboard_cubit.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/views_chart_cubit.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/seller_home_screen.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc.dart';
@@ -63,6 +64,13 @@ void main() async {
           ),
           BlocProvider(
             create: (_) => getIt<ViewsChartCubit>()..getSellerViewsChart(),
+          ),
+          BlocProvider(
+            create: (_) =>
+                getIt<SellerDashboardCubit>()..getSellerDashboardStats(),
+          ),
+          BlocProvider(
+            create: (_) => getIt<PropertyCubit>()..getAllSellerProperties(),
           ),
           BlocProvider(
             create: (_) => getIt<FavoriteBloc>()..add(FavoriteLoad()),

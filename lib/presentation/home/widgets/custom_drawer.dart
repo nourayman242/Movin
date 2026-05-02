@@ -14,20 +14,12 @@ import 'package:movin/presentation/home/widgets/mode_toggle_statement.dart';
 
 import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 
-
 import 'package:movin/presentation/profile/profile_screen.dart';
-
-import 'package:movin/presentation/login/screens/login_screen.dart';
-import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc.dart';
-import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
 import 'package:movin/presentation/settings/screens/settings_screen.dart';
 
 import '../../login/cubit/auth_cubit.dart';
 
 class CustomDrawer extends StatelessWidget {
-
-  //final ProfileModel currentProfile;
-
 
   const CustomDrawer({super.key, required this.profile});
   final ProfileModel profile;
@@ -102,15 +94,6 @@ class CustomDrawer extends StatelessWidget {
                           _navigateTo(context, const RatePropertiesPage()),
                     ),
                     SizedBox(height: 15),
-                    // DrawerItem(
-                    //   icon: Icons.person_outline,
-                    //   text: 'Profile',
-                    //   iconColor: Colors.pinkAccent,
-                    //   circleColor: Colors.pinkAccent.withOpacity(0.1),
-                    //   color: AppColors.navyLight,
-                    //   onTap: () => _navigateTo(context, const ProfilePage()),
-                    // ),
-                    //SizedBox(height: 15),
                     DrawerItem(
                       icon: Icons.history_outlined,
                       text: 'View History',
@@ -136,7 +119,7 @@ class CustomDrawer extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => SettingsScreen(),
+                            builder: (_) => SettingsScreen(currentProfile: profile,),
                           ),
                         );
                       },
