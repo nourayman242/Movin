@@ -19,7 +19,6 @@ import 'package:movin/presentation/seller_properties/saller%20home/cubit/views_c
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/views_chart_state.dart';
 
 class SellerHome extends StatefulWidget {
-  //final ProfileModel currentProfile;
   const SellerHome({super.key});
 
   @override
@@ -30,10 +29,20 @@ class _SellerHomeState extends State<SellerHome>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
+  void _refreshSellerDashboard() {
+    context.read<SellerDashboardCubit>().getSellerDashboardStats();
+    context.read<ViewsChartCubit>().getSellerViewsChart();
+    context.read<MostviewedCubit>().getMostViewedProperties();
+    context.read<PropertyCubit>().getAllSellerProperties();
+  }
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshSellerDashboard();
+    });
   }
 
   @override
@@ -141,9 +150,7 @@ class _SellerHomeState extends State<SellerHome>
                                         );
 
                                         if (mounted) {
-                                          context
-                                              .read<PropertyCubit>()
-                                              .getAllSellerProperties();
+                                          _refreshSellerDashboard();
                                         }
                                       },
                                     ),
@@ -197,7 +204,10 @@ class _SellerHomeState extends State<SellerHome>
                             ),
                           ),
                           const SizedBox(height: 30),
-                          BlocBuilder<SellerDashboardCubit,SellerDashboardState>(
+                          BlocBuilder<
+                            SellerDashboardCubit,
+                            SellerDashboardState
+                          >(
                             builder: (context, state) {
                               if (state is SellerDashboardLoading) {
                                 return const Center(
@@ -1073,9 +1083,8 @@ class _SellerHomeState extends State<SellerHome>
             '/edit-property',
             arguments: property,
           );
-
           if (mounted) {
-            context.read<PropertyCubit>().getAllSellerProperties();
+            _refreshSellerDashboard();
           }
         } else if (value == 'delete') {
           _confirmDelete(context, property.id);
@@ -1086,7 +1095,7 @@ class _SellerHomeState extends State<SellerHome>
             arguments: property,
           );
           if (mounted) {
-            context.read<PropertyCubit>().getAllSellerProperties();
+            _refreshSellerDashboard();
           }
         }
       },
