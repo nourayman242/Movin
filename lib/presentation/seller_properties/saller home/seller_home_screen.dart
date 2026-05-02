@@ -13,6 +13,8 @@ import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 import 'package:movin/data/models/property_model.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/most_viewed_cubit.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/most_viewed_state.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/seller_dashboard_cubit.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/seller_dashboard_state.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/views_chart_cubit.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/views_chart_state.dart';
 
@@ -195,36 +197,114 @@ class _SellerHomeState extends State<SellerHome>
                             ),
                           ),
                           const SizedBox(height: 30),
+                          BlocBuilder<SellerDashboardCubit,SellerDashboardState>(
+                            builder: (context, state) {
+                              if (state is SellerDashboardLoading) {
+                                return const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(20),
+                                    child: CircularProgressIndicator(
+                                      color: AppColors.gold,
+                                    ),
+                                  ),
+                                );
+                              }
 
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _statCard(
-                                "Active Listings",
-                                "12",
-                                Icons.home_outlined,
-                              ),
-                              const SizedBox(width: 20),
-                              _statCard(
-                                "Total Views",
-                                "8.4k",
-                                Icons.remove_red_eye_outlined,
-                              ),
-                            ],
+                              if (state is SellerDashboardLoaded) {
+                                return Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: _statCard(
+                                            "Active Listings",
+                                            state.stats.activeListings
+                                                .toString(),
+                                            Icons.home_outlined,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 20),
+                                        Expanded(
+                                          child: _statCard(
+                                            "Total Views",
+                                            state.stats.totalViews.toString(),
+                                            Icons.remove_red_eye_outlined,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: _statCard(
+                                            "Favorites",
+                                            state.stats.totalFavorites
+                                                .toString(),
+                                            Icons.favorite_border,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 20),
+                                        Expanded(
+                                          child: _statCard(
+                                            "Auctions",
+                                            state.stats.auctionListings
+                                                .toString(),
+                                            Icons.gavel_outlined,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              }
+
+                              if (state is SellerDashboardError) {
+                                return Center(
+                                  child: Text(
+                                    state.message,
+                                    style: const TextStyle(color: Colors.red),
+                                  ),
+                                );
+                              }
+
+                              return const SizedBox();
+                            },
                           ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _statCard(
-                                "Inquiries           ",
-                                "156",
-                                Icons.chat_bubble_outline,
-                              ),
-                              const SizedBox(width: 20),
-                              _statCard("Conversion", "18%", Icons.trending_up),
-                            ],
-                          ),
+
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     _statCard(
+                          //       "Active Listings",
+                          //       "12",
+                          //       Icons.home_outlined,
+                          //     ),
+                          //     const SizedBox(width: 20),
+                          //     _statCard(
+                          //       "Total Views",
+                          //       "8.4k",
+                          //       Icons.remove_red_eye_outlined,
+                          //     ),
+                          //   ],
+                          // ),
+                          // const SizedBox(height: 20),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     _statCard(
+                          //       "Inquiries           ",
+                          //       "156",
+                          //       Icons.chat_bubble_outline,
+                          //     ),
+                          //     const SizedBox(width: 20),
+                          //     _statCard("Conversion", "18%", Icons.trending_up),
+                          //   ],
+                          // ),
                         ],
                       ),
                     ),
