@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movin/presentation/browse_property/widgets/dummy_properties.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_bloc.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_event.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_bloc/fav_state.dart';
@@ -15,9 +14,13 @@ class FavScreen extends StatelessWidget {
       builder: (context, state) {
         final favIds = state.favorites;
 
-        final savedList = dummyProperties
-            .where((p) => favIds.contains(p.id))
-            .toList();
+        // final savedList = dummyProperties
+        //     .where((p) => favIds.contains(p.id))
+        //     .toList();
+        final savedList = state.favoriteProperties;
+        for (var p in savedList) {
+          print("ID: ${p.id} | CREATED: ${p.createdAt}");
+        }
 
         return Scaffold(
           backgroundColor: const Color(0xffF6F7F9),

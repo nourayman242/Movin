@@ -9,7 +9,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   final FavoriteRepository repo;
 
   FavoriteBloc(this.repo)
-      : super(const FavoriteState(favorites: {}, loaded: false)) {
+      : super(const FavoriteState(favorites: {}, favoriteProperties: [], loaded: false)) {
     on<FavoriteLoad>(_onLoad);
     on<FavoriteToggle>(_onToggle);
     on<FavoriteRemove>(_onRemove);
@@ -17,21 +17,23 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   }
 
   Future<void> _onLoad(FavoriteLoad event, Emitter<FavoriteState> emit) async {
-    final ids = await repo.loadFavorites();
-    emit(state.copyWith(favorites: ids, loaded: true));
+    final properties = await repo.loadFavorites();
+    //final ids = await repo.loadFavorites();
+    final ids = properties.map((e) => e.id).toSet();
+    emit(state.copyWith(favorites: ids,favoriteProperties: properties, loaded: true));
   }
 
   Future<void> _onToggle(
       FavoriteToggle event, Emitter<FavoriteState> emit) async {
     final isFav = state.isFavorite(event.propertyId);
 
-    final temp = Set<String>.from(state.favorites);
-    if (isFav)
-      temp.remove(event.propertyId);
-    else
-      temp.add(event.propertyId);
-
-    emit(state.copyWith(favorites: temp));
+    // final temp = Set<String>.from(state.favorites);
+    // if (isFav)
+    //   temp.remove(event.propertyId);
+    // else
+    //   temp.add(event.propertyId);
+    //
+    // emit(state.copyWith(favorites: temp));
 
     try {
       final updated = isFav
@@ -39,8 +41,9 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
           : await repo.add(event.propertyId);
 
       emit(state.copyWith(favorites: updated));
+      add(FavoriteLoad());
     } catch (e) {
-      print("ERROR: $e");
+      print(" FAV ERROR: $e");
     }
     // try {
     //   final updated = state.isFavorite(event.propertyId)
@@ -57,11 +60,12 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
       FavoriteRemove event, Emitter<FavoriteState> emit) async {
     final updated = await repo.remove(event.propertyId);
     emit(state.copyWith(favorites: updated));
+    add(FavoriteLoad());
   }
 
   Future<void> _onClear(
       FavoriteClear event, Emitter<FavoriteState> emit) async {
     await repo.clear();
-    emit(state.copyWith(favorites: {}));
+    emit(state.copyWith(favorites: {},favoriteProperties: [],));
   }
 }

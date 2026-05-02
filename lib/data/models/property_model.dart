@@ -22,6 +22,9 @@ class PropertyModel {
   final String sellerLocation;
   final int views;
 
+  //time
+  final DateTime? createdAt;
+
   PropertyModel({
     required this.isAuction,
     required this.id,
@@ -41,6 +44,9 @@ class PropertyModel {
     required this.sellerPhone,
     required this.sellerLocation,
     required this.views,
+
+    //time
+    this.createdAt,
   });
   // factory PropertyModel.fromJson(Map<String, dynamic> json) {
   //   final List<String> parsedImages = [];
@@ -133,6 +139,11 @@ class PropertyModel {
       sellerLocation: seller['location']?.toString() ?? '',
 
       auctionStatus: auction['status']?.toString() ?? '',
+
+      //time
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'])
+          : null,
     );
   }
   PropertyEntity toEntity() {
@@ -154,6 +165,9 @@ class PropertyModel {
       sellerPhone: sellerPhone,
       sellerLocation: sellerLocation,
       views: views,
+
+      //time
+      createdAt: createdAt,
     );
   }
 }

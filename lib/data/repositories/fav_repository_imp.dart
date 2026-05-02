@@ -3,7 +3,7 @@ import 'package:movin/data/api_services/favorite_api_service.dart';
 import 'package:movin/data/api_services/favorite_response.dart';
 import 'package:movin/domain/repositories/fav_repository.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_hive.dart';
-
+import 'package:movin/domain/entities/property_entity.dart';
 @LazySingleton(as: FavoriteRepository)
 class FavoriteRepositoryImpl implements FavoriteRepository {
   final FavoriteApiService api;
@@ -11,35 +11,44 @@ class FavoriteRepositoryImpl implements FavoriteRepository {
 
   FavoriteRepositoryImpl(this.api, this.hive);
 
+  //load the favs
   @override
-  Future<Set<String>> loadFavorites() async {
+  Future<List<PropertyEntity>> loadFavorites() async {
     final raw = await api.getFavorites();
     final response = FavoriteResponse.fromMap(raw);
-    final ids = response.favorites.toSet();
+    //final ids = response.favorites.toSet();
+    final ids = response.favorites.map((e) => e.id).toSet();
     await hive.saveFavorites(ids);
-    return ids;
+    return response.favorites;
+   // return ids;
   }
-
+//add favs
   @override
   Future<Set<String>> add(String id) async {
     final raw = await api.addFavorite(id);
     print("API RESPONSE: $raw");
-    final response = FavoriteResponse.fromMap(raw);
-    final ids = response.favorites.toSet();
+    final favorites = List<String>.from(raw['favorites']);
+    //final response = FavoriteResponse.fromMap(raw);
+    //final ids = response.favorites.toSet();
+    final ids = favorites.toSet();
     await hive.saveFavorites(ids);
     print(" PARSED IDS: $ids");
     return ids;
   }
 
+  //remove
   @override
   Future<Set<String>> remove(String id) async {
     final raw = await api.removeFavorite(id);
-    final response = FavoriteResponse.fromMap(raw);
-    final ids = response.favorites.toSet();
+    //final response = FavoriteResponse.fromMap(raw);
+   // final ids = response.favorites.toSet();
+    final favorites = List<String>.from(raw['favorites']);
+
+    final ids = favorites.toSet();
     await hive.saveFavorites(ids);
     return ids;
   }
-
+ // clear
   @override
   Future<void> clear() async {
     await api.clearFavorites();
