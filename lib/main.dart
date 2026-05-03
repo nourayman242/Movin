@@ -6,6 +6,7 @@ import 'package:movin/data/models/property_model.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
 
 import 'package:movin/domain/repositories/property_repository.dart';
+import 'package:movin/presentation/Property_detials/cubit/report_cubit.dart';
 import 'package:movin/presentation/auction/create%20auction/cubit/create_auction_cubit.dart';
 import 'package:movin/presentation/auction/create%20auction/screens/create_auction_screen.dart';
 
@@ -74,6 +75,7 @@ void main() async {
             create: (_) => getIt<PropertyCubit>()..getAllSellerProperties(),
           ),
           BlocProvider(create: (_) => getIt<NewsCubit>()..getNews()),
+          BlocProvider(create: (_) => getIt<ReportCubit>()),
           BlocProvider(
             create: (_) => getIt<FavoriteBloc>()..add(FavoriteLoad()),
           ),

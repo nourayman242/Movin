@@ -24,6 +24,7 @@ import '../../data/api_services/otp_services.dart' as _i498;
 import '../../data/api_services/profile_services.dart' as _i825;
 import '../../data/api_services/property_services.dart' as _i409;
 import '../../data/api_services/register_services.dart' as _i702;
+import '../../data/api_services/report_service.dart' as _i983;
 import '../../data/api_services/reset_password_service.dart' as _i766;
 import '../../data/api_services/role_services.dart' as _i241;
 import '../../data/api_services/seller_dashboard_service.dart' as _i726;
@@ -38,6 +39,7 @@ import '../../data/repositories/login_repository_imp.dart' as _i809;
 import '../../data/repositories/news_repository_impl.dart' as _i213;
 import '../../data/repositories/otp_repository_imp.dart' as _i870;
 import '../../data/repositories/register_repository_imp.dart' as _i146;
+import '../../data/repositories/report_repository_impl.dart' as _i70;
 import '../../data/repositories/reset_passwrod_repository_imp.dart' as _i886;
 import '../../data/repositories/role_repository_imp.dart' as _i853;
 import '../../data/repositories/seller_dashboard_repository_impl.dart' as _i260;
@@ -53,6 +55,7 @@ import '../../domain/repositories/otp_repository.dart' as _i1046;
 import '../../domain/repositories/profile_repository.dart' as _i47;
 import '../../domain/repositories/property_repository.dart' as _i906;
 import '../../domain/repositories/register_repository.dart' as _i462;
+import '../../domain/repositories/report_repository.dart' as _i207;
 import '../../domain/repositories/reset_pass_repository.dart' as _i934;
 import '../../domain/repositories/role_repository.dart' as _i487;
 import '../../domain/repositories/seller_dashboard_repository.dart' as _i133;
@@ -72,6 +75,7 @@ import '../../presentation/login/cubit/forget_pass_cubit.dart' as _i309;
 import '../../presentation/login/cubit/otp_cubit.dart' as _i225;
 import '../../presentation/login/cubit/reset_pass_cubit.dart' as _i817;
 import '../../presentation/profile/cubit/profile_cubit.dart' as _i107;
+import '../../presentation/Property_detials/cubit/report_cubit.dart' as _i856;
 import '../../presentation/register/managers/verify_email_bloc.dart' as _i1047;
 import '../../presentation/role_selection/manager/role_bloc/role_bloc.dart'
     as _i355;
@@ -135,6 +139,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i726.SellerDashboardService(gh<_i361.Dio>()));
     gh.lazySingleton<_i54.ViewsChartService>(
         () => _i54.ViewsChartService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i983.ReportService>(
+        () => _i983.ReportService(gh<_i361.Dio>()));
     gh.lazySingleton<_i782.ViewsChartRepository>(
         () => _i225.ViewsChartRepositoryImpl(gh<_i54.ViewsChartService>()));
     gh.lazySingleton<_i47.ProfileRepository>(
@@ -172,6 +178,8 @@ extension GetItInjectableX on _i174.GetIt {
         networkModule.otpServices(gh<_i361.Dio>(instanceName: 'vercelDio')));
     gh.lazySingleton<_i766.ResetPasswordService>(() => networkModule
         .resetPasswordService(gh<_i361.Dio>(instanceName: 'vercelDio')));
+    gh.lazySingleton<_i207.ReportRepository>(
+        () => _i70.ReportRepositoryImpl(gh<_i983.ReportService>()));
     gh.factory<_i107.ProfileCubit>(
         () => networkModule.profileCubit(gh<_i47.ProfileRepository>()));
     gh.factory<_i755.SellerDashboardCubit>(() =>
@@ -184,6 +192,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkModule.auctionRepository(gh<_i380.SocketService>()));
     gh.lazySingleton<_i934.ResetPasswordRepository>(() =>
         _i886.ResetPasswordRepositoryImpl(gh<_i766.ResetPasswordService>()));
+    gh.factory<_i856.ReportCubit>(
+        () => _i856.ReportCubit(gh<_i207.ReportRepository>()));
     gh.factory<_i1061.AuctionListCubit>(
         () => networkModule.auctionListCubit(gh<_i655.AuctionListService>()));
     gh.factory<_i484.PropertyCubit>(

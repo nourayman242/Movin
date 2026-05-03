@@ -15,7 +15,7 @@ class PropertyEntity {
   double? longitude;
 
   final int views;
-
+  final String sellerId;
   final String sellerName;
   final String sellerPhone;
   final String sellerLocation;
@@ -38,6 +38,7 @@ class PropertyEntity {
     double? latitude,
     double? longitude,
     required this.sellerName,
+    required this.sellerId,
     required this.sellerPhone,
     required this.sellerLocation,
     required this.views,
@@ -59,6 +60,7 @@ class PropertyEntity {
     "details": details,
     "isAuction": isAuction,
     "sellerName": sellerName,
+    "sellerId": sellerId,
     "sellerPhone": sellerPhone,
     "sellerLocation": sellerLocation,
     "views": views,

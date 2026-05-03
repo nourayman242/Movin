@@ -295,6 +295,7 @@ class AddPropertyViewModel extends ChangeNotifier {
       sellerPhone: '',
       sellerLocation: '',
       views: 0,
+      sellerId: '',
     );
   }
 }
