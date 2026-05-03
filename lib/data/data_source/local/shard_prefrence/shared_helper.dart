@@ -94,6 +94,10 @@ class SharedHelper {
 
     return UserResponse.fromJson(jsonDecode(jsonString));
   }
+  static Future<String?> getEmail() async {
+  final user = await getUser();
+  return user?.email;
+}
   //REFRESH TOKEN
   static Future<void> saveRefreshToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
