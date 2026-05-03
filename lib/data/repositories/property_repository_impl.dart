@@ -1,7 +1,6 @@
 import 'package:movin/data/api_services/property_services.dart';
 import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/data/models/property_model.dart';
-
 import 'package:movin/domain/repositories/property_repository.dart';
 import 'package:movin/presentation/seller_properties/add_property/add_property_viewmodel.dart';
 
@@ -80,7 +79,6 @@ class PropertyRepositoryImpl implements PropertyRepository {
     return models.map((e) => e.toEntity()).toList();
   }
 
- 
   @override
   Future<List<PropertyEntity>> getViewHistory({
     int page = 1,
@@ -89,5 +87,9 @@ class PropertyRepositoryImpl implements PropertyRepository {
     final models = await service.getViewHistory(page: page, limit: limit);
     return models.map((e) => e.toEntity()).toList();
   }
-  
+
+  @override
+  Future<void> clearViewHistory() async {
+    await service.clearViewHistory(); 
+  }
 }

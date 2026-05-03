@@ -225,5 +225,17 @@ class PropertyService {
       return [];
     }
   }
-  
+Future<void> clearViewHistory() async {
+  try {
+    final token = await SharedHelper.getToken();
+
+    await dio.delete(
+      '/api/seller/view-history/clear',  
+      options: Options(headers: {"Authorization": "Bearer $token"}),
+    );
+  } catch (e) {
+    print("CLEAR VIEW HISTORY API ERROR: $e");
+    rethrow;
+  }
+}
 }

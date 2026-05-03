@@ -20,8 +20,6 @@ abstract class PropertyRepository {
   });
   Future<PropertyEntity> getPropertyById(String id);
   Future<List<PropertyEntity>> getMostViewedProperties();
-
-
   Future<List<PropertyEntity>> getViewHistory({int page, int limit});
-  
+  Future<void> clearViewHistory();
 }
