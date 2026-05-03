@@ -13,10 +13,13 @@ import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 import 'package:movin/data/models/property_model.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/most_viewed_cubit.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/most_viewed_state.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/news_cubit.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/news_state.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/seller_dashboard_cubit.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/seller_dashboard_state.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/views_chart_cubit.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/views_chart_state.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SellerHome extends StatefulWidget {
   const SellerHome({super.key});
@@ -1267,41 +1270,44 @@ class _SellerHomeState extends State<SellerHome>
       ),
     );
   }
-
   Widget _newsContent() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const SizedBox(height: 16),
+    return BlocBuilder<NewsCubit, NewsState>(
+      builder: (context, state) {
+        if (state is NewsLoading) {
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.gold),
+          );
+        }
 
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 1),
-          child: const Text(
-            "Latest Real Estate News",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ),
+        if (state is NewsError) {
+          return Center(child: Text(state.message));
+        }
 
-        const SizedBox(height: 12),
+        if (state is NewsLoaded) {
+          return Column(
+            children: [
+              const SizedBox(height: 16),
+              const Text(
+                "Latest Real Estate News",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
 
-        _newsCard(
-          image: "assets/images/building1.jpeg",
-          title: "Dubai Real Estate Market Shows Strong Growth in Q4 2024",
-          date: "2 days ago",
-          description:
-              "The Dubai property market continues to demonstrate resilience with a 15% increase in transactions...",
-        ),
+              ...state.news.map(
+                (article) => _newsCard(
+                  image: article.image,
+                  title: article.title,
+                  date: article.published.substring(0, 10),
+                  description: article.description,
+                  url: article.url,
+                ),
+              ),
+            ],
+          );
+        }
 
-        _newsCard(
-          image: "assets/images/building2.jpeg",
-          title: "New Sustainable Housing Projects Announced Across UAE",
-          date: "1 week ago",
-          description:
-              "Developers are shifting towards eco-friendly architecture to meet environmental standards...",
-        ),
-
-        const SizedBox(height: 40),
-      ],
+        return const SizedBox();
+      },
     );
   }
 
@@ -1310,6 +1316,7 @@ class _SellerHomeState extends State<SellerHome>
     required String title,
     required String date,
     required String description,
+    required String url,
   }) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -1332,11 +1339,17 @@ class _SellerHomeState extends State<SellerHome>
               topLeft: Radius.circular(18),
               topRight: Radius.circular(18),
             ),
-            child: Image.asset(
+            child: Image.network(
               image,
               height: 180,
               width: double.infinity,
               fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Image.asset(
+                'assets/images/placeholder.webp',
+                height: 180,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           Padding(
@@ -1371,7 +1384,9 @@ class _SellerHomeState extends State<SellerHome>
                 const SizedBox(height: 10),
 
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await launchUrl(Uri.parse(url));
+                  },
                   child: const Text(
                     "Read More →",
                     style: TextStyle(

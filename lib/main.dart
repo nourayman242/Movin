@@ -6,6 +6,7 @@ import 'package:movin/data/models/property_model.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
 
 import 'package:movin/domain/repositories/property_repository.dart';
+import 'package:movin/presentation/Property_detials/cubit/report_cubit.dart';
 import 'package:movin/presentation/auction/create%20auction/cubit/create_auction_cubit.dart';
 import 'package:movin/presentation/auction/create%20auction/screens/create_auction_screen.dart';
 
@@ -33,6 +34,7 @@ import 'package:movin/presentation/seller_properties/add_property/add_property_s
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 import 'package:movin/presentation/seller_properties/edit%20_property/edit_property_screen.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/most_viewed_cubit.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/news_cubit.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/seller_dashboard_cubit.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/views_chart_cubit.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/seller_home_screen.dart';
@@ -72,6 +74,8 @@ void main() async {
           BlocProvider(
             create: (_) => getIt<PropertyCubit>()..getAllSellerProperties(),
           ),
+          BlocProvider(create: (_) => getIt<NewsCubit>()..getNews()),
+          BlocProvider(create: (_) => getIt<ReportCubit>()),
           BlocProvider(
             create: (_) => getIt<FavoriteBloc>()..add(FavoriteLoad()),
           ),

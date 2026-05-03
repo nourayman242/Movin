@@ -376,6 +376,6 @@ List<PropertyEntity> dummyProperties = [
     sellerName: '',
     sellerPhone: '',
     sellerLocation: '',
-    views: 0,
+    views: 0, sellerId: '',
   ),
 ];
