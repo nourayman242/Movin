@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
-import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
 import 'package:movin/presentation/home/cubit/view_history_cubit.dart';
 import 'package:movin/presentation/home/widgets/view_history_cards.dart';

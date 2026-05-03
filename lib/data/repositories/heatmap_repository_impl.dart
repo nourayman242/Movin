@@ -19,10 +19,10 @@ class HeatmapRepositoryImpl implements HeatmapRepository {
   static const _baseUrl = 'https://movin-backend-production.up.railway.app';
   static const _filterEndpoint = '$_baseUrl/api/seller/properties/filter';
 
-  
+
   static final _dio = Dio(BaseOptions(
-    connectTimeout: const Duration(seconds: 15),
-    receiveTimeout: const Duration(seconds: 15),
+    connectTimeout: const Duration(seconds: 30),
+    receiveTimeout: const Duration(seconds: 30),
   ));
 
   @override
@@ -35,7 +35,7 @@ class HeatmapRepositoryImpl implements HeatmapRepository {
         final response = await _dio.get(
           _filterEndpoint,
           queryParameters: {
-            'location': areaName.toLowerCase(),
+            'location': areaName, 
             'limit': 1,
             'page': 1,
           },
@@ -51,8 +51,9 @@ class HeatmapRepositoryImpl implements HeatmapRepository {
           center: center,
           listingCount: count,
         );
-      } catch (_) {
-        // One area failing should never block the whole map
+      } catch (e) {
+        print('Heatmap fetch failed for $areaName: $e');
+        
         return AreaScoreModel(name: areaName, center: center, listingCount: 0);
       }
     });
