@@ -32,15 +32,12 @@ import 'package:movin/presentation/login/cubit/reset_pass_cubit.dart';
 import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
-
 import '../favorite_api_service.dart';
 import '../role_services.dart';
 import '../verify_email_service.dart';
 
 @module
 abstract class NetworkModule {
-
-
   @lazySingleton
   Dio provideDio() {
     const base = 'https://movin-backend-production.up.railway.app';
@@ -57,7 +54,6 @@ abstract class NetworkModule {
     dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
     return dio;
   }
-
 
   @Named('vercelDio')
   @lazySingleton
@@ -76,6 +72,20 @@ abstract class NetworkModule {
     return dio;
   }
 
+  @Named('newsDio')
+  @lazySingleton
+  Dio provideNewsDio() {
+    final dio = Dio(
+      BaseOptions(
+        connectTimeout: const Duration(seconds: 20),
+        receiveTimeout: const Duration(seconds: 20),
+      ),
+    );
+
+    dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
+
+    return dio;
+  }
 
   @lazySingleton
   ForgotPasswordService forgotPasswordService(@Named('vercelDio') Dio dio) {
@@ -85,7 +95,6 @@ abstract class NetworkModule {
   @lazySingleton
   OtpServices otpServices(@Named('vercelDio') Dio dio) => OtpServices(dio);
 
-
   @lazySingleton
   RegisterServices registerServices(Dio dio) => RegisterServices(dio);
 
@@ -93,7 +102,9 @@ abstract class NetworkModule {
   LoginServices loginServices(Dio dio) => LoginServices(dio);
 
   @lazySingleton
-  ForgotPasswordRepository forgotPasswordRepository(ForgotPasswordService service) {
+  ForgotPasswordRepository forgotPasswordRepository(
+    ForgotPasswordService service,
+  ) {
     return ForgotPasswordRepositoryImpl(service);
   }
 
@@ -115,7 +126,7 @@ abstract class NetworkModule {
   @factory
   OtpCubit otpCubit(OtpRepository repo) => OtpCubit(repo);
 
-  @lazySingleton                                                     
+  @lazySingleton
   ResetPasswordService resetPasswordService(@Named('vercelDio') Dio dio) =>
       ResetPasswordService(dio);
 
