@@ -17,6 +17,7 @@ import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/profile/profile_screen.dart';
 import 'package:movin/presentation/settings/screens/settings_screen.dart';
 
+import '../../help_support/screens/help_support.dart';
 import '../../login/cubit/auth_cubit.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -94,6 +95,9 @@ class CustomDrawer extends StatelessWidget {
                           _navigateTo(context, const RatePropertiesPage()),
                     ),
                     SizedBox(height: 15),
+
+
+
                     DrawerItem(
                       icon: Icons.history_outlined,
                       text: 'View History',
@@ -131,7 +135,14 @@ class CustomDrawer extends StatelessWidget {
                       circleColor: Colors.pinkAccent.withOpacity(0.1),
                       text: 'Help & Support',
                       color: AppColors.navyLight,
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => HelpSupportScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),

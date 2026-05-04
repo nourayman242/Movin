@@ -6,6 +6,7 @@ import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/profile/widget/contact_info_card.dart';
 import 'package:movin/presentation/profile/widget/custom_badge.dart';
 import '../../data/models/profile_model.dart';
+import '../../data_injection/getIt/service_locator.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final ProfileModel profile;
@@ -135,7 +136,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
           const SizedBox(height: 12),
           ValueListenableBuilder<bool>(
-            valueListenable: ModeService.isSellerNotifier,
+            //valueListenable: ModeService.isSellerNotifier,
+            valueListenable: getIt<ModeService>().isSellerNotifier,
+
             builder: (context, isSeller, _) {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,

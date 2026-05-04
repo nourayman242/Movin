@@ -4,6 +4,7 @@ import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/profile/widget/custom_badge.dart';
 import '../../../data/models/profile_model.dart';
+import '../../../data_injection/getIt/service_locator.dart';
 
 class ProfileHeader extends StatelessWidget {
   final ProfileModel profile;
@@ -81,7 +82,9 @@ class ProfileHeader extends StatelessWidget {
           const SizedBox(height: 6),
 
           ValueListenableBuilder<bool>(
-            valueListenable: ModeService.isSellerNotifier,
+            // valueListenable: ModeService.isSellerNotifier,
+            valueListenable: getIt<ModeService>().isSellerNotifier,
+
             builder: (context, isSeller, _) {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -22,18 +22,20 @@ class RoleBloc extends Bloc<RoleEvent, RoleState> {
     emit(RoleLoading());
 
     try {
-      final savedRole = await SharedHelper.getUserRole();
-      if (savedRole != null && savedRole.isNotEmpty) {
-        emit(RoleSuccess(savedRole));
-        return;
-      }
-
-      await repo.chooseRole(event.role);
-
-      await SharedHelper.setUserRole(event.role);
+      final response = await repo.chooseRole(event.role);
+      await SharedHelper.setUserRole(event.role.toLowerCase());
+      await SharedHelper.saveToken(response.accessToken);
+      await SharedHelper.saveRefreshToken(response.refreshToken);
+      await SharedHelper.saveUser(response.safeUser);
+      await SharedHelper.saveUserId(response.safeUser.id);
+      await SharedHelper.setLoggedIn(true);
 
       emit(RoleSuccess(event.role));
 
+      //final savedRole = await SharedHelper.getUserRole();
+      // if (savedRole != null && savedRole.isNotEmpty) {
+      //   emit(RoleSuccess(savedRole));
+        return;
     } catch (e) {
       if (e is Failure) {
         emit(RoleError(e.message));

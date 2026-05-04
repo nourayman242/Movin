@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/presentation/home/managers/mode_service.dart';
 import 'package:movin/presentation/role_selection/manager/role_bloc/role_bloc.dart';
 import 'package:movin/presentation/role_selection/manager/role_bloc/role_event.dart';
 import 'package:movin/presentation/role_selection/manager/role_bloc/role_state.dart';
@@ -167,7 +166,7 @@ class _RoleSelectionState extends State<RoleSelection> {
         if (state is RoleSuccess) {
           final role = state.role.toLowerCase();
 
-          await SharedHelper.setUserRole(role);
+         // await SharedHelper.setUserRole(role);
 
           if (role == 'buyer') {
             Navigator.pushReplacementNamed(context, '/buyerhome');

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/data/api_services/user_response.dart';
-import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
-import 'package:movin/data_injection/getIt/service_locator.dart';
-import 'package:movin/domain/entities/login_entity.dart';
-import 'package:movin/domain/repositories/login_repositories.dart';
 import 'package:movin/presentation/login/cubit/auth_cubit.dart';
 import 'package:movin/presentation/login/cubit/auth_state.dart';
 import 'package:movin/presentation/register/screens/register_screen.dart';
+import 'package:movin/presentation/settings/screens/terms_of_service_screen.dart';
+
+import '../../settings/screens/privacy_policy_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -280,7 +278,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               style: AppTextStyles.smallText,
                             ),
                             TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const TermsOfServiceScreen(),
+                                  ),
+                                );
+                              },
                               style: AppButtons.text,
                               child: const Text('Terms of Service'),
                             ),
@@ -294,7 +299,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             const Text('and ', style: AppTextStyles.smallText),
                             TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const PrivacyPolicyScreen(),
+                                  ),
+                                );
+                              },
                               style: AppButtons.text,
                               child: const Text('Privacy Policy'),
                             ),

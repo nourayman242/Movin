@@ -45,9 +45,13 @@ import 'package:movin/presentation/splash_screen/screens/splash.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await ModeService.loadUserMode();
+  //await ModeService.loadUserMode();
   await Hive.initFlutter();
   await setUpServiceLocator();
+  final modeService = getIt<ModeService>();
+  await modeService.loadUserMode();
+
+
   runApp(
     ScreenUtilInit(
       designSize: const Size(375, 812),

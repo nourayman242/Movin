@@ -8,6 +8,7 @@ import 'package:movin/presentation/login/cubit/reset_pass_cubit.dart';
 import 'package:movin/presentation/login/screens/reset_password_page.dart';
 import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/profile/edit_profile_screen.dart';
+import 'package:movin/presentation/settings/screens/manage_subscription_screen.dart';
 
 class AccountSettingsCard extends StatelessWidget {
   final ProfileModel profile;
@@ -107,7 +108,14 @@ class AccountSettingsCard extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               title: const Text('Manage Subscription'),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ManageSubscriptionScreen(),
+                  ),
+                );
+              },
             ),
           ],
         ),

@@ -4,8 +4,8 @@ part 'user_response.g.dart';
 
 @JsonSerializable()
 class UserResponse {
- // @JsonKey(name: '_id')
   final String id;
+
   final String name;
   final String email;
   
@@ -26,55 +26,37 @@ class UserResponse {
     this.isBuyer,
   });
 
-  factory UserResponse.fromJson(Map<String, dynamic> json) =>
-      _$UserResponseFromJson(json);
+  // factory UserResponse.fromJson(Map<String, dynamic> json) =>
+  //     _$UserResponseFromJson(json);
+  factory UserResponse.fromJson(Map<String, dynamic> json) {
+    return UserResponse(
 
-  Map<String, dynamic> toJson() => _$UserResponseToJson(this);
+      id: (json['id'] ?? json['_id'] ?? '').toString(),
+      name: (json['name'] ?? json['username'] ?? '').toString(),
+      email: (json['email'] ?? '').toString(),
+      phone: (json['phone'] ?? '').toString(),
+
+      isAdmin: json['isAdmin'],
+      isSeller: json['isSeller'],
+      isBuyer: json['isBuyer'],
+    );
+  }
+
+  //Map<String, dynamic> toJson() => _$UserResponseToJson(this);
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'phone': phone,
+      'isAdmin': isAdmin,
+      'isSeller': isSeller,
+      'isBuyer': isBuyer,
+    };
+  }
 
   static String _phoneFromJson(dynamic value) {
     if (value == null) return '';
     return value.toString();
   }
 }
-// import 'package:json_annotation/json_annotation.dart';
-
-// part 'user_response.g.dart';
-
-// @JsonSerializable()
-// class UserResponse {
-//   @JsonKey(name: 'id', fromJson: _stringFromJson)
-//   final String id;
-
-//   @JsonKey(fromJson: _stringFromJson)
-//   final String name;
-
-//   @JsonKey(fromJson: _stringFromJson)
-//   final String email;
-
-//   @JsonKey(fromJson: _stringFromJson)
-//   final String phone;
-
-//   final bool? isAdmin;
-//   final bool? isSeller;
-//   final bool? isBuyer;
-
-//   UserResponse({
-//     required this.id,
-//     required this.name,
-//     required this.email,
-//     required this.phone,
-//     this.isAdmin,
-//     this.isSeller,
-//     this.isBuyer,
-//   });
-
-//   factory UserResponse.fromJson(Map<String, dynamic> json) =>
-//       _$UserResponseFromJson(json);
-
-//   Map<String, dynamic> toJson() => _$UserResponseToJson(this);
-
-//   static String _stringFromJson(dynamic value) {
-//     if (value == null) return '';
-//     return value.toString();
-//   }
-// }

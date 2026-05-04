@@ -87,8 +87,9 @@ class _SplashState extends State<Splash> {
     if (!mounted) return;
 
     final onboardingSeen = await SharedHelper.isOnboardingSeen();
-    final loggedIn = await SharedHelper.isLoggedIn();
-    final user = await SharedHelper.getUser();
+    final token = await SharedHelper.getToken();
+    //final loggedIn = await SharedHelper.isLoggedIn();
+
 
 
     // first time
@@ -98,19 +99,32 @@ class _SplashState extends State<Splash> {
     }
 
       // not logged in
-    if (!loggedIn || user == null) {
+//kan kda
+    // if (token == null || token.isEmpty) {
+
+    final isLoggedIn = await SharedHelper.isLoggedIn();
+    if (!isLoggedIn || token == null || token.isEmpty) {
       Navigator.pushReplacementNamed(context, '/login');
       return;
     }
+    //abl switch
+    // final user = await SharedHelper.getUser();
+    // if (user?.isBuyer == true) {
+    //   Navigator.pushReplacementNamed(context, '/buyerhome');
+    // }
+    // else if (user?.isSeller== true) {
+    //   Navigator.pushReplacementNamed(context, '/sellerhome');
+    // }
+    // else {
+    //   Navigator.pushReplacementNamed(context, '/role');
+    // }
+    final role = await SharedHelper.getUserRole();
 
-    //diff roles
-    if (user.isBuyer == true) {
+    if (role == 'buyer') {
       Navigator.pushReplacementNamed(context, '/buyerhome');
-    }
-    else if (user.isSeller == true) {
+    } else if (role == 'seller') {
       Navigator.pushReplacementNamed(context, '/sellerhome');
-    }
-    else {
+    } else {
       Navigator.pushReplacementNamed(context, '/role');
     }
 

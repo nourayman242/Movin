@@ -29,6 +29,7 @@ import '../../data/api_services/reset_password_service.dart' as _i766;
 import '../../data/api_services/role_services.dart' as _i241;
 import '../../data/api_services/seller_dashboard_service.dart' as _i726;
 import '../../data/api_services/socket_service.dart' as _i380;
+import '../../data/api_services/switch_role_service.dart' as _i450;
 import '../../data/api_services/verify_email_service.dart' as _i668;
 import '../../data/api_services/views_chart_service.dart' as _i54;
 import '../../data/data_source/local/auth_local_services.dart' as _i401;
@@ -43,6 +44,7 @@ import '../../data/repositories/report_repository_impl.dart' as _i70;
 import '../../data/repositories/reset_passwrod_repository_imp.dart' as _i886;
 import '../../data/repositories/role_repository_imp.dart' as _i853;
 import '../../data/repositories/seller_dashboard_repository_impl.dart' as _i260;
+import '../../data/repositories/switch_role_repository_imp.dart' as _i160;
 import '../../data/repositories/verify_email_repository_imp.dart' as _i662;
 import '../../data/repositories/views_chart_repository_impl.dart' as _i225;
 import '../../domain/repositories/auction_repository.dart' as _i892;
@@ -59,6 +61,7 @@ import '../../domain/repositories/report_repository.dart' as _i207;
 import '../../domain/repositories/reset_pass_repository.dart' as _i934;
 import '../../domain/repositories/role_repository.dart' as _i487;
 import '../../domain/repositories/seller_dashboard_repository.dart' as _i133;
+import '../../domain/repositories/switch_role_repository.dart' as _i761;
 import '../../domain/repositories/verify_email_repository.dart' as _i661;
 import '../../domain/repositories/views_chart_repository.dart' as _i782;
 import '../../presentation/auction/create%20auction/cubit/create_auction_cubit.dart'
@@ -70,6 +73,7 @@ import '../../presentation/budget_calculator/managers/bc_bloc/loan_calc_bloc.dar
 import '../../presentation/fav_screen/manager/fav_bloc/fav_bloc.dart' as _i371;
 import '../../presentation/fav_screen/manager/fav_hive.dart' as _i588;
 import '../../presentation/home/cubit/view_history_cubit.dart' as _i216;
+import '../../presentation/home/managers/mode_service.dart' as _i168;
 import '../../presentation/login/cubit/auth_cubit.dart' as _i659;
 import '../../presentation/login/cubit/forget_pass_cubit.dart' as _i309;
 import '../../presentation/login/cubit/otp_cubit.dart' as _i225;
@@ -133,14 +137,16 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkModule.favoriteApiService(gh<_i361.Dio>()));
     gh.lazySingleton<_i241.RoleServices>(
         () => networkModule.roleServices(gh<_i361.Dio>()));
+    gh.lazySingleton<_i450.SwitchRoleService>(
+        () => networkModule.switchRoleService(gh<_i361.Dio>()));
     gh.lazySingleton<_i800.LogoutService>(
         () => _i800.LogoutService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i983.ReportService>(
+        () => _i983.ReportService(gh<_i361.Dio>()));
     gh.lazySingleton<_i726.SellerDashboardService>(
         () => _i726.SellerDashboardService(gh<_i361.Dio>()));
     gh.lazySingleton<_i54.ViewsChartService>(
         () => _i54.ViewsChartService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i983.ReportService>(
-        () => _i983.ReportService(gh<_i361.Dio>()));
     gh.lazySingleton<_i782.ViewsChartRepository>(
         () => _i225.ViewsChartRepositoryImpl(gh<_i54.ViewsChartService>()));
     gh.lazySingleton<_i47.ProfileRepository>(
@@ -149,6 +155,8 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i653.FavoriteApiService>(),
           gh<_i588.FavoriteHiveService>(),
         ));
+    gh.lazySingleton<_i761.SwitchRoleRepository>(
+        () => _i160.SwitchRoleRepositoryImpl(gh<_i450.SwitchRoleService>()));
     gh.lazySingleton<_i361.Dio>(
       () => networkModule.provideNewsDio(),
       instanceName: 'newsDio',
@@ -202,6 +210,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i953.CreateAuctionCubit(gh<_i906.PropertyRepository>()));
     gh.factory<_i625.MostviewedCubit>(
         () => _i625.MostviewedCubit(gh<_i906.PropertyRepository>()));
+    gh.lazySingleton<_i168.ModeService>(
+        () => _i168.ModeService(gh<_i761.SwitchRoleRepository>()));
     gh.factory<_i355.RoleBloc>(
         () => _i355.RoleBloc(gh<_i487.RoleRepository>()));
     gh.lazySingleton<_i1073.AuthRepository>(() => _i895.AuthRepositoryImpl(

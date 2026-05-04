@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'role_services.dart';
+part of 'switch_role_service.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'role_services.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
 
-class _RoleServices implements RoleServices {
-  _RoleServices(
+class _SwitchRoleService implements SwitchRoleService {
+  _SwitchRoleService(
     this._dio, {
     this.baseUrl,
   });
@@ -19,12 +19,12 @@ class _RoleServices implements RoleServices {
   String? baseUrl;
 
   @override
-  Future<ChooseRoleResponse> chooseRole(RoleDto dto) async {
+  Future<ChooseRoleResponse> switchRole(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(dto.toJson());
+    _data.addAll(body);
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<ChooseRoleResponse>(Options(
       method: 'PUT',
@@ -33,7 +33,7 @@ class _RoleServices implements RoleServices {
     )
             .compose(
               _dio.options,
-              '/api/auth/choose-role',
+              '/api/auth/switch-role',
               queryParameters: queryParameters,
               data: _data,
             )

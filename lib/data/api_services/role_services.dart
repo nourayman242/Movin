@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:movin/data/api_services/role_selection_response.dart';
 import 'package:movin/data/models/role_dto.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -9,5 +10,8 @@ abstract class RoleServices {
   factory RoleServices(Dio dio, {String baseUrl}) = _RoleServices;
 
   @PUT('/api/auth/choose-role')
-  Future<void> chooseRole(@Body() RoleDto dto);
+  //Future<void> chooseRole(@Body() RoleDto dto);
+  Future<ChooseRoleResponse> chooseRole(
+      @Body() RoleDto dto,
+      );
 }

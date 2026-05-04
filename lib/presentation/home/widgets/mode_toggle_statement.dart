@@ -2,17 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/presentation/home/managers/mode_service.dart';
 
+import '../../../data_injection/getIt/service_locator.dart';
+
 class ModeToggleStatement extends StatelessWidget {
   const ModeToggleStatement({super.key});
 
+  // void _toggleModeAndNavigate(BuildContext context) async {
+  //   final safeContext = Navigator.of(context, rootNavigator: true).context;
+  //   Navigator.pop(context);
+  //   await Future.delayed(const Duration(milliseconds: 200));
+  //   await ModeService.toggleMode();
+  //   Navigator.pushReplacementNamed(safeContext, '/home');
+  // }
   void _toggleModeAndNavigate(BuildContext context) async {
-    final safeContext = Navigator.of(context, rootNavigator: true).context;
-    Navigator.pop(context);
-    await Future.delayed(const Duration(milliseconds: 200));
-    await ModeService.toggleMode();
-    Navigator.pushReplacementNamed(safeContext, '/home');
-  }
+    final modeService = getIt<ModeService>();
 
+    Navigator.pop(context);
+
+    final isSeller = modeService.isSellerNotifier.value;
+
+    await modeService.switchRole(
+      isSeller ? 'buyer' : 'seller'
+    );
+
+    if (!context.mounted) return;
+
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      isSeller ? '/sellerhome' : '/buyerhome',
+          (route) => false,
+    );}
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,7 +51,7 @@ class ModeToggleStatement extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             ValueListenableBuilder<bool>(
-              valueListenable: ModeService.isSellerNotifier,
+              valueListenable: getIt<ModeService>().isSellerNotifier,
               builder: (context, isSeller, child) {
                 final toggleText = isSeller
                     ? 'Switch to Buyer Mode'
