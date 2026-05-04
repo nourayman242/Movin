@@ -96,7 +96,7 @@ class TitleCard extends StatelessWidget {
               _infoItem(
                 Icons.square_outlined,
                 property.size.isNotEmpty ? property.size : '-',
-                'sqft',
+                'msqr',
               ),
               if (property.isAuction)
 
