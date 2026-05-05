@@ -288,36 +288,6 @@ class _SellerHomeState extends State<SellerHome>
                               return const SizedBox();
                             },
                           ),
-
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: [
-                          //     _statCard(
-                          //       "Active Listings",
-                          //       "12",
-                          //       Icons.home_outlined,
-                          //     ),
-                          //     const SizedBox(width: 20),
-                          //     _statCard(
-                          //       "Total Views",
-                          //       "8.4k",
-                          //       Icons.remove_red_eye_outlined,
-                          //     ),
-                          //   ],
-                          // ),
-                          // const SizedBox(height: 20),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: [
-                          //     _statCard(
-                          //       "Inquiries           ",
-                          //       "156",
-                          //       Icons.chat_bubble_outline,
-                          //     ),
-                          //     const SizedBox(width: 20),
-                          //     _statCard("Conversion", "18%", Icons.trending_up),
-                          //   ],
-                          // ),
                         ],
                       ),
                     ),
