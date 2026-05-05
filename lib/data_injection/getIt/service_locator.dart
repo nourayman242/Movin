@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:movin/presentation/fav_screen/manager/fav_hive.dart';
+import '../../presentation/notifications/managers/notification_hive/notification_hive_services.dart';
 import 'service_locator.config.dart';
 import 'package:movin/data/api_services/client/network_module.dart';
 
@@ -18,5 +19,8 @@ Future<void> setUpServiceLocator() async {
 
   final favHive = getIt<FavoriteHiveService>();
   await favHive.init();
+
+ final notificationHive = getIt<NotificationHiveService>();
+ await notificationHive.init();
 
 }
