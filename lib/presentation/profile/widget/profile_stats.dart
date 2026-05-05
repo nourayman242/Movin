@@ -3,6 +3,8 @@ import 'package:movin/app_theme.dart';
 import 'package:movin/data/models/profile_model.dart';
 import 'package:movin/presentation/home/managers/mode_service.dart';
 
+import '../../../data_injection/getIt/service_locator.dart';
+
 class ProfileStats extends StatelessWidget {
   const ProfileStats({super.key, required this.profile});
   final ProfileModel profile;
@@ -12,7 +14,9 @@ class ProfileStats extends StatelessWidget {
     final stats = profile.stats??{};
     
       return ValueListenableBuilder(
-        valueListenable: ModeService.isSellerNotifier,
+        // valueListenable: ModeService.isSellerNotifier,
+        valueListenable: getIt<ModeService>().isSellerNotifier,
+
         builder: (context, isSeller, _) {
           if (isSeller) {
             return Padding(

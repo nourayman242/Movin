@@ -22,6 +22,7 @@ import 'package:movin/presentation/settings/managers/settings_bloc/settings_bloc
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
 import 'package:movin/presentation/settings/screens/settings_screen.dart';
 
+import '../../help_support/screens/help_support.dart';
 import '../../login/cubit/auth_cubit.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -102,15 +103,7 @@ class CustomDrawer extends StatelessWidget {
                           _navigateTo(context, const RatePropertiesPage()),
                     ),
                     SizedBox(height: 15),
-                    // DrawerItem(
-                    //   icon: Icons.person_outline,
-                    //   text: 'Profile',
-                    //   iconColor: Colors.pinkAccent,
-                    //   circleColor: Colors.pinkAccent.withOpacity(0.1),
-                    //   color: AppColors.navyLight,
-                    //   onTap: () => _navigateTo(context, const ProfilePage()),
-                    // ),
-                    //SizedBox(height: 15),
+
                     DrawerItem(
                       icon: Icons.history_outlined,
                       text: 'View History',
@@ -148,7 +141,14 @@ class CustomDrawer extends StatelessWidget {
                       circleColor: Colors.pinkAccent.withOpacity(0.1),
                       text: 'Help & Support',
                       color: AppColors.navyLight,
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => HelpSupportScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),

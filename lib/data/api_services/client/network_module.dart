@@ -35,6 +35,7 @@ import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
 import '../favorite_api_service.dart';
 import '../role_services.dart';
+import '../switch_role_service.dart';
 import '../verify_email_service.dart';
 
 @module
@@ -162,6 +163,11 @@ abstract class NetworkModule {
 
   @lazySingleton
   RoleServices roleServices(Dio dio) => RoleServices(dio);
+
+  @lazySingleton
+  SwitchRoleService switchRoleService(Dio dio) {
+    return SwitchRoleService(dio);
+  }
 }
 
 class _RetryInterceptor extends Interceptor {

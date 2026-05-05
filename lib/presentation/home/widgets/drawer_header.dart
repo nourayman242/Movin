@@ -4,6 +4,8 @@ import 'package:movin/data/models/profile_model.dart';
 
 import 'package:movin/presentation/home/managers/mode_service.dart';
 
+import '../../../data_injection/getIt/service_locator.dart';
+
 class CustomDrawerHeader extends StatefulWidget {
   const CustomDrawerHeader({super.key, required this.profile});
   final ProfileModel profile;
@@ -17,7 +19,12 @@ class _CustomDrawerHeaderState extends State<CustomDrawerHeader> {
   @override
   void initState() {
     super.initState();
-    ModeService.loadUserMode();
+    _init();
+  }
+
+  Future<void> _init() async {
+    final modeService = getIt<ModeService>();
+    await modeService.loadUserMode();
   }
 
   @override
@@ -42,7 +49,9 @@ class _CustomDrawerHeaderState extends State<CustomDrawerHeader> {
           const SizedBox(width: 12),
           Expanded(
             child: ValueListenableBuilder<bool>(
-              valueListenable: ModeService.isSellerNotifier,
+              // valueListenable: ModeService.isSellerNotifier,
+              valueListenable: getIt<ModeService>().isSellerNotifier,
+
               builder: (context, isSeller, child) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

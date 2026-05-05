@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
 
+import '../screens/privacy_policy_screen.dart';
+import '../screens/terms_of_service_screen.dart';
+
 class PrivacyLegalCard extends StatelessWidget {
   const PrivacyLegalCard({super.key});
 
@@ -56,20 +59,34 @@ class PrivacyLegalCard extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               title: const Text('Privacy Policy'),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PrivacyPolicyScreen(),
+                  ),
+                );
+              },
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: const Text('Terms of Service'),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TermsOfServiceScreen(),
+                  ),
+                );
+              },
             ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Data Management'),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {},
-            ),
+            // ListTile(
+            //   contentPadding: EdgeInsets.zero,
+            //   title: const Text('Data Management'),
+            //   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+            //   onTap: () {},
+            // ),
           ],
         ),
       ),
