@@ -23,6 +23,7 @@ import '../../data/api_services/news_service.dart' as _i756;
 import '../../data/api_services/notification_service.dart' as _i398;
 import '../../data/api_services/otp_services.dart' as _i498;
 import '../../data/api_services/profile_services.dart' as _i825;
+import '../../data/api_services/property_evaluation_service.dart' as _i384;
 import '../../data/api_services/property_services.dart' as _i409;
 import '../../data/api_services/register_services.dart' as _i702;
 import '../../data/api_services/report_service.dart' as _i983;
@@ -41,6 +42,8 @@ import '../../data/repositories/login_repository_imp.dart' as _i809;
 import '../../data/repositories/news_repository_impl.dart' as _i213;
 import '../../data/repositories/notification_repository_imp.dart' as _i753;
 import '../../data/repositories/otp_repository_imp.dart' as _i870;
+import '../../data/repositories/property_evaluation_repository_imp.dart'
+    as _i544;
 import '../../data/repositories/register_repository_imp.dart' as _i146;
 import '../../data/repositories/report_repository_impl.dart' as _i70;
 import '../../data/repositories/reset_passwrod_repository_imp.dart' as _i886;
@@ -58,6 +61,7 @@ import '../../domain/repositories/news_repository.dart' as _i88;
 import '../../domain/repositories/notification_repository.dart' as _i1060;
 import '../../domain/repositories/otp_repository.dart' as _i1046;
 import '../../domain/repositories/profile_repository.dart' as _i47;
+import '../../domain/repositories/property_evaluation_repository.dart' as _i630;
 import '../../domain/repositories/property_repository.dart' as _i906;
 import '../../domain/repositories/register_repository.dart' as _i462;
 import '../../domain/repositories/report_repository.dart' as _i207;
@@ -87,6 +91,8 @@ import '../../presentation/notifications/managers/notification_hive/notification
     as _i162;
 import '../../presentation/profile/cubit/profile_cubit.dart' as _i107;
 import '../../presentation/Property_detials/cubit/report_cubit.dart' as _i856;
+import '../../presentation/property_evaluation/managers/poperty_evaluation_bloc/property_evaluation_bloc.dart'
+    as _i957;
 import '../../presentation/register/managers/verify_email_bloc.dart' as _i1047;
 import '../../presentation/role_selection/manager/role_bloc/role_bloc.dart'
     as _i355;
@@ -158,6 +164,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i726.SellerDashboardService(gh<_i361.Dio>()));
     gh.lazySingleton<_i54.ViewsChartService>(
         () => _i54.ViewsChartService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i384.PropertyEvaluationService>(
+        () => _i384.PropertyEvaluationService(gh<_i361.Dio>()));
     gh.lazySingleton<_i782.ViewsChartRepository>(
         () => _i225.ViewsChartRepositoryImpl(gh<_i54.ViewsChartService>()));
     gh.lazySingleton<_i1060.NotificationRepository>(() =>
@@ -217,6 +225,9 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkModule.auctionRepository(gh<_i380.SocketService>()));
     gh.lazySingleton<_i934.ResetPasswordRepository>(() =>
         _i886.ResetPasswordRepositoryImpl(gh<_i766.ResetPasswordService>()));
+    gh.lazySingleton<_i630.PropertyEvaluationRepository>(() =>
+        _i544.PropertyEvaluationRepositoryImpl(
+            gh<_i384.PropertyEvaluationService>()));
     gh.factory<_i856.ReportCubit>(
         () => _i856.ReportCubit(gh<_i207.ReportRepository>()));
     gh.factory<_i1061.AuctionListCubit>(
@@ -251,6 +262,8 @@ extension GetItInjectableX on _i174.GetIt {
         networkModule.resetPasswordCubit(gh<_i934.ResetPasswordRepository>()));
     gh.factory<_i309.ForgotPasswordCubit>(() =>
         networkModule.forgotPasswordCubit(gh<_i6.ForgotPasswordRepository>()));
+    gh.factory<_i957.PropertyEvaluationBloc>(() =>
+        _i957.PropertyEvaluationBloc(gh<_i630.PropertyEvaluationRepository>()));
     gh.lazySingleton<_i88.NewsRepository>(
         () => _i213.NewsRepositoryImpl(gh<_i756.NewsService>()));
     gh.factory<_i659.AuthCubit>(() => _i659.AuthCubit(
