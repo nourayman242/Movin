@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
@@ -12,9 +13,15 @@ import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 import 'package:movin/data/models/property_model.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/most_viewed_cubit.dart';
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/most_viewed_state.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/news_cubit.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/news_state.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/seller_dashboard_cubit.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/seller_dashboard_state.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/views_chart_cubit.dart';
+import 'package:movin/presentation/seller_properties/saller%20home/cubit/views_chart_state.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SellerHome extends StatefulWidget {
-  //final ProfileModel currentProfile;
   const SellerHome({super.key});
 
   @override
@@ -25,10 +32,20 @@ class _SellerHomeState extends State<SellerHome>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
+  void _refreshSellerDashboard() {
+    context.read<SellerDashboardCubit>().getSellerDashboardStats();
+    context.read<ViewsChartCubit>().getSellerViewsChart();
+    context.read<MostviewedCubit>().getMostViewedProperties();
+    context.read<PropertyCubit>().getAllSellerProperties();
+  }
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshSellerDashboard();
+    });
   }
 
   @override
@@ -136,9 +153,7 @@ class _SellerHomeState extends State<SellerHome>
                                         );
 
                                         if (mounted) {
-                                          context
-                                              .read<PropertyCubit>()
-                                              .getAllSellerProperties();
+                                          _refreshSellerDashboard();
                                         }
                                       },
                                     ),
@@ -192,36 +207,117 @@ class _SellerHomeState extends State<SellerHome>
                             ),
                           ),
                           const SizedBox(height: 30),
+                          BlocBuilder<
+                            SellerDashboardCubit,
+                            SellerDashboardState
+                          >(
+                            builder: (context, state) {
+                              if (state is SellerDashboardLoading) {
+                                return const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(20),
+                                    child: CircularProgressIndicator(
+                                      color: AppColors.gold,
+                                    ),
+                                  ),
+                                );
+                              }
 
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _statCard(
-                                "Active Listings",
-                                "12",
-                                Icons.home_outlined,
-                              ),
-                              const SizedBox(width: 20),
-                              _statCard(
-                                "Total Views",
-                                "8.4k",
-                                Icons.remove_red_eye_outlined,
-                              ),
-                            ],
+                              if (state is SellerDashboardLoaded) {
+                                return Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: _statCard(
+                                            "Active Listings",
+                                            state.stats.activeListings
+                                                .toString(),
+                                            Icons.home_outlined,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 20),
+                                        Expanded(
+                                          child: _statCard(
+                                            "Total Views",
+                                            state.stats.totalViews.toString(),
+                                            Icons.remove_red_eye_outlined,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: _statCard(
+                                            "Favorites",
+                                            state.stats.totalFavorites
+                                                .toString(),
+                                            Icons.favorite_border,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 20),
+                                        Expanded(
+                                          child: _statCard(
+                                            "Auctions",
+                                            state.stats.auctionListings
+                                                .toString(),
+                                            Icons.gavel_outlined,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              }
+
+                              if (state is SellerDashboardError) {
+                                return Center(
+                                  child: Text(
+                                    state.message,
+                                    style: const TextStyle(color: Colors.red),
+                                  ),
+                                );
+                              }
+
+                              return const SizedBox();
+                            },
                           ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _statCard(
-                                "Inquiries           ",
-                                "156",
-                                Icons.chat_bubble_outline,
-                              ),
-                              const SizedBox(width: 20),
-                              _statCard("Conversion", "18%", Icons.trending_up),
-                            ],
-                          ),
+
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     _statCard(
+                          //       "Active Listings",
+                          //       "12",
+                          //       Icons.home_outlined,
+                          //     ),
+                          //     const SizedBox(width: 20),
+                          //     _statCard(
+                          //       "Total Views",
+                          //       "8.4k",
+                          //       Icons.remove_red_eye_outlined,
+                          //     ),
+                          //   ],
+                          // ),
+                          // const SizedBox(height: 20),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     _statCard(
+                          //       "Inquiries           ",
+                          //       "156",
+                          //       Icons.chat_bubble_outline,
+                          //     ),
+                          //     const SizedBox(width: 20),
+                          //     _statCard("Conversion", "18%", Icons.trending_up),
+                          //   ],
+                          // ),
                         ],
                       ),
                     ),
@@ -333,51 +429,258 @@ class _SellerHomeState extends State<SellerHome>
   }
 
   Widget _perfCard() {
-    return Container(
-      margin: const EdgeInsets.only(top: 12, left: 16, right: 16),
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 14),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Performance Overview',
-            style: TextStyle(fontSize: 16, color: AppColors.navyDark),
+    return BlocBuilder<ViewsChartCubit, ViewsChartState>(
+      builder: (context, state) {
+        return Container(
+          margin: const EdgeInsets.only(top: 12, left: 16, right: 16),
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(22),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primaryNavy.withOpacity(.05),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade50,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.trending_up, color: AppColors.gold, size: 36),
-                  SizedBox(height: 8),
-                  Text(
-                    'Performance Chart',
-                    style: TextStyle(color: Colors.black54),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// HEADER
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            'Performance Overview',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.navyDark,
+                            ),
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            'Seller property views in last months',
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Views, likes, and inquiries over time',
-                    style: TextStyle(color: Colors.black38, fontSize: 12),
-                  ),
+
+                  if (state is ViewsChartLoaded)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryNavy,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Text(
+                        "${state.chart.data.fold(0, (a, b) => a + b)} Views",
+                        style: const TextStyle(
+                          color: AppColors.gold,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
                 ],
               ),
-            ),
+
+              const SizedBox(height: 25),
+
+              if (state is ViewsChartLoading)
+                const SizedBox(
+                  height: 220,
+                  child: Center(
+                    child: CircularProgressIndicator(color: AppColors.gold),
+                  ),
+                )
+              else if (state is ViewsChartLoaded)
+                Container(
+                  height: 240,
+                  padding: const EdgeInsets.only(
+                    top: 20,
+                    right: 12,
+                    left: 0,
+                    bottom: 0,
+                  ),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.gold.withOpacity(.03),
+                        AppColors.primaryNavy.withOpacity(.015),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: LineChart(
+                    LineChartData(
+                      minY: 0,
+                      gridData: FlGridData(
+                        show: true,
+                        drawVerticalLine: false,
+                        horizontalInterval: 2,
+                        getDrawingHorizontalLine: (value) {
+                          return FlLine(
+                            color: Colors.grey.withOpacity(.12),
+                            strokeWidth: 1,
+                          );
+                        },
+                      ),
+                      borderData: FlBorderData(show: false),
+
+                      titlesData: FlTitlesData(
+                        topTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        rightTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            reservedSize: 28,
+                            showTitles: true,
+                            interval: 2,
+                            getTitlesWidget: (value, meta) {
+                              return Text(
+                                value.toInt().toString(),
+                                style: TextStyle(
+                                  color: Colors.grey.shade500,
+                                  fontSize: 11,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 24,
+                            interval: 1, // VERY IMPORTANT
+                            getTitlesWidget: (value, meta) {
+                              if (value % 1 != 0) {
+                                return const SizedBox();
+                              }
+
+                              int index = value.toInt();
+
+                              if (index >= 0 &&
+                                  index < state.chart.labels.length) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  child: Text(
+                                    state.chart.labels[index],
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.navyDark,
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              return const SizedBox();
+                            },
+                          ),
+                        ),
+                      ),
+
+                      lineTouchData: LineTouchData(
+                        touchTooltipData: LineTouchTooltipData(
+                          tooltipRoundedRadius: 12,
+                          getTooltipItems: (spots) {
+                            return spots.map((spot) {
+                              return LineTooltipItem(
+                                "${spot.y.toInt()} views",
+                                const TextStyle(
+                                  color: AppColors.navyDark,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            }).toList();
+                          },
+                        ),
+                      ),
+
+                      lineBarsData: [
+                        LineChartBarData(
+                          isCurved: true,
+                          preventCurveOverShooting: true,
+                          curveSmoothness: .35,
+                          barWidth: 4,
+                          color: AppColors.gold,
+
+                          belowBarData: BarAreaData(
+                            show: true,
+                            gradient: LinearGradient(
+                              colors: [
+                                AppColors.gold.withOpacity(.25),
+                                AppColors.gold.withOpacity(.02),
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                          ),
+
+                          dotData: FlDotData(
+                            show: true,
+                            getDotPainter: (spot, percent, bar, index) {
+                              return FlDotCirclePainter(
+                                radius: 4.5,
+                                color: AppColors.gold,
+                                strokeWidth: 2,
+                                strokeColor: AppColors.white,
+                              );
+                            },
+                          ),
+
+                          spots: List.generate(
+                            state.chart.data.length,
+                            (index) => FlSpot(
+                              index.toDouble(),
+                              state.chart.data[index].toDouble(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else if (state is ViewsChartError)
+                SizedBox(
+                  height: 220,
+                  child: Center(
+                    child: Text(
+                      state.message,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ),
+                )
+              else
+                const SizedBox(
+                  height: 220,
+                  child: Center(child: Text("No chart data")),
+                ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -675,8 +978,7 @@ class _SellerHomeState extends State<SellerHome>
   ) {
     final status = property.status;
     final auctionStatus = property.isAuction
-        ? property.auctionStatus 
-        ?? "pending"
+        ? property.auctionStatus ?? "pending"
         : "unknown";
 
     String? imageUrl = property.images.isNotEmpty
@@ -784,9 +1086,8 @@ class _SellerHomeState extends State<SellerHome>
             '/edit-property',
             arguments: property,
           );
-
           if (mounted) {
-            context.read<PropertyCubit>().getAllSellerProperties();
+            _refreshSellerDashboard();
           }
         } else if (value == 'delete') {
           _confirmDelete(context, property.id);
@@ -797,7 +1098,7 @@ class _SellerHomeState extends State<SellerHome>
             arguments: property,
           );
           if (mounted) {
-            context.read<PropertyCubit>().getAllSellerProperties();
+            _refreshSellerDashboard();
           }
         }
       },
@@ -969,41 +1270,44 @@ class _SellerHomeState extends State<SellerHome>
       ),
     );
   }
-
   Widget _newsContent() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const SizedBox(height: 16),
+    return BlocBuilder<NewsCubit, NewsState>(
+      builder: (context, state) {
+        if (state is NewsLoading) {
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.gold),
+          );
+        }
 
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 1),
-          child: const Text(
-            "Latest Real Estate News",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ),
+        if (state is NewsError) {
+          return Center(child: Text(state.message));
+        }
 
-        const SizedBox(height: 12),
+        if (state is NewsLoaded) {
+          return Column(
+            children: [
+              const SizedBox(height: 16),
+              const Text(
+                "Latest Real Estate News",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
 
-        _newsCard(
-          image: "assets/images/building1.jpeg",
-          title: "Dubai Real Estate Market Shows Strong Growth in Q4 2024",
-          date: "2 days ago",
-          description:
-              "The Dubai property market continues to demonstrate resilience with a 15% increase in transactions...",
-        ),
+              ...state.news.map(
+                (article) => _newsCard(
+                  image: article.image,
+                  title: article.title,
+                  date: article.published.substring(0, 10),
+                  description: article.description,
+                  url: article.url,
+                ),
+              ),
+            ],
+          );
+        }
 
-        _newsCard(
-          image: "assets/images/building2.jpeg",
-          title: "New Sustainable Housing Projects Announced Across UAE",
-          date: "1 week ago",
-          description:
-              "Developers are shifting towards eco-friendly architecture to meet environmental standards...",
-        ),
-
-        const SizedBox(height: 40),
-      ],
+        return const SizedBox();
+      },
     );
   }
 
@@ -1012,6 +1316,7 @@ class _SellerHomeState extends State<SellerHome>
     required String title,
     required String date,
     required String description,
+    required String url,
   }) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -1034,11 +1339,17 @@ class _SellerHomeState extends State<SellerHome>
               topLeft: Radius.circular(18),
               topRight: Radius.circular(18),
             ),
-            child: Image.asset(
+            child: Image.network(
               image,
               height: 180,
               width: double.infinity,
               fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Image.asset(
+                'assets/images/placeholder.webp',
+                height: 180,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           Padding(
@@ -1073,7 +1384,9 @@ class _SellerHomeState extends State<SellerHome>
                 const SizedBox(height: 10),
 
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await launchUrl(Uri.parse(url));
+                  },
                   child: const Text(
                     "Read More →",
                     style: TextStyle(

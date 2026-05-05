@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
+import 'package:movin/data/models/profile_model.dart';
+import 'package:movin/data_injection/getIt/service_locator.dart';
+import 'package:movin/presentation/login/cubit/reset_pass_cubit.dart';
+import 'package:movin/presentation/login/screens/reset_password_page.dart';
+import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/profile/edit_profile_screen.dart';
 import 'package:movin/presentation/settings/screens/manage_subscription_screen.dart';
 
 class AccountSettingsCard extends StatelessWidget {
-  //final ProfileModel profile;
-  const AccountSettingsCard({super.key, });
+  final ProfileModel profile;
+  const AccountSettingsCard({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +28,8 @@ class AccountSettingsCard extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFE5F1),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFFFE5F1),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -59,20 +66,43 @@ class AccountSettingsCard extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               title: const Text('Edit Profile'),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (_) => EditProfileScreen(profile: profile),
-                //   ),
-                // );
+              onTap: () async {
+                final updated = await Navigator.push<ProfileModel>(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<ProfileCubit>(),
+                      child: EditProfileScreen(profile: profile),
+                    ),
+                  ),
+                );
+                if (updated != null) {
+                  context.read<ProfileCubit>().updateProfile(
+                    username: updated.name,
+                    bio: updated.bio,
+                    location: updated.location,
+                    phone: updated.phone,
+                  );
+                }
               },
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: const Text('Change Password'),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {},
+              onTap: () async {
+                final email = await SharedHelper.getEmail();
+                if (!context.mounted) return;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider(
+                      create: (_) => getIt<ResetPasswordCubit>(),
+                      child: ResetPasswordPage(email: email ?? ''),
+                    ),
+                  ),
+                );
+              },
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,

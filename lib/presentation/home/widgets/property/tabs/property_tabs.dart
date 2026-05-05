@@ -50,7 +50,7 @@ class PropertyTabs extends StatelessWidget {
           if (controller.selectedTab == 0)
             DescriptionTab()
           else if (controller.selectedTab == 1)
-            FeaturesTab()
+            FeaturesTab(property: property)
           else
             LocationTab(property: property), 
         ],

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:movin/presentation/home/screens/Result_page.dart';
 import 'package:movin/presentation/home/widgets/filter_widgets.dart';
 
-// Cairo areas — keep in sync with your backend's area list
 const List<String> kCairoAreas = [
   'New Cairo',
   'Rehab City',
@@ -22,15 +22,19 @@ class FilterScreen extends StatefulWidget {
 }
 
 class _FilterScreenState extends State<FilterScreen> {
+  // ── Price bounds (10 million cap) ──────────────────────────────────────────
   final double _minPrice = 0;
-  final double _maxPrice = 100000000;
-  RangeValues _priceRange = const RangeValues(0, 100000000);
+  final double _maxPrice = 10000000;
+  RangeValues _priceRange = const RangeValues(0, 10000000);
 
   final Color navy = const Color(0xFF001F3F);
   final Color offWhite = const Color(0xFFF8F8F8);
 
   final TextEditingController priceMinController = TextEditingController();
   final TextEditingController priceMaxController = TextEditingController();
+
+  // Shared number formatter (commas)
+  final _fmt = NumberFormat('#,###');
 
   String? selectedPropertyType;
   String? selectedBedrooms;
@@ -39,13 +43,13 @@ class _FilterScreenState extends State<FilterScreen> {
   bool? isFurnished;
   bool? hasPoolValue;
   String? selectedSort;
-  String? selectedArea; // ← new
+  String? selectedArea;
 
   @override
   void initState() {
     super.initState();
-    priceMinController.text = _priceRange.start.toInt().toString();
-    priceMaxController.text = _priceRange.end.toInt().toString();
+    priceMinController.text = _fmt.format(_priceRange.start.toInt());
+    priceMaxController.text = _fmt.format(_priceRange.end.toInt());
   }
 
   @override
@@ -55,25 +59,23 @@ class _FilterScreenState extends State<FilterScreen> {
     super.dispose();
   }
 
-  void _updateSliderFromText() {
-    double start =
-        double.tryParse(priceMinController.text.replaceAll(',', '')) ??
-            _minPrice;
-    double end =
-        double.tryParse(priceMaxController.text.replaceAll(',', '')) ??
-            _maxPrice;
+  /// Strip commas before parsing
+  double _parse(String text) =>
+      double.tryParse(text.replaceAll(',', '')) ?? 0;
 
-    start = start.clamp(_minPrice, _maxPrice);
-    end = end.clamp(_minPrice, _maxPrice);
+  void _updateSliderFromText() {
+    double start = _parse(priceMinController.text).clamp(_minPrice, _maxPrice);
+    double end = _parse(priceMaxController.text).clamp(_minPrice, _maxPrice);
     if (start > end) start = end;
 
+    // Snap to 100 k steps
     start = (start / 100000).round() * 100000;
     end = (end / 100000).round() * 100000;
 
     setState(() {
       _priceRange = RangeValues(start, end);
-      priceMinController.text = start.toInt().toString();
-      priceMaxController.text = end.toInt().toString();
+      priceMinController.text = _fmt.format(start.toInt());
+      priceMaxController.text = _fmt.format(end.toInt());
     });
   }
 
@@ -83,8 +85,8 @@ class _FilterScreenState extends State<FilterScreen> {
 
     setState(() {
       _priceRange = RangeValues(start, end);
-      priceMinController.text = start.toInt().toString();
-      priceMaxController.text = end.toInt().toString();
+      priceMinController.text = _fmt.format(start.toInt());
+      priceMaxController.text = _fmt.format(end.toInt());
     });
   }
 
@@ -104,7 +106,7 @@ class _FilterScreenState extends State<FilterScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // ── Area Selector Card ──────────────────────────────────
+                // ── Area Selector ─────────────────────────────────────────
                 _AreaSelectorCard(
                   navy: navy,
                   offWhite: offWhite,
@@ -114,6 +116,7 @@ class _FilterScreenState extends State<FilterScreen> {
 
                 const SizedBox(height: 20),
 
+                // ── Price Range ───────────────────────────────────────────
                 priceRangeCard(
                   priceMinController: priceMinController,
                   priceMaxController: priceMaxController,
@@ -127,6 +130,7 @@ class _FilterScreenState extends State<FilterScreen> {
 
                 const SizedBox(height: 20),
 
+                // ── Property Type ─────────────────────────────────────────
                 propertyTypeCard(
                   navy: navy,
                   selectedType: selectedPropertyType,
@@ -138,37 +142,33 @@ class _FilterScreenState extends State<FilterScreen> {
                     });
                   },
                   selectedBedrooms: selectedBedrooms,
-                  onBedroomSelected: (bed) {
-                    setState(() => selectedBedrooms = bed);
-                  },
+                  onBedroomSelected: (bed) =>
+                      setState(() => selectedBedrooms = bed),
                   selectedBathrooms: selectedBathrooms,
-                  onBathroomSelected: (bath) {
-                    setState(() => selectedBathrooms = bath);
-                  },
+                  onBathroomSelected: (bath) =>
+                      setState(() => selectedBathrooms = bath),
                   builtUpArea: builtUpArea,
-                  onBuiltUpAreaChanged: (val) {
-                    setState(() => builtUpArea = val);
-                  },
+                  onBuiltUpAreaChanged: (val) =>
+                      setState(() => builtUpArea = val),
                   isFurnished: isFurnished,
-                  onFurnishedChanged: (val) {
-                    setState(() => isFurnished = val);
-                  },
+                  onFurnishedChanged: (val) =>
+                      setState(() => isFurnished = val),
                   hasPool: hasPoolValue,
-                  onPoolChanged: (value) {
-                    setState(() => hasPoolValue = value);
-                  },
+                  onPoolChanged: (value) =>
+                      setState(() => hasPoolValue = value),
                 ),
 
                 const SizedBox(height: 20),
 
+                // ── Sort By ───────────────────────────────────────────────
                 sortByCard(
                   selectedSort: selectedSort,
-                  onSortChanged: (value) {
-                    setState(() => selectedSort = value);
-                  },
+                  onSortChanged: (value) =>
+                      setState(() => selectedSort = value),
                   navy: navy,
                 ),
 
+                // ── Apply ─────────────────────────────────────────────────
                 applyFilterButton(
                   navy: navy,
                   onPressed: () {
@@ -185,7 +185,7 @@ class _FilterScreenState extends State<FilterScreen> {
                           minPrice: _priceRange.start,
                           maxPrice: _priceRange.end,
                           sortLabel: selectedSort,
-                          selectedArea: selectedArea, // ← new
+                          selectedArea: selectedArea,
                         ),
                       ),
                     );
@@ -201,7 +201,6 @@ class _FilterScreenState extends State<FilterScreen> {
 }
 
 // ── Area Selector Card ────────────────────────────────────────────────────────
-
 class _AreaSelectorCard extends StatelessWidget {
   final Color navy;
   final Color offWhite;
@@ -223,7 +222,8 @@ class _AreaSelectorCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 3)),
+          BoxShadow(
+              color: Colors.black12, blurRadius: 8, offset: Offset(0, 3)),
         ],
       ),
       child: Column(
@@ -245,7 +245,8 @@ class _AreaSelectorCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
             decoration: BoxDecoration(
               color: offWhite,
               borderRadius: BorderRadius.circular(12),
@@ -256,10 +257,12 @@ class _AreaSelectorCard extends StatelessWidget {
                 isExpanded: true,
                 hint: Text(
                   'Select your area',
-                  style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
+                  style: TextStyle(
+                      color: Colors.grey.shade500, fontSize: 14),
                 ),
                 value: selectedArea,
-                icon: Icon(Icons.keyboard_arrow_down_rounded, color: navy),
+                icon:
+                    Icon(Icons.keyboard_arrow_down_rounded, color: navy),
                 items: kCairoAreas
                     .map((area) => DropdownMenuItem(
                           value: area,

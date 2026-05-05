@@ -58,7 +58,11 @@ class BrowsePropertyCard extends StatelessWidget {
 
                       return SizedBox(
                         height: 200,
-                        child: const Center(child: CircularProgressIndicator(color: AppColors.primaryNavy)),
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.primaryNavy,
+                          ),
+                        ),
                       );
                     },
 
@@ -162,10 +166,7 @@ class BrowsePropertyCard extends StatelessWidget {
                         style: AppTextStyles.smallText,
                       ),
                       Text(
-
-
-
-                        property.size.isNotEmpty ? property.size : '-',
+                       '${property.size.isNotEmpty ? property.size : "-"} msqr',
                         style: AppTextStyles.smallText,
                       ),
                     ],

@@ -1,7 +1,6 @@
 import 'package:movin/data/api_services/property_services.dart';
 import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/data/models/property_model.dart';
-
 import 'package:movin/domain/repositories/property_repository.dart';
 import 'package:movin/presentation/seller_properties/add_property/add_property_viewmodel.dart';
 
@@ -15,7 +14,6 @@ class PropertyRepositoryImpl implements PropertyRepository {
   }
 
   @override
-
   Future<void> create(AddPropertyViewModel vm, String token) {
     return service.createProperty(vm: vm, token: token);
   }
@@ -33,14 +31,12 @@ class PropertyRepositoryImpl implements PropertyRepository {
   @override
   Future<List<PropertyEntity>> searchProperties(String location) async {
     final models = await service.searchProperties(location);
-
     return models.map((e) => e.toEntity()).toList();
   }
 
   @override
   Future<List<PropertyEntity>> getRecentProperties() async {
     final models = await service.getRecentProperties();
-
     return models.map((e) => e.toEntity()).toList();
   }
 
@@ -53,36 +49,47 @@ class PropertyRepositoryImpl implements PropertyRepository {
   @override
   Future<List<PropertyEntity>> getPropertiesByType(String type) async {
     final models = await service.getPropertiesByType(type);
-   return models.map((e) => e.toEntity()).toList();
+    return models.map((e) => e.toEntity()).toList();
   }
-  @override
-Future<void> createAuction({
-  required String propertyId,
-  required int startPrice,
-  required String startTime,
-  required String endTime,
-}) async {
-  await service.createAuction(
-    propertyId: propertyId,
-    startPrice: startPrice,
-    startTime: startTime,
-    endTime: endTime,
-  );
-}
-@override
-Future<PropertyEntity> getPropertyById(String id) async {
-  final model = await service.getPropertyById(id);
-  return model.toEntity();
-}
-//  @override
-//   Future<List<PropertyModel>> getMostViewedProperties() async {
-//     final data = await service.getMostViewedProperties();
 
-//     return data.map<PropertyModel>((e) => PropertyModel.fromJson(e as Map<String, dynamic>)).toList();
-//   }
-@override
-Future<List<PropertyEntity>> getMostViewedProperties() async {
-  final models = await service.getMostViewedProperties();
-  return models.map((e) => e.toEntity()).toList();
-}
+  @override
+  Future<void> createAuction({
+    required String propertyId,
+    required int startPrice,
+    required String startTime,
+    required String endTime,
+  }) async {
+    await service.createAuction(
+      propertyId: propertyId,
+      startPrice: startPrice,
+      startTime: startTime,
+      endTime: endTime,
+    );
+  }
+
+  @override
+  Future<PropertyEntity> getPropertyById(String id) async {
+    final model = await service.getPropertyById(id);
+    return model.toEntity();
+  }
+
+  @override
+  Future<List<PropertyEntity>> getMostViewedProperties() async {
+    final models = await service.getMostViewedProperties();
+    return models.map((e) => e.toEntity()).toList();
+  }
+
+  @override
+  Future<List<PropertyEntity>> getViewHistory({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    final models = await service.getViewHistory(page: page, limit: limit);
+    return models.map((e) => e.toEntity()).toList();
+  }
+
+  @override
+  Future<void> clearViewHistory() async {
+    await service.clearViewHistory(); 
+  }
 }

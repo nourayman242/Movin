@@ -17,6 +17,7 @@ class PropertyModel {
   final double? longitude;
 
   final String? auctionStatus;
+  final String sellerId;
   final String sellerName;
   final String sellerPhone;
   final String sellerLocation;
@@ -40,6 +41,7 @@ class PropertyModel {
     this.latitude,
     this.longitude,
     required this.auctionStatus,
+    required this.sellerId,
     required this.sellerName,
     required this.sellerPhone,
     required this.sellerLocation,
@@ -133,7 +135,7 @@ class PropertyModel {
 
       isAuction: auction['isAuction'] == true,
       views: int.tryParse(json['views']?.toString() ?? '0') ?? 0,
-
+      sellerId: seller['_id']?.toString() ?? '',
       sellerName: seller['username']?.toString() ?? '',
       sellerPhone: seller['phone']?.toString() ?? '',
       sellerLocation: seller['location']?.toString() ?? '',
@@ -161,6 +163,7 @@ class PropertyModel {
       details: details,
       latitude: latitude,
       longitude: longitude,
+      sellerId: sellerId,
       sellerName: sellerName,
       sellerPhone: sellerPhone,
       sellerLocation: sellerLocation,

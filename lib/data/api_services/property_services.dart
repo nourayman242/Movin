@@ -80,12 +80,10 @@ class PropertyService {
 
   Future<List<PropertyModel>> searchProperties(String location) async {
     try {
-      final token = await SharedHelper.getToken(); // get saved token
+      final token = await SharedHelper.getToken();
 
       final response = await dio.get(
         'https://movin-backend-production.up.railway.app/api/seller/properties/search',
-
-        //"https://movin-app.vercel.app/api/seller/properties/search",
         queryParameters: {"location": location},
         options: Options(headers: {"Authorization": "Bearer $token"}),
       );
@@ -170,25 +168,74 @@ class PropertyService {
   }
 
   Future<PropertyModel> getPropertyById(String id) async {
-  final response = await dio.get('/api/seller/properties/$id');
+    final response = await dio.get('/api/seller/properties/$id');
 
-  final data = response.data;
+    final data = response.data;
 
-  if (data == null || data['property'] == null) {
-    throw Exception("Property not found");
+    if (data == null || data['property'] == null) {
+      throw Exception("Property not found");
+    }
+
+    return PropertyModel.fromJson(data['property']);
   }
 
-  return PropertyModel.fromJson(data['property']);
-}
+  Future<List<PropertyModel>> getMostViewedProperties() async {
+    final response = await dio.get('/api/seller/properties/most-viewed');
 
-Future<List<PropertyModel>> getMostViewedProperties() async {
-  final response = await dio.get('/api/seller/properties/most-viewed');
+    final List rawList = response.data['properties'] ?? [];
 
-  final List rawList = response.data['properties'] ?? [];
+    return rawList.map<PropertyModel>((e) {
+      final map = (e as Map).cast<String, dynamic>();
+      return PropertyModel.fromJson(map);
+    }).toList();
+  }
 
-  return rawList.map<PropertyModel>((e) {
-    final map = (e as Map).cast<String, dynamic>();
-    return PropertyModel.fromJson(map);
-  }).toList();
+ 
+  Future<List<PropertyModel>> getViewHistory({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    try {
+      final token = await SharedHelper.getToken();
+
+      final response = await dio.get(
+        '/api/seller/view-history',
+        queryParameters: {"page": page, "limit": limit},
+        options: Options(headers: {"Authorization": "Bearer $token"}),
+      );
+
+      if (response.data == null || response.data['history'] == null) {
+        return [];
+      }
+
+      
+      return (response.data['history'] as List).map((item) {
+        final Map<String, dynamic> propertyMap =
+            Map<String, dynamic>.from(item['property'] as Map);
+        final Map<String, dynamic> sellerMap =
+            Map<String, dynamic>.from(item['seller'] as Map);
+
+        
+        propertyMap['seller'] = sellerMap;
+
+        return PropertyModel.fromJson(propertyMap);
+      }).toList();
+    } catch (e) {
+      print("VIEW HISTORY API ERROR: $e");
+      return [];
+    }
+  }
+Future<void> clearViewHistory() async {
+  try {
+    final token = await SharedHelper.getToken();
+
+    await dio.delete(
+      '/api/seller/view-history/clear',  
+      options: Options(headers: {"Authorization": "Bearer $token"}),
+    );
+  } catch (e) {
+    print("CLEAR VIEW HISTORY API ERROR: $e");
+    rethrow;
+  }
 }
 }

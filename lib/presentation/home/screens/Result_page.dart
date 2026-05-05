@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/data/api_services/filter_services.dart';
 import 'package:movin/data/models/property_model.dart';
+import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/presentation/Heatmap/pages/heatmap_screen.dart';
+import 'package:movin/presentation/Property_detials/screens/property_detials.dart';
+import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 
 class ResultsPage extends StatefulWidget {
   final Color navy;
@@ -235,7 +239,7 @@ List<String> get _activeChips {
 
           // ── Heatmap FAB ──────────────────────────────────────────────────────
           floatingActionButton: _HeatmapFab(navy: widget.navy,selectedArea: widget.selectedArea,),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
 
           body: _buildBody(snapshot),
         );
@@ -317,7 +321,18 @@ List<String> get _activeChips {
       padding: const EdgeInsets.all(16),
       itemCount: properties.length,
       itemBuilder: (context, index) {
-        return _PropertyCard(property: properties[index], navy: widget.navy);
+        return GestureDetector(
+  onTap: () => Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => BlocProvider(
+        create: (_) => getIt<PropertyCubit>(),
+        child: PropertyDetailsScreen(propertyId: properties[index].id),
+      ),
+    ),
+  ),
+  child: _PropertyCard(property: properties[index], navy: widget.navy),
+);
       },
     );
   }
