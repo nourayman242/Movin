@@ -25,6 +25,8 @@ import 'package:movin/presentation/login/cubit/auth_cubit.dart';
 
 import 'package:movin/presentation/login/screens/forgot_password_page.dart';
 import 'package:movin/presentation/login/screens/login_screen.dart';
+import 'package:movin/presentation/notifications/managers/notification_bloc/notification_bloc.dart';
+import 'package:movin/presentation/notifications/managers/notification_bloc/notification_event.dart';
 import 'package:movin/presentation/onboarding/screens/onboarding.dart';
 import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/register/managers/verify_email_bloc.dart';
@@ -83,6 +85,18 @@ void main() async {
           BlocProvider(
             create: (_) => getIt<FavoriteBloc>()..add(FavoriteLoad()),
           ),
+          BlocProvider(
+            create: (_) => getIt<SettingsBloc>()..add(LoadSettings()),
+          ),
+          BlocProvider(
+            create: (_) => getIt<FavoriteBloc>()..add(FavoriteLoad()),
+          ),
+
+          BlocProvider(
+            create: (_) => getIt<NotificationBloc>()
+              ..add(GetAllNotificationsEvent()),
+          ),
+
           BlocProvider(
             create: (_) => getIt<SettingsBloc>()..add(LoadSettings()),
           ),

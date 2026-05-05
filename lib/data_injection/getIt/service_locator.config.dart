@@ -20,6 +20,7 @@ import '../../data/api_services/google_auth_service.dart' as _i21;
 import '../../data/api_services/login_services.dart' as _i744;
 import '../../data/api_services/logout_services.dart' as _i800;
 import '../../data/api_services/news_service.dart' as _i756;
+import '../../data/api_services/notification_service.dart' as _i398;
 import '../../data/api_services/otp_services.dart' as _i498;
 import '../../data/api_services/profile_services.dart' as _i825;
 import '../../data/api_services/property_services.dart' as _i409;
@@ -38,6 +39,7 @@ import '../../data/repositories/auth_repository_impl.dart' as _i895;
 import '../../data/repositories/fav_repository_imp.dart' as _i76;
 import '../../data/repositories/login_repository_imp.dart' as _i809;
 import '../../data/repositories/news_repository_impl.dart' as _i213;
+import '../../data/repositories/notification_repository_imp.dart' as _i753;
 import '../../data/repositories/otp_repository_imp.dart' as _i870;
 import '../../data/repositories/register_repository_imp.dart' as _i146;
 import '../../data/repositories/report_repository_impl.dart' as _i70;
@@ -53,6 +55,7 @@ import '../../domain/repositories/fav_repository.dart' as _i66;
 import '../../domain/repositories/forget_pass_repository.dart' as _i6;
 import '../../domain/repositories/login_repositories.dart' as _i386;
 import '../../domain/repositories/news_repository.dart' as _i88;
+import '../../domain/repositories/notification_repository.dart' as _i1060;
 import '../../domain/repositories/otp_repository.dart' as _i1046;
 import '../../domain/repositories/profile_repository.dart' as _i47;
 import '../../domain/repositories/property_repository.dart' as _i906;
@@ -78,6 +81,10 @@ import '../../presentation/login/cubit/auth_cubit.dart' as _i659;
 import '../../presentation/login/cubit/forget_pass_cubit.dart' as _i309;
 import '../../presentation/login/cubit/otp_cubit.dart' as _i225;
 import '../../presentation/login/cubit/reset_pass_cubit.dart' as _i817;
+import '../../presentation/notifications/managers/notification_bloc/notification_bloc.dart'
+    as _i831;
+import '../../presentation/notifications/managers/notification_hive/notification_hive_services.dart'
+    as _i162;
 import '../../presentation/profile/cubit/profile_cubit.dart' as _i107;
 import '../../presentation/Property_detials/cubit/report_cubit.dart' as _i856;
 import '../../presentation/register/managers/verify_email_bloc.dart' as _i1047;
@@ -117,6 +124,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i998.SettingsLocalService());
     gh.lazySingleton<_i588.FavoriteHiveService>(
         () => _i588.FavoriteHiveService());
+    gh.lazySingleton<_i162.NotificationHiveService>(
+        () => _i162.NotificationHiveService());
     gh.lazySingleton<_i361.Dio>(
       () => networkModule.provideVercelDio(),
       instanceName: 'vercelDio',
@@ -139,6 +148,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkModule.roleServices(gh<_i361.Dio>()));
     gh.lazySingleton<_i450.SwitchRoleService>(
         () => networkModule.switchRoleService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i398.NotificationService>(
+        () => networkModule.notificationService(gh<_i361.Dio>()));
     gh.lazySingleton<_i800.LogoutService>(
         () => _i800.LogoutService(gh<_i361.Dio>()));
     gh.lazySingleton<_i983.ReportService>(
@@ -149,6 +160,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i54.ViewsChartService(gh<_i361.Dio>()));
     gh.lazySingleton<_i782.ViewsChartRepository>(
         () => _i225.ViewsChartRepositoryImpl(gh<_i54.ViewsChartService>()));
+    gh.lazySingleton<_i1060.NotificationRepository>(() =>
+        _i753.NotificationRepositoryImpl(gh<_i398.NotificationService>()));
     gh.lazySingleton<_i47.ProfileRepository>(
         () => networkModule.profileRepository(gh<_i825.ProfileService>()));
     gh.lazySingleton<_i66.FavoriteRepository>(() => _i76.FavoriteRepositoryImpl(
@@ -172,6 +185,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i111.SettingsBloc>(() => _i111.SettingsBloc(
           gh<_i998.SettingsLocalService>(),
           gh<_i401.AuthLocalService>(),
+        ));
+    gh.factory<_i831.NotificationBloc>(() => _i831.NotificationBloc(
+          gh<_i1060.NotificationRepository>(),
+          gh<_i162.NotificationHiveService>(),
         ));
     gh.lazySingleton<_i133.SellerDashboardRepository>(() =>
         _i260.SellerDashboardRepositoryImpl(
