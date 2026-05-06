@@ -4,14 +4,12 @@ import 'package:retrofit/retrofit.dart';
 
 part 'switch_role_service.g.dart';
 
-
 @RestApi()
 abstract class SwitchRoleService {
-  factory SwitchRoleService(Dio dio, {String baseUrl}) =
-  _SwitchRoleService;
+  factory SwitchRoleService(Dio dio, {String baseUrl}) = _SwitchRoleService;
 
   @PUT('/api/auth/switch-role')
   Future<ChooseRoleResponse> switchRole(
-      @Body() Map<String, dynamic> body,
-      );
+    @Body() Map<String, dynamic> body,
+  );
 }
