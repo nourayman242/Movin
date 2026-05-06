@@ -24,4 +24,16 @@ class OtpRepositoryImpl implements OtpRepository {
       throw Exception("Unexpected error: $e");
     }
   }
+  @override
+Future<String> resendOtp({required String email}) async {
+  try {
+    final response = await api.resendOtp({'email': email});
+    return response.message ?? "OTP resent successfully";
+  } on DioException catch (e) {
+    final msg = e.response?.data?['message'] ?? e.message;
+    throw Exception(msg);
+  } catch (e) {
+    throw Exception("Unexpected error: $e");
+  }
+}
 }

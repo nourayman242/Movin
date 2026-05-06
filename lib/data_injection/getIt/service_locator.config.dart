@@ -158,14 +158,14 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkModule.notificationService(gh<_i361.Dio>()));
     gh.lazySingleton<_i800.LogoutService>(
         () => _i800.LogoutService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i384.PropertyEvaluationService>(
+        () => _i384.PropertyEvaluationService(gh<_i361.Dio>()));
     gh.lazySingleton<_i983.ReportService>(
         () => _i983.ReportService(gh<_i361.Dio>()));
     gh.lazySingleton<_i726.SellerDashboardService>(
         () => _i726.SellerDashboardService(gh<_i361.Dio>()));
     gh.lazySingleton<_i54.ViewsChartService>(
         () => _i54.ViewsChartService(gh<_i361.Dio>()));
-    gh.lazySingleton<_i384.PropertyEvaluationService>(
-        () => _i384.PropertyEvaluationService(gh<_i361.Dio>()));
     gh.lazySingleton<_i782.ViewsChartRepository>(
         () => _i225.ViewsChartRepositoryImpl(gh<_i54.ViewsChartService>()));
     gh.lazySingleton<_i1060.NotificationRepository>(() =>

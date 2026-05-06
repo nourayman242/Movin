@@ -6,10 +6,14 @@ import '../models/otp_dto.dart';
 
 part 'otp_services.g.dart';
 
+
 @RestApi()
 abstract class OtpServices {
-  factory OtpServices(@Named('vercelDio')Dio dio, {String baseUrl}) = _OtpServices;
+  factory OtpServices(@Named('vercelDio') Dio dio, {String baseUrl}) = _OtpServices;
 
   @POST("/api/auth/verify-otp")
   Future<OtpResponse> verifyOtp(@Body() OtpDto dto);
+
+  @POST("/api/auth/resend-reset-otp")
+  Future<OtpResponse> resendOtp(@Body() Map<String, dynamic> body);
 }

@@ -16,3 +16,14 @@ class OtpFailure extends OtpState {
   final String message;
   OtpFailure(this.message);
 }
+class OtpResendLoading extends OtpState {}
+
+class OtpResendSuccess extends OtpState {
+  final String message;
+  OtpResendSuccess({this.message = "OTP resent successfully"});
+}
+
+class OtpResendFailure extends OtpState {
+  final String message;
+  OtpResendFailure(this.message);
+}
