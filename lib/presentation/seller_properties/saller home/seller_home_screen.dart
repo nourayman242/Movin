@@ -59,14 +59,14 @@ class _SellerHomeState extends State<SellerHome>
   Widget build(BuildContext context) {
     return BlocListener<PropertyCubit, PropertyState>(
       listener: (context, state) {
-    if (state is PropertyDeleteSuccess) {
-      _refreshSellerDashboard();
+        if (state is PropertyDeleteSuccess) {
+          _refreshSellerDashboard();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.message)),
-      );
-    }
-  },
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
+        }
+      },
       child: BlocBuilder<ProfileCubit, ProfileState>(
         builder: (context, state) {
           if (state.isLoading) {
@@ -1169,7 +1169,9 @@ class _SellerHomeState extends State<SellerHome>
                     ),
                     onPressed: () async {
                       await Navigator.pushNamed(context, '/addproperty');
-
+                      // if (mounted) {
+                      //   _refreshSellerDashboard();
+                      // }
                       // if (mounted) {
                       //   context.read<PropertyCubit>().getAllSellerProperties();
                       // }
@@ -1204,8 +1206,11 @@ class _SellerHomeState extends State<SellerHome>
                     ),
                     onPressed: () {
                       Navigator.pushNamed(context, '/addproperty');
+                      // if (mounted) {
+                      //   context.read<PropertyCubit>().getAllSellerProperties();
+                      // }
                       if (mounted) {
-                        context.read<PropertyCubit>().getAllSellerProperties();
+                        _refreshSellerDashboard();
                       }
                     },
                   ),
