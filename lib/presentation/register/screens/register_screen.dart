@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/domain/entities/register_entity.dart';
 import 'package:movin/domain/repositories/register_repository.dart';
+import 'package:movin/presentation/settings/screens/privacy_policy_screen.dart';
+import 'package:movin/presentation/settings/screens/terms_of_service_screen.dart';
 
 class RegisterScareen extends StatefulWidget {
   const RegisterScareen({super.key});
@@ -129,7 +130,7 @@ class _RegisterScareenState extends State<RegisterScareen> {
                       );
                       try {
                         await repo.registerUser(user);
-                       // await SharedHelper.setLoggedIn(true);
+                       
 
                         if (!context.mounted) return;
                         Navigator.pushNamed(
@@ -137,21 +138,10 @@ class _RegisterScareenState extends State<RegisterScareen> {
                           '/verify-email',
                           arguments: user.email,
                         );
-                        // ScaffoldMessenger.of(context).showSnackBar(
-                        //   SnackBar(content: Text('Registered successfully')),
-                        // );
-                        // Navigator.pushReplacementNamed(context, '/role').then((
-                        //   _,
-                        // ) {
-                        //   nameValue.clear();
-                        //   userValue.clear();
-                        //   phoneValue.clear();
-                        //   passValue.clear();
-                        // });
+                        
+                        
                       } catch (e, st) {
-                        // if (!context.mounted) return;
-                        // print('Exception: $e');
-                        // print('StackTrace: $st');
+                        
                         ScaffoldMessenger.of(
                           context,
                         ).showSnackBar(SnackBar(content: Text(e.toString())));
@@ -177,7 +167,14 @@ class _RegisterScareenState extends State<RegisterScareen> {
                             style: AppTextStyles.smallText,
                           ),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const TermsOfServiceScreen(),
+                                  ),
+                                );
+                            },
                             style: AppButtons.text,
                             child: const Text('Terms of Service'),
                           ),
@@ -191,7 +188,14 @@ class _RegisterScareenState extends State<RegisterScareen> {
                         children: [
                           const Text('and ', style: AppTextStyles.smallText),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const PrivacyPolicyScreen(),
+                                  ),
+                                );
+                            },
                             style: AppButtons.text,
                             child: const Text('Privacy Policy'),
                           ),
