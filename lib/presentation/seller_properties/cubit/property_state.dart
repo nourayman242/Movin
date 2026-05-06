@@ -22,3 +22,7 @@ class PropertyDetailsLoaded extends PropertyState {
   final PropertyEntity property;
   PropertyDetailsLoaded(this.property);
 }
+class PropertyDeleteSuccess extends PropertyState {
+  final String message;
+  PropertyDeleteSuccess(this.message);
+}

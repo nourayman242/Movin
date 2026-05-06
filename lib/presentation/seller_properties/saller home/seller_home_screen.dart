@@ -57,21 +57,32 @@ class _SellerHomeState extends State<SellerHome>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileCubit, ProfileState>(
-      builder: (context, state) {
-        if (state.isLoading) {
-          return const Center(
-            child: Scaffold(
-              backgroundColor: AppColors.background,
-              body: Center(
-                child: CircularProgressIndicator(color: AppColors.gold),
-              ),
-            ),
-          );
-        }
+    return BlocListener<PropertyCubit, PropertyState>(
+      listener: (context, state) {
+    if (state is PropertyDeleteSuccess) {
+      _refreshSellerDashboard();
 
-        return _buildContent(context, state.profile);
-      },
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(state.message)),
+      );
+    }
+  },
+      child: BlocBuilder<ProfileCubit, ProfileState>(
+        builder: (context, state) {
+          if (state.isLoading) {
+            return const Center(
+              child: Scaffold(
+                backgroundColor: AppColors.background,
+                body: Center(
+                  child: CircularProgressIndicator(color: AppColors.gold),
+                ),
+              ),
+            );
+          }
+
+          return _buildContent(context, state.profile);
+        },
+      ),
     );
   }
 

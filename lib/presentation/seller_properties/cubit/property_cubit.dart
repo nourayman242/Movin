@@ -52,14 +52,26 @@ class PropertyCubit extends Cubit<PropertyState> {
     }
   }
 
-  Future<void> deleteProperty(String id) async {
+    // Future<void> deleteProperty(String id) async {
+    //   try {
+    //     await repository.delete(id);
+    //     await getAllSellerProperties();
+    //   } catch (e) {
+    //     emit(PropertyError(e.toString()));
+    //   }
+  // }
+
+   Future<void> deleteProperty(String id) async {
     try {
       await repository.delete(id);
+      emit(PropertyDeleteSuccess('Property deleted successfully'));
       await getAllSellerProperties();
     } catch (e) {
       emit(PropertyError(e.toString()));
     }
   }
+
+  
 
   Future<void> updateProperty({
     required String id,
