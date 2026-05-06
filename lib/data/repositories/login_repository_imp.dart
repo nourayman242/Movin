@@ -1,8 +1,7 @@
-
-
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:movin/data/api_services/login_services.dart';
+import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
 import 'package:movin/data/models/login_dto.dart';
 import 'package:movin/domain/entities/login_entity.dart';
 import 'package:movin/domain/repositories/login_repositories.dart';
@@ -14,48 +13,34 @@ class LoginRepositoryImpl implements LoginRepository {
 
   LoginRepositoryImpl(this.api);
 
-  // @override
-  // Future<LoginResponse> loginUser(LoginEntity user) async {
-  //   final dto = LoginDto.fromEntity(user);
-  //   print('Login DTO: ${dto.toJson()}');
-
-  //   try {
-  //     final response = await api.loginUser(dto);
-  //     print("LOGIN SUCCESS: ${response.toJson()}");
-
-  //     return response;
-
-  //   } on DioException catch (e) {
-  //     final msg = e.response?.data?['message'] ?? e.message;
-  //     print("LOGIN ERROR: $msg");
-  //     throw Exception(msg);
-
-  //   } catch (e) {
-  //     throw Exception('Unexpected error: $e');
-  //   }
-  // }
   @override
-Future<LoginResponse> loginUser(LoginEntity user) async {
-  final dto = LoginDto.fromEntity(user);
+  Future<LoginResponse> loginUser(LoginEntity user) async {
+    final dto = LoginDto.fromEntity(user);
 
-  try {
-    final response = await api.loginUser(dto);
+    try {
+      final response = await api.loginUser(dto);
 
-    if (response.accessToken.isEmpty) {
-      throw Exception(response.message.isNotEmpty
-          ? response.message
-          : 'Invalid email or password');
+      if (response.accessToken.isEmpty) {
+        throw Exception(response.message.isNotEmpty
+            ? response.message
+            : 'Invalid email or password');
+      }
+
+      await SharedHelper.saveToken(response.accessToken);
+      await SharedHelper.saveRefreshToken(response.refreshToken);
+      await SharedHelper.saveUser(response.user);
+      await SharedHelper.setUserRole(
+        response.user.isSeller == true ? 'seller' : 'buyer',
+      );
+      await SharedHelper.setLoggedIn(true);
+
+      return response;
+
+    } on DioException catch (e) {
+      final msg = e.response?.data?['message'] ?? 'Login failed';
+      throw Exception(msg);
+    } catch (e) {
+      throw Exception('Unexpected error: $e');
     }
-
-    return response;
-
-  } on DioException catch (e) {
-    final msg = e.response?.data?['message'] ?? 'Login failed';
-    throw Exception(msg);
   }
-  catch(e){
-    throw Exception('Unexpected error:$e');
-  }
-}
-
 }

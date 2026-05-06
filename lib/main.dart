@@ -53,7 +53,6 @@ void main() async {
   final modeService = getIt<ModeService>();
   await modeService.loadUserMode();
 
-
   runApp(
     ScreenUtilInit(
       designSize: const Size(375, 812),
@@ -93,8 +92,8 @@ void main() async {
           ),
 
           BlocProvider(
-            create: (_) => getIt<NotificationBloc>()
-              ..add(GetAllNotificationsEvent()),
+            create: (_) =>
+                getIt<NotificationBloc>()..add(GetAllNotificationsEvent()),
           ),
 
           BlocProvider(
@@ -132,7 +131,17 @@ class Movin extends StatelessWidget {
           '/onboarding': (_) => const OnboardingScreen(),
           '/login': (_) => const LoginScreen(),
           '/role': (_) => const RoleSelection(),
-          '/buyerhome': (_) => const BuyerHome(),
+          '/buyerhome': (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => getIt<ProfileCubit>()..getProfile()),
+              BlocProvider(
+                create: (_) => getIt<PropertyCubit>()
+                  ..loadRecentProperties()
+                  ..loadRecommendedProperties(),
+              ),
+            ],
+            child: const BuyerHome(),
+          ),
           '/sellerhome': (_) => MultiBlocProvider(
             providers: [
               BlocProvider(create: (_) => getIt<ProfileCubit>()..getProfile()),
@@ -143,6 +152,14 @@ class Movin extends StatelessWidget {
                 create: (_) =>
                     getIt<MostviewedCubit>()..getMostViewedProperties(),
               ),
+              BlocProvider(
+                create: (_) => getIt<ViewsChartCubit>()..getSellerViewsChart(),
+              ),
+              BlocProvider(
+                create: (_) =>
+                    getIt<SellerDashboardCubit>()..getSellerDashboardStats(),
+              ),
+              BlocProvider(create: (_) => getIt<NewsCubit>()..getNews()),
             ],
             child: const SellerHome(),
           ),
