@@ -19,6 +19,7 @@ import 'package:movin/presentation/settings/screens/settings_screen.dart';
 
 import '../../help_support/screens/help_support.dart';
 import '../../login/cubit/auth_cubit.dart';
+import '../../property_evaluation/screens/property_evaluation_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
 
@@ -92,7 +93,7 @@ class CustomDrawer extends StatelessWidget {
                       circleColor: Colors.amber.withOpacity(0.1),
                       color: AppColors.navyLight,
                       onTap: () =>
-                          _navigateTo(context, const RatePropertiesPage()),
+                          _navigateTo(context,  PropertyEvaluationScreen()),
                     ),
                     SizedBox(height: 15),
 
