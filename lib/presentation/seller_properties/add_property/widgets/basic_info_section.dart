@@ -30,6 +30,23 @@ class BasicInfoSection extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
+              'Title *',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade700,
+              ),
+            ),
+            TextFormField(
+              controller: vm.titleController,
+              decoration: AppInputDecoration.rounded(
+                hintText: 'Title *',
+                prefixIcon: Icons.title,
+              ),
+              
+             onChanged: (_) => vm.notifyListeners()
+            ),
+            const SizedBox(height: 12),
+            Text(
               'Listing Type *',
               style: TextStyle(
                 fontWeight: FontWeight.w600,

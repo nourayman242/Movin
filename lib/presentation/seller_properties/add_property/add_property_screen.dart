@@ -151,8 +151,11 @@ class AddPropertyScreen extends StatelessWidget {
 
                           if (vm.isTypeSelected) ...[
                             const BasicInfoSection(),
+                            const SizedBox(height: 10),
                             const PropertyDetailsSection(),
+                            const SizedBox(height: 10),
                             const ImagesSection(),
+                            const SizedBox(height: 10),
                             const DescriptionSection(),
                             const MapSection(),
                             const AuctionSection(),

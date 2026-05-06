@@ -24,6 +24,7 @@ class AddPropertyViewModel extends ChangeNotifier {
   // Text controllers (shared across sections)
   final priceController = TextEditingController();
   final locationController = TextEditingController();
+  final titleController = TextEditingController();
   final areaController = TextEditingController();
 
   // Details
@@ -54,6 +55,7 @@ class AddPropertyViewModel extends ChangeNotifier {
 
   // BASIC INFO
   String get location => locationController.text.trim();
+  String get title => titleController.text.trim();
   String get description => descriptionController.text.trim();
   int get price => int.parse(priceController.text.trim());
   String get size => '${areaController.text.trim()} sqm';
@@ -187,6 +189,7 @@ class AddPropertyViewModel extends ChangeNotifier {
   bool get isBasicValid =>
       priceController.text.trim().isNotEmpty &&
       locationController.text.trim().isNotEmpty &&
+      titleController.text.trim().isNotEmpty &&
       areaController.text.trim().isNotEmpty &&
       descriptionController.text.trim().isNotEmpty &&
       images.isNotEmpty;
@@ -228,6 +231,7 @@ class AddPropertyViewModel extends ChangeNotifier {
   // Reset form
   void reset() {
     selectedType = null;
+    titleController.clear();
     priceController.clear();
     locationController.clear();
     areaController.clear();
@@ -261,6 +265,7 @@ class AddPropertyViewModel extends ChangeNotifier {
   void dispose() {
     priceController.dispose();
     locationController.dispose();
+    titleController.dispose();
     areaController.dispose();
     bedroomsController.dispose();
     bathroomsController.dispose();
