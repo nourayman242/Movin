@@ -127,7 +127,7 @@ class PropertyCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    property.description,
+                    property.title,
                     style: AppTextStyles.label,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

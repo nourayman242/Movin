@@ -25,7 +25,7 @@ class AddPropertyViewModel extends ChangeNotifier {
   String? get startTime => auctionStart?.toIso8601String();
 
   String? get endTime => auctionEnd?.toIso8601String();
-  final auctionDescriptionController = TextEditingController();
+  //final auctionDescriptionController = TextEditingController();
   // Text controllers (shared across sections)
   final priceController = TextEditingController();
   final locationController = TextEditingController();
@@ -130,8 +130,8 @@ class AddPropertyViewModel extends ChangeNotifier {
 
     return auctionStart != null &&
         auctionEnd != null &&
-        startingBidController.text.trim().isNotEmpty &&
-        auctionDescriptionController.text.trim().isNotEmpty;
+        startingBidController.text.trim().isNotEmpty;
+    // auctionDescriptionController.text.trim().isNotEmpty;
   }
 
   void setAuction(bool value) {
@@ -260,7 +260,7 @@ class AddPropertyViewModel extends ChangeNotifier {
     auctionStart = null;
     auctionEnd = null;
     startingBidController.clear();
-    auctionDescriptionController.clear();
+    //auctionDescriptionController.clear();
     latitude = null;
     longitude = null;
     notifyListeners();
@@ -284,7 +284,7 @@ class AddPropertyViewModel extends ChangeNotifier {
     terraceController.dispose();
     descriptionController.dispose();
     startingBidController.dispose();
-    auctionDescriptionController.dispose();
+    //auctionDescriptionController.dispose();
     super.dispose();
   }
 

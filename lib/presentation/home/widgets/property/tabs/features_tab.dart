@@ -89,6 +89,8 @@ class FeaturesTab extends StatelessWidget {
         return "Private Pool";
       case "garden":
         return "Garden";
+        case "terrace":
+        return "Terrace Area";
       case "parking":
         return "Parking";
       case "maidsroom":

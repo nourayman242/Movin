@@ -26,7 +26,7 @@ class PropertyHeaderSection extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      property.description,
+                      property.title,
                       style: TextStyle(
                         fontSize: 22.sp,
                         fontWeight: FontWeight.bold,

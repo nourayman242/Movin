@@ -6,10 +6,7 @@ import '../add_property_viewmodel.dart';
 class AuctionSection extends StatelessWidget {
   const AuctionSection({super.key});
 
-  Future<void> _pickDate(
-    BuildContext context,
-    bool isStart,
-  ) async {
+  Future<void> _pickDate(BuildContext context, bool isStart) async {
     final vm = context.read<AddPropertyViewModel>();
 
     final picked = await showDatePicker(
@@ -17,6 +14,15 @@ class AuctionSection extends StatelessWidget {
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(primary: AppColors.gold),
+            dialogTheme: DialogThemeData(backgroundColor: Colors.white),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (picked != null) {
@@ -39,16 +45,13 @@ class AuctionSection extends StatelessWidget {
         color: AppColors.white,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-          ),
+          BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// 🔘 Title + Radio
+          ///  Title + Radio
           Row(
             children: [
               Radio<bool>(
@@ -59,9 +62,7 @@ class AuctionSection extends StatelessWidget {
               ),
               const Text(
                 "Mazad (Auction)",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -69,7 +70,7 @@ class AuctionSection extends StatelessWidget {
           if (vm.isAuction) ...[
             const SizedBox(height: 10),
 
-            /// 📅 Dates Row
+            ///  Dates Row
             Row(
               children: [
                 Expanded(
@@ -94,7 +95,7 @@ class AuctionSection extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            /// 💰 Starting Bid
+            ///  Starting Bid
             Text(
               'Starting Bid *',
               style: TextStyle(
@@ -114,32 +115,32 @@ class AuctionSection extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            /// 📝 Auction Description
-            Text(
-              'Auction Details',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.grey.shade700,
-              ),
-            ),
-            const SizedBox(height: 6),
-            TextFormField(
-              controller: vm.auctionDescriptionController,
-              minLines: 3,
-              maxLines: 6,
-              decoration: AppInputDecoration.rounded(
-                hintText:
-                    'Add any extra details about the auction, rules, or conditions...',
-              ),
-              onChanged: (_) => vm.notifyListeners(),
-            ),
+            ///  Auction Description
+            // Text(
+            //   'Auction Details',
+            //   style: TextStyle(
+            //     fontWeight: FontWeight.w600,
+            //     color: Colors.grey.shade700,
+            //   ),
+            // ),
+            // const SizedBox(height: 6),
+            // TextFormField(
+            //   controller: vm.auctionDescriptionController,
+            //   minLines: 3,
+            //   maxLines: 6,
+            //   decoration: AppInputDecoration.rounded(
+            //     hintText:
+            //         'Add any extra details about the auction, rules, or conditions...',
+            //   ),
+            //   onChanged: (_) => vm.notifyListeners(),
+            // ),
           ],
         ],
       ),
     );
   }
 
-  /// 📅 Date Field Styled Like Your Inputs
+  ///  Date Field Styled Like Your Inputs
   Widget _dateField(
     BuildContext context, {
     required String label,
@@ -154,7 +155,7 @@ class AuctionSection extends StatelessWidget {
             hintText: value == null
                 ? label
                 : "${value.year}-${value.month}-${value.day}",
-            prefixIcon: Icons.calendar_today, // 👈 BLACK by default
+            prefixIcon: Icons.calendar_today, 
           ),
         ),
       ),
