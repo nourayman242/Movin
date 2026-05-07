@@ -56,7 +56,7 @@ class TitleCard extends StatelessWidget {
           ),
           SizedBox(height: 12.h),
           Text(
-            property.description,
+            property.title,
             style: TextStyle(
               fontSize: 22.sp,
               fontWeight: FontWeight.w600,
@@ -95,7 +95,7 @@ class TitleCard extends StatelessWidget {
               ),
               _infoItem(
                 Icons.square_outlined,
-                property.size.isNotEmpty ? property.size : '-',
+                property.size != 0 ? property.size.toString() : '-',
                 'msqr',
               ),
               if (property.isAuction)

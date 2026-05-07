@@ -15,6 +15,7 @@ class EditPropertyScreen extends StatefulWidget {
 }
 
 class _EditPropertyScreenState extends State<EditPropertyScreen> {
+  late TextEditingController titleController;
   late TextEditingController locationController;
   late TextEditingController descriptionController;
   late TextEditingController priceController;
@@ -33,10 +34,11 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
 
     final p = widget.property;
 
+    titleController = TextEditingController(text: p.title);
     locationController = TextEditingController(text: p.location);
     descriptionController = TextEditingController(text: p.description);
     priceController = TextEditingController(text: p.price.toString());
-    sizeController = TextEditingController(text: p.size);
+    sizeController = TextEditingController(text: p.size.toString());
     bedroomsController = TextEditingController(
       text: p.details["bedrooms"]?.toString() ?? "",
     );
@@ -52,6 +54,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
 
   @override
   void dispose() {
+    titleController.dispose();
     locationController.dispose();
     descriptionController.dispose();
     priceController.dispose();
@@ -78,6 +81,8 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _label("Title"),
+            _input(titleController),
             _label("Location"),
             _input(locationController),
 
@@ -159,7 +164,6 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
             //   onChanged: (v) => setState(() => selectedStatus = v!),
             //   decoration: _decoration(),
             // ),
-
             const SizedBox(height: 20),
 
             _label("Current Images"),
@@ -192,17 +196,45 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
 
   void _onSave() async {
     final updatedEntity = PropertyEntity(
+      id: widget.property.id,
+      title: titleController.text.trim(),
+
       location: locationController.text.trim(),
+
       description: descriptionController.text.trim(),
+
       price: int.tryParse(priceController.text.trim()) ?? 0,
+
       listingType: selectedListingType,
+
       type: selectedType,
-      size: sizeController.text.trim(),
+
+      size: int.tryParse(sizeController.text.trim()) ?? 0,
+
       images: widget.property.images,
+
+      status: widget.property.status,
+
       details: {
         "bedrooms": bedroomsController.text.trim(),
         "bathrooms": bathroomsController.text.trim(),
-      }, id: '', status: '', isAuction: false, sellerName: '', sellerPhone: '', sellerLocation: '', views: 0, sellerId: '',
+      },
+
+      isAuction: widget.property.isAuction,
+
+      latitude: widget.property.latitude,
+      longitude: widget.property.longitude,
+
+      auction: widget.property.auction,
+
+      sellerId: widget.property.sellerId,
+      sellerName: widget.property.sellerName,
+      sellerPhone: widget.property.sellerPhone,
+      sellerLocation: widget.property.sellerLocation,
+
+      views: widget.property.views,
+
+      createdAt: widget.property.createdAt,
     );
 
     final cubit = context.read<PropertyCubit>();

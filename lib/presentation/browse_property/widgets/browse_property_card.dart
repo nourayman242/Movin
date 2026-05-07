@@ -166,7 +166,7 @@ class BrowsePropertyCard extends StatelessWidget {
                         style: AppTextStyles.smallText,
                       ),
                       Text(
-                       '${property.size.isNotEmpty ? property.size : "-"} msqr',
+                       '${property.size} msqr',
                         style: AppTextStyles.smallText,
                       ),
                     ],

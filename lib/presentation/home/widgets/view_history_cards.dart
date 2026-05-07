@@ -218,9 +218,7 @@ class ViewHistoryCard extends StatelessWidget {
                             const _VerticalDivider(),
                             Expanded(
                               child: _AttrItem(
-                                value: property.size.isNotEmpty
-                                    ? property.size
-                                    : '-',
+                                value: property.size != 0 ? property.size.toString() : '-',
                                 label: "m²",
                               ),
                             ),

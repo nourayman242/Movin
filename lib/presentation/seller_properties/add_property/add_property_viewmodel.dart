@@ -20,6 +20,11 @@ class AddPropertyViewModel extends ChangeNotifier {
   DateTime? auctionEnd;
 
   final startingBidController = TextEditingController();
+  int get startPrice => int.tryParse(startingBidController.text.trim()) ?? 0;
+
+  String? get startTime => auctionStart?.toIso8601String();
+
+  String? get endTime => auctionEnd?.toIso8601String();
   final auctionDescriptionController = TextEditingController();
   // Text controllers (shared across sections)
   final priceController = TextEditingController();
@@ -58,7 +63,7 @@ class AddPropertyViewModel extends ChangeNotifier {
   String get title => titleController.text.trim();
   String get description => descriptionController.text.trim();
   int get price => int.parse(priceController.text.trim());
-  String get size => '${areaController.text.trim()} sqm';
+  int get size => int.tryParse(areaController.text.trim()) ?? 0;
 
   // TYPE
   String get type => selectedType!.name;
@@ -285,17 +290,40 @@ class AddPropertyViewModel extends ChangeNotifier {
 
   PropertyEntity toEntity({required List<String> imageUrls}) {
     return PropertyEntity(
-      location: locationController.text.trim(),
-      description: descriptionController.text.trim(),
-      price: int.parse(priceController.text.trim()),
-      listingType: listingType,
-      type: selectedType!.name,
-      size: '${areaController.text.trim()} sqm',
-      images: imageUrls,
-      details: details,
       id: '',
+      title: title,
+
+      location: locationController.text.trim(),
+
+      description: descriptionController.text.trim(),
+
+      price: int.parse(priceController.text.trim()),
+
+      listingType: listingType,
+
+      type: selectedType!.name,
+
+      size: size,
+
+      images: imageUrls,
+
+      details: details,
+
       status: '',
-      isAuction: false,
+
+      isAuction: isAuction,
+
+      latitude: latitude,
+      longitude: longitude,
+
+      auction: isAuction
+          ? {
+              "startPrice": startPrice,
+              "startTime": startTime,
+              "endTime": endTime,
+            }
+          : null,
+
       sellerName: '',
       sellerPhone: '',
       sellerLocation: '',

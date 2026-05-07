@@ -122,14 +122,14 @@ class PropertyAuctionsScreen extends StatelessWidget {
       price: a.currentBid.toInt(),
       listingType: a.listingType,
       type: a.type,
-      size: a.size.toString(),
+      size: a.size.toInt(),
       images: a.image != null ? [a.image!] : [],
       details: {},
       status: a.status,
       isAuction: true,
        sellerName: a.seller.username, 
        sellerPhone: '', 
-       sellerLocation: '', views: 0, sellerId: '',
+       sellerLocation: '', views: 0, sellerId: '', title: '',
     );
   }
 
