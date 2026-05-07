@@ -48,28 +48,30 @@ class FeaturesTab extends StatelessWidget {
   }
 
   List<String> _extractFeatures(Map<String, dynamic> details) {
-    List<String> result = [];
+  List<String> result = [];
 
-    details.forEach((rawKey, rawValue) {
-      final key = rawKey.toString().trim().toLowerCase();
-      final value = rawValue;
+  details.forEach((rawKey, rawValue) {
+    final key = rawKey.toString().trim().toLowerCase();
+    final value = rawValue;
+     print(
+         "CHECKING FEATURE => key:$key value:$value type:${value.runtimeType}",
+       );
+       if (_isIgnoredField(key)) return;
 
-      print(
-        "CHECKING FEATURE => key:$key value:$value type:${value.runtimeType}",
-      );
+    if (value == null || value.toString().trim().isEmpty) return;
 
-      if (_isIgnoredField(key)) return;
+    // Boolean features
+    if (value == true || value.toString().toLowerCase() == "true") {
+      result.add(_beautifyKey(key));
+      return;
+    }
 
-      // accept bool true OR string "true"
-      if (value == true || value.toString().toLowerCase() == "true") {
-        result.add(_beautifyKey(key));
-      }
-    });
+    // Numeric/Text details
+    result.add("${_beautifyKey(key)}: $value");
+  });
 
-    print("FINAL FEATURES => $result");
-
-    return result;
-  }
+  return result;
+}
 
   bool _isIgnoredField(String key) {
     return [
@@ -80,39 +82,79 @@ class FeaturesTab extends StatelessWidget {
       "location",
       "type",
       "listingtype",
+      "Bathsrooms",
     ].contains(key.trim().toLowerCase());
   }
 
   String _beautifyKey(String key) {
     switch (key.trim().toLowerCase()) {
+      // ===== Residential =====
+
+      case "floor":
+        return "Floor Number";
+
+      case "floors":
+        return "Number Of Floors";
+
+      case "land_area":
+        return "Land Area";
+
+      // ===== Villa =====
+      case "garden":
+        return "Private Garden";
+
+      case "parking":
+        return "Parking Space";
+
       case "pool":
         return "Private Pool";
-      case "garden":
-        return "Garden";
-        case "terrace":
-        return "Terrace Area";
-      case "parking":
-        return "Parking";
-      case "maidsroom":
-        return "Maid's Room";
-      case "balcony":
-        return "Balcony";
-      case "ac":
-        return "Central AC";
-      case "wardrobes":
-        return "Built-in Wardrobes";
-      case "security":
-        return "Security System";
-      case "smarthome":
-        return "Smart Home";
-      case "gym":
-        return "Gym Access";
+
+      // ===== Apartment =====
       case "elevator":
         return "Elevator";
+
+      // ===== Office =====
+      case "work_rooms":
+        return "Work Rooms";
+
+      case "meeting_rooms":
+        return "Meeting Rooms";
+
+      // ===== Penthouse =====
+      case "terrace":
+        return "Terrace Area";
+
+      // ===== Extra Features =====
+      case "maidsroom":
+        return "Maid's Room";
+
+      case "balcony":
+        return "Balcony";
+
+      case "ac":
+        return "Central AC";
+
+      case "wardrobes":
+        return "Built-in Wardrobes";
+
+      case "security":
+        return "Security System";
+
+      case "smarthome":
+        return "Smart Home";
+
+      case "gym":
+        return "Gym Access";
+
       case "furnished":
         return "Fully Furnished";
+
       default:
-        return key[0].toUpperCase() + key.substring(1);
+        return key
+            .replaceAll("_", " ")
+            .split(" ")
+            .map((e) => e.isNotEmpty ? e[0].toUpperCase() + e.substring(1) : e)
+            .join(" ");
     }
   }
 
