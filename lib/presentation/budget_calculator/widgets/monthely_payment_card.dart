@@ -7,8 +7,14 @@ import 'package:movin/presentation/budget_calculator/managers/bc_bloc/loan_calc_
 class MonthlyPaymentCard extends StatelessWidget {
   const MonthlyPaymentCard({Key? key}) : super(key: key);
 
+  // String _formatCurrency(double amount) {
+  //   return '\$${amount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (m) => '${m[1]},')}';
+  // }
   String _formatCurrency(double amount) {
-    return '\$${amount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (m) => '${m[1]},')}';
+    return '${amount.toStringAsFixed(0).replaceAllMapped(
+      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+          (m) => '${m[1]},',
+    )} EGP';
   }
 
   @override

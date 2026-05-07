@@ -53,10 +53,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             padding: const EdgeInsets.all(AppSpacing.medium),
             child: Column(
               children: [
-                LanguageCard(),
-                AppWidgets.verticalSpace(AppSpacing.medium),
-                NotificationCard(),
-                AppWidgets.verticalSpace(AppSpacing.medium),
+                // LanguageCard(),
+                // AppWidgets.verticalSpace(AppSpacing.medium),
+                // NotificationCard(),
+                // AppWidgets.verticalSpace(AppSpacing.medium),
                 AccountSettingsCard(profile: widget.currentProfile),
                 AppWidgets.verticalSpace(AppSpacing.medium),
                 PrivacyLegalCard(),

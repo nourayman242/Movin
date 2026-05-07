@@ -63,6 +63,7 @@ class AppInputDecoration {
     IconData? prefixIcon,
     IconData? suffixIcon,
     VoidCallback? onSuffixTap,
+    String? suffixText,
   }) {
     return InputDecoration(
       hintText: hintText,
@@ -78,6 +79,7 @@ class AppInputDecoration {
               icon: Icon(suffixIcon, color: Colors.grey),
             )
           : null,
+      suffixText: suffixText,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(30),
         borderSide: BorderSide.none,
