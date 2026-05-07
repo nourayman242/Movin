@@ -12,3 +12,16 @@ class VerifyEmailError extends VerifyEmailState {
 
   VerifyEmailError(this.message);
 }
+class ResendOtpLoading extends VerifyEmailState {}
+
+class ResendOtpSuccess extends VerifyEmailState {
+  final String message;
+
+  ResendOtpSuccess(this.message);
+}
+
+class ResendOtpError extends VerifyEmailState {
+  final String message;
+
+  ResendOtpError(this.message);
+}

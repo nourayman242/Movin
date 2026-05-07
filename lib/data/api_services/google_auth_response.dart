@@ -6,16 +6,27 @@ part 'google_auth_response.g.dart';
 
 @JsonSerializable()
 class GoogleAuthResponse {
-  final String token;
+  //final String token;
+  final String accessToken;
+  final String refreshToken;
   final UserResponse user;
 
   GoogleAuthResponse({
-    required this.token,
+   // required this.token,
+    required this.accessToken,
+    required this.refreshToken,
     required this.user,
   });
 
-  factory GoogleAuthResponse.fromJson(Map<String, dynamic> json) =>
-      _$GoogleAuthResponseFromJson(json);
+  // factory GoogleAuthResponse.fromJson(Map<String, dynamic> json) =>
+  //     _$GoogleAuthResponseFromJson(json);
+  factory GoogleAuthResponse.fromJson(Map<String, dynamic> json) {
+    return GoogleAuthResponse(
+      accessToken: json['accessToken'] ?? '',
+      refreshToken: json['refreshToken'] ?? '',
+      user: UserResponse.fromJson(json['user'] ?? {}),
+    );
+  }
 
   Map<String, dynamic> toJson() => _$GoogleAuthResponseToJson(this);
 }

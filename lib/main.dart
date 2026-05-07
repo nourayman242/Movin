@@ -58,7 +58,7 @@ void main() async {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
-      builder: (_, __) => MultiBlocProvider(
+      builder: (_, _) => MultiBlocProvider(
         providers: [
           RepositoryProvider<PropertyRepository>(
             create: (_) => getIt<PropertyRepository>(),

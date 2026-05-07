@@ -5,4 +5,5 @@ abstract class VerifyEmailRepository {
       String email,
       String otp,
       );
+  Future<String> resendOtp(String email);
 }

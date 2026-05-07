@@ -16,6 +16,7 @@ class VerifyEmailBloc
   VerifyEmailBloc(this.repo) : super(VerifyEmailInitial()) {
 
     on<SubmitOtpEvent>(_onVerify);
+    on<ResendOtpEvent>(_onResendOtp);
   }
 
   Future<void> _onVerify(
@@ -48,6 +49,25 @@ class VerifyEmailBloc
 
     } catch (e) {
       emit(VerifyEmailError(e.toString()));
+    }
+  }
+  Future<void> _onResendOtp(
+      ResendOtpEvent event,
+      Emitter<VerifyEmailState> emit,
+      ) async {
+
+    emit(ResendOtpLoading());
+
+    try {
+
+      final message =
+      await repo.resendOtp(event.email);
+
+      emit(ResendOtpSuccess(message));
+
+    } catch (e) {
+
+      emit(ResendOtpError(e.toString()));
     }
   }
 }

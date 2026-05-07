@@ -67,16 +67,34 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.pop(context);
           }
 
-          final user = state.profile;
+        //   final user = state.profile;
+        //
+        //   //  same routing logic but from profile
+        //   if (user.isBuyer == true) {
+        //     Navigator.pushReplacementNamed(context, '/buyerhome');
+        //   }
+        //   else if (user.isSeller == true) {
+        //     Navigator.pushReplacementNamed(context, '/sellerhome');
+        //   }
+        //   else {
+        //     Navigator.pushReplacementNamed(context, '/role');
+        //   }
+        // }
+          final profile = state.profile;
 
-          //  same routing logic but from profile
-          if (user.isBuyer == true) {
+          // 🧠 NEW USER
+          if (profile == null ||
+              (profile.isBuyer == false && profile.isSeller == false)) {
+            Navigator.pushReplacementNamed(context, '/role');
+            return;
+          }
+
+          // 👇 EXISTING USER
+          if (profile.isBuyer == true) {
             Navigator.pushReplacementNamed(context, '/buyerhome');
-          }
-          else if (user.isSeller == true) {
+          } else if (profile.isSeller == true) {
             Navigator.pushReplacementNamed(context, '/sellerhome');
-          }
-          else {
+          } else {
             Navigator.pushReplacementNamed(context, '/role');
           }
         }
@@ -257,7 +275,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(width: 30),
                         const Text(
-                          'Sign in with Google',
+                          'Continue with Google',
                           style: TextStyle(fontSize: 18, color: AppColors.gold),
                         ),
                       ],
