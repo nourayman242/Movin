@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:movin/data/api_services/property_services.dart';
 import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/data/models/property_model.dart';
@@ -19,9 +20,10 @@ class PropertyRepositoryImpl implements PropertyRepository {
   }
 
   @override
-  Future<void> update(String id, PropertyEntity property) {
-    return service.updateProperty(id, property);
+  Future<void> update(String id, PropertyEntity property, List<XFile> newImages) {
+    return service.updateProperty(id, property, newImages);
   }
+  
 
   @override
   Future<void> delete(String id) {

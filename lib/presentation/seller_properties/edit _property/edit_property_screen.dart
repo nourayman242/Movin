@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/data/models/property_model.dart';
 import 'package:movin/domain/entities/property_entity.dart';
@@ -27,6 +30,11 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
   late String selectedStatus;
 
   late String selectedListingType;
+  final ImagePicker picker = ImagePicker();
+
+  late List<String> existingImages;
+
+  List<XFile> newImages = [];
 
   @override
   void initState() {
@@ -50,6 +58,29 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
     selectedType = p.type.toLowerCase();
     selectedStatus = p.status;
     selectedListingType = p.listingType;
+    existingImages = List.from(widget.property.images);
+  }
+
+  Future<void> _pickImages() async {
+    final picked = await picker.pickMultiImage();
+
+    if (picked.isNotEmpty) {
+      setState(() {
+        newImages.addAll(picked);
+      });
+    }
+  }
+
+  void _removeExistingImage(int index) {
+    setState(() {
+      existingImages.removeAt(index);
+    });
+  }
+
+  void _removeNewImage(int index) {
+    setState(() {
+      newImages.removeAt(index);
+    });
   }
 
   @override
@@ -152,22 +183,109 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
               decoration: _decoration(),
             ),
 
-            // _label("Status"),
-            // DropdownButtonFormField<String>(
-            //   dropdownColor: AppColors.background,
-            //   value: selectedStatus,
-            //   items: const [
-            //     DropdownMenuItem(value: "active", child: Text("Active")),
-            //     DropdownMenuItem(value: "pending", child: Text("Pending")),
-            //     DropdownMenuItem(value: "sold", child: Text("Sold")),
-            //   ],
-            //   onChanged: (v) => setState(() => selectedStatus = v!),
-            //   decoration: _decoration(),
-            // ),
             const SizedBox(height: 20),
 
-            _label("Current Images"),
-            _imagesPreview(widget.property.images),
+            _label("Property Images"),
+            Text(
+              "You can add new images or remove existing ones.By Changes all existing ones .",
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+            ),
+
+            SizedBox(height: 10),
+
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                /// EXISTING IMAGES
+                ...List.generate(existingImages.length, (index) {
+                  return Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          existingImages[index],
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+
+                      Positioned(
+                        top: 4,
+                        right: 4,
+                        child: GestureDetector(
+                          onTap: () => _removeExistingImage(index),
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+
+                /// NEW IMAGES
+                ...List.generate(newImages.length, (index) {
+                  return Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.file(
+                          File(newImages[index].path),
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+
+                      Positioned(
+                        top: 4,
+                        right: 4,
+                        child: GestureDetector(
+                          onTap: () => _removeNewImage(index),
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(
+                              color: AppColors.grey,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+
+                /// ADD BUTTON
+                GestureDetector(
+                  onTap: _pickImages,
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(Icons.add_a_photo, size: 35),
+                  ),
+                ),
+              ],
+            ),
 
             const SizedBox(height: 30),
 
@@ -211,7 +329,8 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
 
       size: int.tryParse(sizeController.text.trim()) ?? 0,
 
-      images: widget.property.images,
+      //images: widget.property.images,
+      images: existingImages,
 
       status: widget.property.status,
 
@@ -240,7 +359,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
     final cubit = context.read<PropertyCubit>();
 
     try {
-      await cubit.updateProperty(id: widget.property.id, entity: updatedEntity);
+      await cubit.updateProperty(id: widget.property.id, entity: updatedEntity, newImages: newImages);
 
       if (!mounted) return;
 
@@ -256,36 +375,6 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
     }
   }
 
-  Widget _imagesPreview(List<String> images) {
-    return SizedBox(
-      height: 90,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: images.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 10),
-        itemBuilder: (_, i) {
-          final imageUrl = images[i];
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              imageUrl,
-              width: 90,
-              height: 90,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Image.asset(
-                  'assets/images/placeholder.webp',
-                  width: 90,
-                  height: 90,
-                  fit: BoxFit.cover,
-                );
-              },
-            ),
-          );
-        },
-      ),
-    );
-  }
 
   Widget _label(String text) => Padding(
     padding: const EdgeInsets.only(bottom: 6, top: 16),

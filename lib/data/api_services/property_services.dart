@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
 import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/data/models/property_model.dart';
@@ -69,7 +70,42 @@ class PropertyService {
         .toList();
   }
 
-  Future<void> updateProperty(String id, PropertyEntity entity) async {
+  // Future<void> updateProperty(String id, PropertyEntity entity) async {
+  //   final formData = FormData();
+
+  //   formData.fields.addAll([
+  //     MapEntry("title", entity.title),
+  //     MapEntry("location", entity.location),
+  //     MapEntry("description", entity.description),
+  //     MapEntry("price", entity.price.toString()),
+  //     MapEntry("listingType", entity.listingType),
+  //     MapEntry("type", entity.type),
+  //     MapEntry("size", entity.size.toString()),
+  //   ]);
+
+  //   if (entity.latitude != null) {
+  //     formData.fields.add(
+  //       MapEntry("coordinates[latitude]", entity.latitude.toString()),
+  //     );
+  //   }
+
+  //   if (entity.longitude != null) {
+  //     formData.fields.add(
+  //       MapEntry("coordinates[longitude]", entity.longitude.toString()),
+  //     );
+  //   }
+
+  //   entity.details.forEach((key, value) {
+  //     formData.fields.add(MapEntry("details[$key]", value.toString()));
+  //   });
+
+  //   await dio.patch('/api/seller/properties/$id', data: formData);
+  // }
+  Future<void> updateProperty(
+    String id,
+    PropertyEntity entity,
+    List<XFile> newImages,
+  ) async {
     final formData = FormData();
 
     formData.fields.addAll([
@@ -82,21 +118,20 @@ class PropertyService {
       MapEntry("size", entity.size.toString()),
     ]);
 
-    if (entity.latitude != null) {
-      formData.fields.add(
-        MapEntry("coordinates[latitude]", entity.latitude.toString()),
-      );
+    /// existing images
+    for (final image in entity.images) {
+      formData.fields.add(MapEntry("existingImages[]", image));
     }
 
-    if (entity.longitude != null) {
-      formData.fields.add(
-        MapEntry("coordinates[longitude]", entity.longitude.toString()),
+    /// new images
+    for (final image in newImages) {
+      formData.files.add(
+        MapEntry(
+          "images",
+          await MultipartFile.fromFile(image.path, filename: image.name),
+        ),
       );
     }
-
-    entity.details.forEach((key, value) {
-      formData.fields.add(MapEntry("details[$key]", value.toString()));
-    });
 
     await dio.patch('/api/seller/properties/$id', data: formData);
   }

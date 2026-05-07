@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
 import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/domain/repositories/property_repository.dart';
@@ -52,16 +53,7 @@ class PropertyCubit extends Cubit<PropertyState> {
     }
   }
 
-    // Future<void> deleteProperty(String id) async {
-    //   try {
-    //     await repository.delete(id);
-    //     await getAllSellerProperties();
-    //   } catch (e) {
-    //     emit(PropertyError(e.toString()));
-    //   }
-  // }
-
-   Future<void> deleteProperty(String id) async {
+  Future<void> deleteProperty(String id) async {
     try {
       await repository.delete(id);
       emit(PropertyDeleteSuccess('Property deleted successfully'));
@@ -71,16 +63,31 @@ class PropertyCubit extends Cubit<PropertyState> {
     }
   }
 
-  
-
+  // Future<void> updateProperty({
+  //   required String id,
+  //   required PropertyEntity entity,
+  // }) async {
+  //   try {
+  //     emit(PropertyLoading());
+  //     await repository.update(id, entity);
+  //     final properties = await repository.getAll();
+  //     emit(PropertyLoaded(properties));
+  //   } catch (e) {
+  //     emit(PropertyError(e.toString()));
+  //   }
+  // }
   Future<void> updateProperty({
     required String id,
     required PropertyEntity entity,
+    required List<XFile> newImages,
   }) async {
     try {
       emit(PropertyLoading());
-      await repository.update(id, entity);
+
+      await repository.update(id, entity, newImages);
+
       final properties = await repository.getAll();
+
       emit(PropertyLoaded(properties));
     } catch (e) {
       emit(PropertyError(e.toString()));
@@ -120,8 +127,4 @@ class PropertyCubit extends Cubit<PropertyState> {
       emit(PropertyError(e.toString()));
     }
   }
-
-  
-
-  
 }
