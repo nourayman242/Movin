@@ -219,7 +219,7 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(4),
                             decoration: const BoxDecoration(
-                              color: Colors.red,
+                              color: AppColors.grey,
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
@@ -288,23 +288,41 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
             ),
 
             const SizedBox(height: 30),
+            BlocBuilder<PropertyCubit, PropertyState>(
+              builder: (context, state) {
+                final isLoading = state is PropertyLoading;
 
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.gold,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-                onPressed: _onSave,
-                child: const Text(
-                  "Save Changes",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
+                return SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.gold,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+
+                    onPressed: isLoading ? null : _onSave,
+
+                    child: isLoading
+                        ? const SizedBox(
+                            height: 22,
+                            width: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.navyDark,
+                              ),
+                            ),
+                          )
+                        : const Text(
+                            "Save Changes",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ],
         ),
@@ -313,6 +331,25 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
   }
 
   void _onSave() async {
+    final bool imagesChanged =
+        existingImages.length != widget.property.images.length ||
+        newImages.isNotEmpty;
+
+    final bool removedAllOldImages = existingImages.isEmpty;
+
+    final bool addedNewImages = newImages.isNotEmpty;
+
+    if (imagesChanged && (!removedAllOldImages || !addedNewImages)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "To update images, remove all old images first, then add new ones.",
+          ),
+        ),
+      );
+
+      return;
+    }
     final updatedEntity = PropertyEntity(
       id: widget.property.id,
       title: titleController.text.trim(),
@@ -359,7 +396,11 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
     final cubit = context.read<PropertyCubit>();
 
     try {
-      await cubit.updateProperty(id: widget.property.id, entity: updatedEntity, newImages: newImages);
+      await cubit.updateProperty(
+        id: widget.property.id,
+        entity: updatedEntity,
+        newImages: newImages,
+      );
 
       if (!mounted) return;
 
@@ -374,7 +415,6 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
       ).showSnackBar(SnackBar(content: Text('Failed to update property: $e')));
     }
   }
-
 
   Widget _label(String text) => Padding(
     padding: const EdgeInsets.only(bottom: 6, top: 16),
