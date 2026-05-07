@@ -17,6 +17,7 @@ class PlaceBidSection extends StatefulWidget {
 class _PlaceBidSectionState extends State<PlaceBidSection> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController controller = TextEditingController();
+  bool _isPlacingBid = false;
   @override
   void initState() {
     super.initState();
@@ -32,8 +33,40 @@ class _PlaceBidSectionState extends State<PlaceBidSection> {
       listenWhen: (previous, current) =>
           previous.bidSuccess != current.bidSuccess ||
           previous.errorMessage != current.errorMessage,
+      // listener: (context, state) {
+      //   if (state.bidSuccess) {
+      //     ScaffoldMessenger.of(context).showSnackBar(
+      //       SnackBar(
+      //         backgroundColor: AppColors.background,
+      //         content: Row(
+      //           children: [
+      //             Icon(Icons.check_circle, color: AppColors.primaryNavy),
+      //             SizedBox(width: 12),
+      //             Column(
+      //               crossAxisAlignment: CrossAxisAlignment.start,
+      //               children: [
+      //                 Text(
+      //                   'Your bid has been successfully placed',
+      //                   style: TextStyle(color: AppColors.primaryNavy),
+      //                 ),
+      //               ],
+      //             ),
+      //           ],
+      //         ),
+      //       ),
+      //     );
+      //   }
+
+      //   if (state.errorMessage != null) {
+      //     ScaffoldMessenger.of(
+      //       context,
+      //     ).showSnackBar(SnackBar(content: Text(" ${state.errorMessage}")));
+      //   }
+      // },
       listener: (context, state) {
-        if (state.bidSuccess) {
+        if (state.bidSuccess && _isPlacingBid) {
+          _isPlacingBid = false;
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: AppColors.background,
@@ -56,10 +89,12 @@ class _PlaceBidSectionState extends State<PlaceBidSection> {
           );
         }
 
-        if (state.errorMessage != null) {
+        if (state.errorMessage != null && _isPlacingBid) {
+          _isPlacingBid = false;
+
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text(" ${state.errorMessage}")));
+          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
         }
       },
       child: Padding(
@@ -155,6 +190,7 @@ class _PlaceBidSectionState extends State<PlaceBidSection> {
                         );
                         return;
                       }
+                      _isPlacingBid = true;
 
                       context.read<AuctionCubit>().placeIncrementBid(
                         widget.property.id,
@@ -203,7 +239,9 @@ class _QuickBidButton extends StatelessWidget {
           final userId = await SharedHelper.getUserId();
 
           if (userId == null) return;
-
+          (context.findAncestorStateOfType<_PlaceBidSectionState>())
+                  ?._isPlacingBid =
+              true;
           context.read<AuctionCubit>().placeIncrementBid(
             property.id,
             value,
@@ -244,6 +282,9 @@ class _QuickBidButtonPercent extends StatelessWidget {
           final userId = await SharedHelper.getUserId();
 
           if (userId == null) return;
+          (context.findAncestorStateOfType<_PlaceBidSectionState>())
+                  ?._isPlacingBid =
+              true;
 
           context.read<AuctionCubit>().placePercentBid(
             property.id,
