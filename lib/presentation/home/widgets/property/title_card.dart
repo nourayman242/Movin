@@ -98,7 +98,7 @@ class TitleCard extends StatelessWidget {
                 property.size != 0 ? property.size.toString() : '-',
                 'msqr',
               ),
-              if (property.isAuction)
+              if (property.isAuction && property.auction!['status']=="approved")
 
               _infoItem(
                 Icons.gavel_outlined,
