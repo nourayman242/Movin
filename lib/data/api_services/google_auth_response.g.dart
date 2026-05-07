@@ -8,12 +8,14 @@ part of 'google_auth_response.dart';
 
 GoogleAuthResponse _$GoogleAuthResponseFromJson(Map<String, dynamic> json) =>
     GoogleAuthResponse(
-      token: json['token'] as String,
+      accessToken: json['accessToken'] as String,
+      refreshToken: json['refreshToken'] as String,
       user: UserResponse.fromJson(json['user'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$GoogleAuthResponseToJson(GoogleAuthResponse instance) =>
     <String, dynamic>{
-      'token': instance.token,
+      'accessToken': instance.accessToken,
+      'refreshToken': instance.refreshToken,
       'user': instance.user,
     };

@@ -5,6 +5,7 @@ import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart'
 import 'package:movin/domain/repositories/auth_repository.dart';
 import 'package:movin/presentation/login/cubit/auth_state.dart';
 
+import '../../../data/models/profile_model.dart';
 import '../../../data_injection/getIt/service_locator.dart';
 import '../../../domain/entities/login_entity.dart';
 import '../../../domain/repositories/login_repositories.dart';
@@ -37,6 +38,45 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+//   Future<void> loginWithGoogle() async {
+//     emit(AuthLoading());
+//
+//     try {
+//       final result = await authRepo.loginWithGoogle();
+//
+//       final accessToken = result['accessToken'] as String;
+//       final refreshToken = result['refreshToken'] as String;
+//
+//       await SharedHelper.saveToken(accessToken);
+//       await SharedHelper.saveRefreshToken(refreshToken);
+//       await SharedHelper.setLoggedIn(true);
+// //gded
+// //       final profileRepo = getIt<ProfileRepository>();
+// //       final profile = await profileRepo.getProfile();
+// //adeeeeeem
+//       // final userJson = result['user'];
+//       // UserResponse? user;
+//       // if (userJson != null) {
+//       //   user = UserResponse.fromJson(userJson);
+//       // }
+//       // await _saveUserData(accessToken, refreshToken, user);
+//       ///////////////
+//       UserResponse? profile;
+//
+//       try {
+//         final profileRepo = getIt<ProfileRepository>();
+//         profile = await profileRepo.getProfile();
+//       } catch (e) {
+//         print("Profile not available → new Google user");
+//         profile = null;
+//       }
+//       emit(AuthGoogleSuccess(accessToken,profile));
+//          // user     //-> adem
+//       //));
+//     } catch (e) {
+//       emit(AuthError(e.toString()));
+//     }
+//   }
   Future<void> loginWithGoogle() async {
     emit(AuthLoading());
 
@@ -45,27 +85,39 @@ class AuthCubit extends Cubit<AuthState> {
 
       final accessToken = result['accessToken'] as String;
       final refreshToken = result['refreshToken'] as String;
+
       await SharedHelper.saveToken(accessToken);
       await SharedHelper.saveRefreshToken(refreshToken);
+
+      ProfileModel? profile;
+      bool isNewGoogleUser = false;
+
+      try {
+        final profileRepo = getIt<ProfileRepository>();
+        profile = await profileRepo.getProfile();
+
+        // 🧠 extra safety check
+        if (profile.isBuyer == false && profile.isSeller == false) {
+          isNewGoogleUser = true;
+        }
+
+      } catch (e) {
+        print("🚨 Google user has no profile yet");
+        profile = null;
+        isNewGoogleUser = true;
+      }
+
       await SharedHelper.setLoggedIn(true);
-//gded
-      final profileRepo = getIt<ProfileRepository>();
-      final profile = await profileRepo.getProfile();
-//adeeeeeem
-      // final userJson = result['user'];
-      // UserResponse? user;
-      // if (userJson != null) {
-      //   user = UserResponse.fromJson(userJson);
-      // }
-      // await _saveUserData(accessToken, refreshToken, user);
-      ///////////////
-      emit(AuthGoogleSuccess(accessToken,profile));
-         // user     //-> adem
-      //));
+
+      emit(AuthGoogleSuccess(
+        accessToken,
+        profile,
+      ));
     } catch (e) {
       emit(AuthError(e.toString()));
     }
   }
+
   Future<void> _saveUserData( String accessToken,
       String refreshToken,UserResponse? user) async {
     await SharedHelper.saveToken(accessToken);

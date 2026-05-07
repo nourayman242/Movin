@@ -10,10 +10,11 @@ UserResponse _$UserResponseFromJson(Map<String, dynamic> json) => UserResponse(
       id: json['id'] as String,
       name: json['name'] as String,
       email: json['email'] as String,
-      phone: UserResponse._phoneFromJson(json['phone']),
+      phone: json['phone'] as String?,
       isAdmin: json['isAdmin'] as bool?,
       isSeller: json['isSeller'] as bool?,
       isBuyer: json['isBuyer'] as bool?,
+      isGoogleAuth: json['isGoogleAuth'] as bool?,
     );
 
 Map<String, dynamic> _$UserResponseToJson(UserResponse instance) =>
@@ -25,4 +26,5 @@ Map<String, dynamic> _$UserResponseToJson(UserResponse instance) =>
       'isAdmin': instance.isAdmin,
       'isSeller': instance.isSeller,
       'isBuyer': instance.isBuyer,
+      'isGoogleAuth': instance.isGoogleAuth,
     };

@@ -9,12 +9,14 @@ class UserResponse {
   final String name;
   final String email;
   
-  @JsonKey(fromJson: _phoneFromJson)
-  final String phone;
+  //@JsonKey(fromJson: _phoneFromJson)
+  final String? phone;
 
   final bool? isAdmin;
   final bool? isSeller;
   final bool? isBuyer;
+
+  final bool? isGoogleAuth;
 
   UserResponse({
     required this.id,
@@ -24,6 +26,8 @@ class UserResponse {
     this.isAdmin,
     this.isSeller,
     this.isBuyer,
+
+    this.isGoogleAuth
   });
 
   // factory UserResponse.fromJson(Map<String, dynamic> json) =>
@@ -34,11 +38,15 @@ class UserResponse {
       id: (json['id'] ?? json['_id'] ?? '').toString(),
       name: (json['name'] ?? json['username'] ?? '').toString(),
       email: (json['email'] ?? '').toString(),
-      phone: (json['phone'] ?? '').toString(),
+
+      //phone: (json['phone'] ?? '').toString(),
+      phone: json['phone']?.toString(),
 
       isAdmin: json['isAdmin'],
       isSeller: json['isSeller'],
       isBuyer: json['isBuyer'],
+
+      isGoogleAuth: json['isGoogleAuth'],
     );
   }
 
@@ -52,6 +60,8 @@ class UserResponse {
       'isAdmin': isAdmin,
       'isSeller': isSeller,
       'isBuyer': isBuyer,
+
+      'isGoogleAuth': isGoogleAuth,
     };
   }
 

@@ -28,7 +28,8 @@ class AuthSuccess extends AuthState {
 }
 class AuthGoogleSuccess extends AuthState {
   final String token;
-  final ProfileModel profile;
+  final ProfileModel? profile;
+  //final UserResponse? profile;
 
   AuthGoogleSuccess(this.token, this.profile);
 }
