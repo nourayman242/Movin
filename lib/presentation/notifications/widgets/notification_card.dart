@@ -33,7 +33,7 @@ class NotificationCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildIcon(notification.type),
+              _buildIcon(notification),
 
               const SizedBox(width: 12),
 
@@ -77,27 +77,88 @@ class NotificationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildIcon(String type) {
+  // Widget _buildIcon(String type) {
+  //   IconData icon;
+  //   Color bg;
+  //
+  //   switch (type) {
+  //     case 'message':
+  //       icon = Icons.chat_bubble_outline;
+  //       bg = Colors.blue.shade50;
+  //       break;
+  //
+  //     case 'alert':
+  //       //icon = Icons.gavel;
+  //       icon = Icons.notifications_none;
+  //
+  //       bg = Colors.orange.shade50;
+  //       break;
+  //
+  //     default:
+  //       //icon = Icons.notifications_none;
+  //       icon = Icons.gavel;
+  //       bg = Colors.grey.shade100;
+  //   }
+
+  //   return CircleAvatar(
+  //     backgroundColor: bg,
+  //     radius: 22,
+  //     child: Icon(
+  //       icon,
+  //       color: AppColors.primaryNavy,
+  //     ),
+  //   );
+  // }
+  Widget _buildIcon(NotificationEntity notification) {
+    final title = notification.title.toLowerCase();
+    final body = notification.body.toLowerCase();
+
     IconData icon;
     Color bg;
 
-    switch (type) {
-      case 'message':
-        icon = Icons.chat_bubble_outline;
-        bg = Colors.blue.shade50;
-        break;
+    if (notification.type == 'message') {
+      icon = Icons.chat_bubble_outline;
+      bg = Colors.blue.shade50;
+    }
 
-      case 'alert':
-        //icon = Icons.gavel;
-        icon = Icons.notifications_none;
+    else if (
+    title.contains('auction') ||
+        body.contains('auction') ||
+        body.contains('bid')
+    ) {
+      icon = Icons.gavel;
+      bg = Colors.orange.shade50;
+    }
 
-        bg = Colors.orange.shade50;
-        break;
+    else if (
+    title.contains('price') ||
+        body.contains('price') ||
+        body.contains('reduced')
+    ) {
+      icon = Icons.attach_money;
+      bg = Colors.green.shade50;
+    }
 
-      default:
-        //icon = Icons.notifications_none;
-        icon = Icons.gavel;
-        bg = Colors.grey.shade100;
+    else if (
+    title.contains('favorite') ||
+        title.contains('wishlist')
+    ) {
+      icon = Icons.favorite_border;
+      bg = Colors.pink.shade50;
+    }
+
+    else if (
+    title.contains('property') ||
+        body.contains('villa') ||
+        body.contains('apartment')
+    ) {
+      icon = Icons.home_outlined;
+      bg = Colors.purple.shade50;
+    }
+
+    else {
+      icon = Icons.notifications_none;
+      bg = Colors.grey.shade100;
     }
 
     return CircleAvatar(
@@ -118,9 +179,9 @@ class NotificationCard extends StatelessWidget {
     }
 
     if (diff.inHours < 24) {
-      return '${diff.inHours} hour ago';
+      return '${diff.inHours} hours ago';
     }
 
-    return '${diff.inDays} day ago';
+    return '${diff.inDays} days ago';
   }
 }

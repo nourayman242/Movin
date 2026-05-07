@@ -96,6 +96,8 @@ class FavCard extends StatelessWidget {
                 Text(
                   property.description,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
 
                 const SizedBox(height: 8),

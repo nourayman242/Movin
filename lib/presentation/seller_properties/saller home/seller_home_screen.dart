@@ -22,6 +22,9 @@ import 'package:movin/presentation/seller_properties/saller%20home/cubit/views_c
 import 'package:movin/presentation/seller_properties/saller%20home/cubit/views_chart_state.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../notifications/managers/notification_bloc/notification_bloc.dart';
+import '../../notifications/managers/notification_bloc/notification_state.dart';
+
 class SellerHome extends StatefulWidget {
   const SellerHome({super.key});
 
@@ -100,6 +103,16 @@ class _SellerHomeState extends State<SellerHome>
           stats: {},
           createdAt: DateTime.now(),
         );
+    final notificationBloc = context.watch<NotificationBloc>();
+
+    int unreadCount = 0;
+
+    if (notificationBloc.state is NotificationLoaded) {
+      unreadCount = (notificationBloc.state as NotificationLoaded)
+          .notifications
+          .where((e) => !e.read)
+          .length;
+    }
     return Scaffold(
       backgroundColor: AppColors.background,
 
@@ -182,7 +195,8 @@ class _SellerHomeState extends State<SellerHome>
                                     },
                                     child: iconContainer(
                                       Icons.notifications_none_outlined,
-                                      hasBadge: true,
+                                      // hasBadge: true,
+                                      hasBadge: unreadCount > 0,
                                     ),
                                   ),
                                   SizedBox(width: 10),
