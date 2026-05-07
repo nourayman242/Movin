@@ -7,6 +7,7 @@ import 'package:movin/presentation/notifications/widgets/notification_card.dart'
 import '../managers/notification_bloc/notification_bloc.dart';
 import '../managers/notification_bloc/notification_event.dart';
 import '../managers/notification_bloc/notification_state.dart';
+import '../notifications_routes.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -54,19 +55,50 @@ class _NotificationsScreenState
 
         elevation: 0,
 
+        // actions: [
+        //   TextButton(
+        //     onPressed: () {
+        //       context.read<NotificationBloc>().add(
+        //         MarkAllNotificationsAsReadEvent(),
+        //       );
+        //     },
+        //     child: Text(
+        //       'Mark all as read',
+        //       style: TextStyle(
+        //         color: AppColors.gold,
+        //       ),
+        //     ),
+        //   ),
+        // ],
         actions: [
-          TextButton(
-            onPressed: () {
-              context.read<NotificationBloc>().add(
-                MarkAllNotificationsAsReadEvent(),
+          BlocBuilder<NotificationBloc, NotificationState>(
+            builder: (context, state) {
+
+              bool hasUnread = false;
+
+              if (state is NotificationLoaded) {
+                hasUnread = state.notifications.any((e) => !e.read);
+              }
+
+              return TextButton(
+                onPressed: hasUnread
+                    ? () {
+                  context.read<NotificationBloc>().add(
+                    MarkAllNotificationsAsReadEvent(),
+                  );
+                }
+                    : null,
+
+                child: Text(
+                  'Mark all as read',
+                  style: TextStyle(
+                    color: hasUnread
+                        ? AppColors.gold
+                        : Colors.grey,
+                  ),
+                ),
               );
             },
-            child: Text(
-              'Mark all as read',
-              style: TextStyle(
-                color: AppColors.gold,
-              ),
-            ),
           ),
         ],
 
@@ -169,12 +201,19 @@ class _NotificationsScreenState
           notification: notification,
 
           onTap: () {
-            context.read<NotificationBloc>().add(
-              MarkNotificationAsReadEvent(
-                notification.id,
-              ),
+            //
+            if (!notification.read) {
+              context.read<NotificationBloc>().add(
+                MarkNotificationAsReadEvent(
+                  notification.id,
+                ),
+              );
+            }
+            Navigator.push(
+              context,
+              NotificationRoute.resolve(notification),
             );
-          },
+          }
         );
       },
     );

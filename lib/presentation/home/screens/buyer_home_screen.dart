@@ -30,6 +30,9 @@ import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 import 'package:movin/presentation/view_more_home/screens/view_more_listing.dart';
 import 'package:movin/presentation/view_more_home/screens/view_more_recommendtion.dart';
 
+import '../../notifications/managers/notification_bloc/notification_bloc.dart';
+import '../../notifications/managers/notification_bloc/notification_state.dart';
+
 class BuyerHome extends StatefulWidget {
   //final ProfileModel currentProfile;
 
@@ -102,6 +105,16 @@ class _BuyerHomeState extends State<BuyerHome> {
           stats: {},
           createdAt: DateTime.now(),
         );
+    final notificationBloc = context.watch<NotificationBloc>();
+
+    int unreadCount = 0;
+
+    if (notificationBloc.state is NotificationLoaded) {
+      unreadCount = (notificationBloc.state as NotificationLoaded)
+          .notifications
+          .where((e) => !e.read)
+          .length;
+    }
 
     return Scaffold(
       drawer: CustomDrawer(profile: safeProfile),
@@ -149,7 +162,8 @@ class _BuyerHomeState extends State<BuyerHome> {
                           },
                           child: iconContainer(
                             Icons.notifications_none_outlined,
-                            hasBadge: true,
+                            //hasBadge: true,
+                            hasBadge: unreadCount > 0,
                           ),
                         ),
                         const SizedBox(width: 12),

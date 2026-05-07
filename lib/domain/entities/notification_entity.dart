@@ -4,6 +4,9 @@ class NotificationEntity {
   final String body;
   final String type;
   final bool read;
+  final String? screen;
+  final String? entityId;
+  final Map<String, dynamic>? extra;
   final DateTime createdAt;
 
   NotificationEntity({
@@ -12,6 +15,9 @@ class NotificationEntity {
     required this.body,
     required this.type,
     required this.read,
+    this.screen,
+    this.entityId,
+    this.extra,
     required this.createdAt,
   });
 
