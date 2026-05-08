@@ -35,12 +35,15 @@ class SellerHome extends StatefulWidget {
 class _SellerHomeState extends State<SellerHome>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
-  void _refreshSellerDashboard() {
-    context.read<SellerDashboardCubit>().getSellerDashboardStats();
-    context.read<ViewsChartCubit>().getSellerViewsChart();
-    context.read<MostviewedCubit>().getMostViewedProperties();
-    context.read<PropertyCubit>().getAllSellerProperties();
+  final ScrollController _scrollController = ScrollController();
+  Future<void> _refreshSellerDashboard() async {
+    await Future.wait([
+      context.read<SellerDashboardCubit>().getSellerDashboardStats(),
+      context.read<ViewsChartCubit>().getSellerViewsChart(),
+      context.read<MostviewedCubit>().getMostViewedProperties(),
+      context.read<PropertyCubit>().getAllSellerProperties(),
+      context.read<NewsCubit>().getNews(),
+    ]);
   }
 
   @override
@@ -55,15 +58,16 @@ class _SellerHomeState extends State<SellerHome>
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<PropertyCubit, PropertyState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is PropertyDeleteSuccess) {
-          _refreshSellerDashboard();
+          await _refreshSellerDashboard();
 
           ScaffoldMessenger.of(
             context,
@@ -114,11 +118,17 @@ class _SellerHomeState extends State<SellerHome>
     }
     return Scaffold(
       backgroundColor: AppColors.background,
-
       drawer: CustomDrawer(profile: safeProfile),
+
       body: DefaultTabController(
         length: 3,
+
         child: NestedScrollView(
+          controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
+
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
               SliverToBoxAdapter(
@@ -131,40 +141,51 @@ class _SellerHomeState extends State<SellerHome>
                         right: 20,
                         bottom: 30,
                       ),
+
                       decoration: const BoxDecoration(
                         color: AppColors.primaryNavy,
                       ),
+
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                             children: [
                               Builder(
                                 builder: (context) => InkWell(
                                   borderRadius: BorderRadius.circular(12),
+
                                   onTap: () =>
                                       Scaffold.of(context).openDrawer(),
+
                                   child: iconContainer(Icons.menu),
                                 ),
                               ),
+
                               Row(
                                 children: [
                                   Container(
                                     margin: const EdgeInsets.only(right: 14),
+
                                     child: ElevatedButton.icon(
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: AppColors.gold,
+
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
                                             30,
                                           ),
                                         ),
                                       ),
+
                                       icon: const Icon(
                                         Icons.add,
                                         color: Colors.black,
                                       ),
+
                                       label: const Text(
                                         "Add Property",
                                         style: TextStyle(color: Colors.black),
@@ -177,11 +198,12 @@ class _SellerHomeState extends State<SellerHome>
                                         );
 
                                         if (mounted) {
-                                          _refreshSellerDashboard();
+                                          await _refreshSellerDashboard();
                                         }
                                       },
                                     ),
                                   ),
+
                                   GestureDetector(
                                     onTap: () {
                                       Navigator.push(
@@ -192,13 +214,15 @@ class _SellerHomeState extends State<SellerHome>
                                         ),
                                       );
                                     },
+
                                     child: iconContainer(
                                       Icons.notifications_none_outlined,
-                                      // hasBadge: true,
                                       hasBadge: unreadCount > 0,
                                     ),
                                   ),
-                                  SizedBox(width: 10),
+
+                                  const SizedBox(width: 10),
+
                                   GestureDetector(
                                     onTap: () {
                                       Navigator.push(
@@ -209,13 +233,16 @@ class _SellerHomeState extends State<SellerHome>
                                         ),
                                       );
                                     },
+
                                     child: iconContainer(Icons.gavel_outlined),
                                   ),
                                 ],
                               ),
                             ],
                           ),
+
                           const SizedBox(height: 30),
+
                           const Text(
                             "Seller Dashboard",
                             style: TextStyle(
@@ -224,6 +251,7 @@ class _SellerHomeState extends State<SellerHome>
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+
                           const Text(
                             "Manage your properties and track performance",
                             style: TextStyle(
@@ -231,7 +259,9 @@ class _SellerHomeState extends State<SellerHome>
                               fontSize: 18,
                             ),
                           ),
+
                           const SizedBox(height: 30),
+
                           BlocBuilder<
                             SellerDashboardCubit,
                             SellerDashboardState
@@ -241,6 +271,7 @@ class _SellerHomeState extends State<SellerHome>
                                 return const Center(
                                   child: Padding(
                                     padding: EdgeInsets.all(20),
+
                                     child: CircularProgressIndicator(
                                       color: AppColors.gold,
                                     ),
@@ -254,6 +285,7 @@ class _SellerHomeState extends State<SellerHome>
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
+
                                       children: [
                                         Expanded(
                                           child: _statCard(
@@ -263,7 +295,9 @@ class _SellerHomeState extends State<SellerHome>
                                             Icons.home_outlined,
                                           ),
                                         ),
+
                                         const SizedBox(width: 20),
+
                                         Expanded(
                                           child: _statCard(
                                             "Total Views",
@@ -273,10 +307,13 @@ class _SellerHomeState extends State<SellerHome>
                                         ),
                                       ],
                                     ),
+
                                     const SizedBox(height: 20),
+
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
+
                                       children: [
                                         Expanded(
                                           child: _statCard(
@@ -286,7 +323,9 @@ class _SellerHomeState extends State<SellerHome>
                                             Icons.favorite_border,
                                           ),
                                         ),
+
                                         const SizedBox(width: 20),
+
                                         Expanded(
                                           child: _statCard(
                                             "Auctions",
@@ -330,9 +369,42 @@ class _SellerHomeState extends State<SellerHome>
           body: TabBarView(
             controller: _tabController,
             children: [
-              SingleChildScrollView(child: _overviewContent()),
-              SingleChildScrollView(child: _myListingsContent(context)),
-              SingleChildScrollView(child: _newsContent()),
+              RefreshIndicator(
+                color: AppColors.gold,
+                onRefresh: _refreshSellerDashboard,
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+                  padding: EdgeInsets.zero,
+                  children: [_overviewContent()],
+                ),
+              ),
+
+              RefreshIndicator(
+                color: AppColors.gold,
+                onRefresh: _refreshSellerDashboard,
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+                  padding: EdgeInsets.zero,
+                  children: [_myListingsContent(context)],
+                ),
+              ),
+
+              RefreshIndicator(
+                backgroundColor: AppColors.background,
+                color: AppColors.gold,
+                onRefresh: _refreshSellerDashboard,
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+                  padding: EdgeInsets.zero,
+                  children: [_newsContent()],
+                ),
+              ),
             ],
           ),
         ),
@@ -422,6 +494,7 @@ class _SellerHomeState extends State<SellerHome>
       ),
     );
   }
+
   Widget _perfCard() {
     return BlocBuilder<ViewsChartCubit, ViewsChartState>(
       builder: (context, state) {
@@ -928,7 +1001,7 @@ class _SellerHomeState extends State<SellerHome>
                     onPressed: () async {
                       await Navigator.pushNamed(context, '/addproperty');
                       if (mounted) {
-                        _refreshSellerDashboard();
+                        await _refreshSellerDashboard();
                       }
                     },
                   ),
@@ -937,38 +1010,36 @@ class _SellerHomeState extends State<SellerHome>
             );
           }
 
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                ...state.properties.map(
-                  (property) => _fullListingCardFromModel(context, property),
-                ),
+          return Column(
+            children: [
+              ...state.properties.map(
+                (property) => _fullListingCardFromModel(context, property),
+              ),
 
-                const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-                Center(
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
+              Center(
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
                     ),
-                    icon: const Icon(Icons.add, color: Colors.black),
-                    label: const Text(
-                      "Add Property",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/addproperty');
-                      if (mounted) {
-                        _refreshSellerDashboard();
-                      }
-                    },
                   ),
+                  icon: const Icon(Icons.add, color: Colors.black),
+                  label: const Text(
+                    "Add Property",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/addproperty');
+                    if (mounted) {
+                      _refreshSellerDashboard();
+                    }
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         }
 
@@ -1092,7 +1163,7 @@ class _SellerHomeState extends State<SellerHome>
             arguments: property,
           );
           if (mounted) {
-            _refreshSellerDashboard();
+            await _refreshSellerDashboard();
           }
         } else if (value == 'delete') {
           _confirmDelete(context, property.id);
@@ -1103,7 +1174,7 @@ class _SellerHomeState extends State<SellerHome>
             arguments: property,
           );
           if (mounted) {
-            _refreshSellerDashboard();
+            await _refreshSellerDashboard();
           }
         }
       },
