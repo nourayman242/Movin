@@ -76,25 +76,6 @@ class AuctionCubit extends Cubit<AuctionState> {
       );
     });
 
-    // repo.listenNewBid((data) {
-    //   print("newBid: $data");
-
-    //   final newBids = List.from(state.bids)..insert(0, data["bid"]);
-
-    //   emit(
-    //     state.copyWith(
-    //       currentBid: data["currentBid"] ?? state.currentBid,
-    //       totalBids: data["totalBids"] ?? state.totalBids,
-    //       endTime: data["endTime"] ?? state.endTime,
-    //       status: data["status"] ?? state.status,
-    //       bids: newBids,
-    //       bidSuccess: true,
-    //       errorMessage: null,
-    //     ),
-    //   );
-    //   emit(state.copyWith(bidSuccess: false));
-    // });
-
 
 
 repo.listenNewBid((data) {

@@ -14,6 +14,7 @@ class AuctionSeller {
 
 class AuctionListModel {
   final String id;
+  final String title;
   final String description;
   final String location;
   final String? image;
@@ -27,9 +28,11 @@ class AuctionListModel {
   final String listingType;
   final double size;
   final int views;
+  Map<String, dynamic> details;
 
   AuctionListModel({
     required this.id,
+    required this.title,
     required this.description,
     required this.location,
     this.image,
@@ -43,11 +46,15 @@ class AuctionListModel {
     required this.listingType,
     required this.size,
     required this.views,
+    required this.details,
   });
 
   factory AuctionListModel.fromJson(Map<String, dynamic> json) {
+    print("TITLE => ${json['title']}");
+print("DETAILS => ${json['details']}");
     return AuctionListModel(
       id: json['_id'] ?? '',
+      title: json['title']?.toString() ?? '',
       description: json['description'] ?? '',
       location: json['location'] ?? '',
       image: json['image'],
@@ -61,6 +68,10 @@ class AuctionListModel {
       listingType: json['listingType'] ?? '',
       size: (json['size'] ?? 0).toDouble(),
       views: json['views'] ?? 0,
+      details: json['details'] != null
+    ? Map<String, dynamic>.from(json['details'])
+    : {},
     );
+    
   }
 }
