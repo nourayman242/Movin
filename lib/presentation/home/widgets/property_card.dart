@@ -127,7 +127,7 @@ class PropertyCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    property.description,
+                    property.title,
                     style: AppTextStyles.label,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -177,7 +177,7 @@ class PropertyCard extends StatelessWidget {
 
                      
                       _attrItem(
-                        property.size.isNotEmpty ? property.size : '-',
+                        property.size != 0 ? property.size.toString() : '-',
                         "msqr",
                       ),
 

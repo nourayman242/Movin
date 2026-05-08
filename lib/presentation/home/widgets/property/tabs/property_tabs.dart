@@ -48,7 +48,7 @@ class PropertyTabs extends StatelessWidget {
 
          
           if (controller.selectedTab == 0)
-            DescriptionTab()
+            DescriptionTab(property: property,)
           else if (controller.selectedTab == 1)
             FeaturesTab(property: property)
           else

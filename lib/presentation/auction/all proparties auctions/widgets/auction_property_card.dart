@@ -76,7 +76,7 @@ class AuctionPropertyCard extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: status == "Active" ? AppColors.gold : Colors.red,
+                    color: status == "live" ? AppColors.gold : Colors.red,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(

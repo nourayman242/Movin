@@ -24,12 +24,6 @@ class _AuctionDateFieldState extends State<AuctionDateField> {
   final TextEditingController _controller = TextEditingController();
 
   Future<void> _pickDateTime() async {
-    // final date = await showDatePicker(
-    //   context: context,
-    //   initialDate: DateTime.now(),
-    //   firstDate: DateTime.now(),
-    //   lastDate: DateTime(2100),
-    // );
     final date = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -49,10 +43,6 @@ class _AuctionDateFieldState extends State<AuctionDateField> {
 
     if (date == null) return;
 
-    // final time = await showTimePicker(
-    //   context: context,
-    //   initialTime: TimeOfDay.now(),
-    // );
     final time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),

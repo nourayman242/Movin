@@ -242,7 +242,7 @@ class _CreateAuctionScreenState extends State<CreateAuctionScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                property.description,
+                property.title,
                 style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
               ),
               Text(

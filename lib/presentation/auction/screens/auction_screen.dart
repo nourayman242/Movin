@@ -68,7 +68,7 @@ class _AuctionScreenState extends State<AuctionScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      const DescriptionTab(),
+                       DescriptionTab(property: widget.property),
                     ],
                   ),
                 ),

@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/data/models/property_model.dart';
 import 'package:movin/domain/entities/property_entity.dart';
@@ -15,6 +18,7 @@ class EditPropertyScreen extends StatefulWidget {
 }
 
 class _EditPropertyScreenState extends State<EditPropertyScreen> {
+  late TextEditingController titleController;
   late TextEditingController locationController;
   late TextEditingController descriptionController;
   late TextEditingController priceController;
@@ -26,6 +30,11 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
   late String selectedStatus;
 
   late String selectedListingType;
+  final ImagePicker picker = ImagePicker();
+
+  late List<String> existingImages;
+
+  List<XFile> newImages = [];
 
   @override
   void initState() {
@@ -33,10 +42,11 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
 
     final p = widget.property;
 
+    titleController = TextEditingController(text: p.title);
     locationController = TextEditingController(text: p.location);
     descriptionController = TextEditingController(text: p.description);
     priceController = TextEditingController(text: p.price.toString());
-    sizeController = TextEditingController(text: p.size);
+    sizeController = TextEditingController(text: p.size.toString());
     bedroomsController = TextEditingController(
       text: p.details["bedrooms"]?.toString() ?? "",
     );
@@ -48,10 +58,34 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
     selectedType = p.type.toLowerCase();
     selectedStatus = p.status;
     selectedListingType = p.listingType;
+    existingImages = List.from(widget.property.images);
+  }
+
+  Future<void> _pickImages() async {
+    final picked = await picker.pickMultiImage();
+
+    if (picked.isNotEmpty) {
+      setState(() {
+        newImages.addAll(picked);
+      });
+    }
+  }
+
+  void _removeExistingImage(int index) {
+    setState(() {
+      existingImages.removeAt(index);
+    });
+  }
+
+  void _removeNewImage(int index) {
+    setState(() {
+      newImages.removeAt(index);
+    });
   }
 
   @override
   void dispose() {
+    titleController.dispose();
     locationController.dispose();
     descriptionController.dispose();
     priceController.dispose();
@@ -78,6 +112,8 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _label("Title"),
+            _input(titleController),
             _label("Location"),
             _input(locationController),
 
@@ -147,42 +183,146 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
               decoration: _decoration(),
             ),
 
-            // _label("Status"),
-            // DropdownButtonFormField<String>(
-            //   dropdownColor: AppColors.background,
-            //   value: selectedStatus,
-            //   items: const [
-            //     DropdownMenuItem(value: "active", child: Text("Active")),
-            //     DropdownMenuItem(value: "pending", child: Text("Pending")),
-            //     DropdownMenuItem(value: "sold", child: Text("Sold")),
-            //   ],
-            //   onChanged: (v) => setState(() => selectedStatus = v!),
-            //   decoration: _decoration(),
-            // ),
-
             const SizedBox(height: 20),
 
-            _label("Current Images"),
-            _imagesPreview(widget.property.images),
+            _label("Property Images"),
+            Text(
+              "You can add new images or remove existing ones.By Changes all existing ones .",
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+            ),
 
-            const SizedBox(height: 30),
+            SizedBox(height: 10),
 
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.gold,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-                onPressed: _onSave,
-                child: const Text(
-                  "Save Changes",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                /// EXISTING IMAGES
+                ...List.generate(existingImages.length, (index) {
+                  return Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          existingImages[index],
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+
+                      Positioned(
+                        top: 4,
+                        right: 4,
+                        child: GestureDetector(
+                          onTap: () => _removeExistingImage(index),
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(
+                              color: AppColors.grey,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+
+                /// NEW IMAGES
+                ...List.generate(newImages.length, (index) {
+                  return Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.file(
+                          File(newImages[index].path),
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+
+                      Positioned(
+                        top: 4,
+                        right: 4,
+                        child: GestureDetector(
+                          onTap: () => _removeNewImage(index),
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(
+                              color: AppColors.grey,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+
+                /// ADD BUTTON
+                GestureDetector(
+                  onTap: _pickImages,
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(Icons.add_a_photo, size: 35),
                   ),
                 ),
-              ),
+              ],
+            ),
+
+            const SizedBox(height: 30),
+            BlocBuilder<PropertyCubit, PropertyState>(
+              builder: (context, state) {
+                final isLoading = state is PropertyLoading;
+
+                return SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.gold,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+
+                    onPressed: isLoading ? null : _onSave,
+
+                    child: isLoading
+                        ? const SizedBox(
+                            height: 22,
+                            width: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.navyDark,
+                              ),
+                            ),
+                          )
+                        : const Text(
+                            "Save Changes",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -191,24 +331,76 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
   }
 
   void _onSave() async {
+    final bool imagesChanged =
+        existingImages.length != widget.property.images.length ||
+        newImages.isNotEmpty;
+
+    final bool removedAllOldImages = existingImages.isEmpty;
+
+    final bool addedNewImages = newImages.isNotEmpty;
+
+    if (imagesChanged && (!removedAllOldImages || !addedNewImages)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "To update images, remove all old images first, then add new ones.",
+          ),
+        ),
+      );
+
+      return;
+    }
     final updatedEntity = PropertyEntity(
+      id: widget.property.id,
+      title: titleController.text.trim(),
+
       location: locationController.text.trim(),
+
       description: descriptionController.text.trim(),
+
       price: int.tryParse(priceController.text.trim()) ?? 0,
+
       listingType: selectedListingType,
+
       type: selectedType,
-      size: sizeController.text.trim(),
-      images: widget.property.images,
+
+      size: int.tryParse(sizeController.text.trim()) ?? 0,
+
+      //images: widget.property.images,
+      images: existingImages,
+
+      status: widget.property.status,
+
       details: {
         "bedrooms": bedroomsController.text.trim(),
         "bathrooms": bathroomsController.text.trim(),
-      }, id: '', status: '', isAuction: false, sellerName: '', sellerPhone: '', sellerLocation: '', views: 0, sellerId: '',
+      },
+
+      isAuction: widget.property.isAuction,
+
+      latitude: widget.property.latitude,
+      longitude: widget.property.longitude,
+
+      auction: widget.property.auction,
+
+      sellerId: widget.property.sellerId,
+      sellerName: widget.property.sellerName,
+      sellerPhone: widget.property.sellerPhone,
+      sellerLocation: widget.property.sellerLocation,
+
+      views: widget.property.views,
+
+      createdAt: widget.property.createdAt,
     );
 
     final cubit = context.read<PropertyCubit>();
 
     try {
-      await cubit.updateProperty(id: widget.property.id, entity: updatedEntity);
+      await cubit.updateProperty(
+        id: widget.property.id,
+        entity: updatedEntity,
+        newImages: newImages,
+      );
 
       if (!mounted) return;
 
@@ -222,37 +414,6 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
         context,
       ).showSnackBar(SnackBar(content: Text('Failed to update property: $e')));
     }
-  }
-
-  Widget _imagesPreview(List<String> images) {
-    return SizedBox(
-      height: 90,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: images.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 10),
-        itemBuilder: (_, i) {
-          final imageUrl = images[i];
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              imageUrl,
-              width: 90,
-              height: 90,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Image.asset(
-                  'assets/images/placeholder.webp',
-                  width: 90,
-                  height: 90,
-                  fit: BoxFit.cover,
-                );
-              },
-            ),
-          );
-        },
-      ),
-    );
   }
 
   Widget _label(String text) => Padding(

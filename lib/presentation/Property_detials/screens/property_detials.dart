@@ -73,7 +73,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                       PropertyTabs(controller: controller, property: property),
                       SizedBox(height: 16.h),
 
-                      if (property.isAuction)
+                      if (property.isAuction && property.auction!['status']=="approved")
                         BlocProvider(
                           create: (context) =>
                               getIt<AuctionCubit>()..init(property.id),

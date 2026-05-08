@@ -129,7 +129,7 @@ class BrowsePropertyCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(property.description, style: AppTextStyles.label),
+                  Text(property.title, style: AppTextStyles.label),
                   const SizedBox(height: 5),
                   Row(
                     children: [
@@ -166,7 +166,7 @@ class BrowsePropertyCard extends StatelessWidget {
                         style: AppTextStyles.smallText,
                       ),
                       Text(
-                       '${property.size.isNotEmpty ? property.size : "-"} msqr',
+                       '${property.size} msqr',
                         style: AppTextStyles.smallText,
                       ),
                     ],

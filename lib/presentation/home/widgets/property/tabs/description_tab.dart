@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:movin/domain/entities/property_entity.dart';
 
 
 class DescriptionTab extends StatelessWidget {
-  const DescriptionTab({super.key});
+  const DescriptionTab({super.key, required this.property});
+  final PropertyEntity property;
 
   @override
   Widget build(BuildContext context) {
@@ -11,20 +13,20 @@ class DescriptionTab extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '''Discover luxury living at its finest in this stunning modern luxury villa. This meticulously designed property features high-end finishes, spacious layouts, and breathtaking views. Perfect for families seeking comfort and elegance.\n\nThe property boasts 4 generously sized bedrooms, 3 modern bathrooms, and an expansive 3,500 square feet of living space. Every detail has been carefully curated to provide the ultimate living experience.''',
+          property.description,
           style: TextStyle(fontSize: 14.sp, height: 1.5, color: Colors.grey.shade700),
         ),
         SizedBox(height: 16.h),
         Divider(),
         SizedBox(height: 8.h),
-        _propertyDetailRow('Property ID', 'MV-1234', 'Year Built', '2023'),
+        _propertyDetailRow('Property ID', property.id, 'Year Built', property.createdAt.toString()),
         SizedBox(height: 6.h),
-        _propertyDetailRow(
-          'Furnishing',
-          'Fully Furnished',
-          'Occupancy',
-          'Ready to Move',
-        ),
+        // _propertyDetailRow(
+        //   'Furnishing',
+        //   'Fully Furnished',
+        //   'Occupancy',
+        //   'Ready to Move',
+        // ),
       ],
     );
   }
