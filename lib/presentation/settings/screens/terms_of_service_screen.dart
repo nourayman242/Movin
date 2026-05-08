@@ -144,8 +144,8 @@ class TermsOfServiceScreen extends StatelessWidget {
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black),
         title: const Text(
-          "Terms of Service",
-          style: TextStyle(color: Colors.black, fontSize: 18),
+          "Terms of service ",
+          style: TextStyle(color: Colors.black),
         ),
       ),
       body: Padding(

@@ -144,7 +144,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.black),
         title: const Text(
           "Privacy Policy",
-          style: TextStyle(color: Colors.black, fontSize: 18),
+          style: TextStyle(color: Colors.black),
         ),
       ),
       body: Padding(

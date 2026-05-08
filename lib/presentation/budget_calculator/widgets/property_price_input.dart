@@ -82,7 +82,8 @@ class _PropertyPriceInputState extends State<PropertyPriceInput> {
           keyboardType: TextInputType.number,
           decoration: AppInputDecoration.rounded(
             hintText: 'Enter property price',
-            prefixIcon: Icons.attach_money,
+            //prefixIcon: Icons.attach_money,
+            suffixText: ' EGP',
           ),
           onChanged: _onChanged,
           onEditingComplete: () {
