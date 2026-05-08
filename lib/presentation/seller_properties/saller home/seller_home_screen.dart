@@ -108,8 +108,7 @@ class _SellerHomeState extends State<SellerHome>
     int unreadCount = 0;
 
     if (notificationBloc.state is NotificationLoaded) {
-      unreadCount = (notificationBloc.state as NotificationLoaded)
-          .notifications
+      unreadCount = (notificationBloc.state as NotificationLoaded).notifications
           .where((e) => !e.read)
           .length;
     }
@@ -510,158 +509,180 @@ class _SellerHomeState extends State<SellerHome>
                   ),
                 )
               else if (state is ViewsChartLoaded)
-                Container(
-                  height: 240.h,
-                  padding: EdgeInsets.only(
-                    top: 20.h,
-                    right: 12.w,
-                    left: 0,
-                    bottom: 0,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.gold.withOpacity(.03),
-                        AppColors.primaryNavy.withOpacity(.015),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                    borderRadius: BorderRadius.circular(18.r),
-                  ),
-                  child: LineChart(
-                    LineChartData(
-                      minY: 0,
-                      gridData: FlGridData(
-                        show: true,
-                        drawVerticalLine: false,
-                        horizontalInterval: 2,
-                        getDrawingHorizontalLine: (value) {
-                          return FlLine(
-                            color: Colors.grey.withOpacity(.12),
-                            strokeWidth: 1.w,
-                          );
-                        },
+                Builder(
+                  builder: (context) {
+                    final maxValue = state.chart.data.isEmpty
+                        ? 10
+                        : state.chart.data.reduce((a, b) => a > b ? a : b);
+
+                    final interval = maxValue <= 10
+                        ? 2.0
+                        : (maxValue / 5).ceilToDouble();
+
+                    return Container(
+                      height: 240.h,
+                      padding: EdgeInsets.only(
+                        top: 20.h,
+                        right: 12.w,
+                        left: 0,
+                        bottom: 0,
                       ),
-                      borderData: FlBorderData(show: false),
-
-                      titlesData: FlTitlesData(
-                        topTitles: AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.gold.withOpacity(.03),
+                            AppColors.primaryNavy.withOpacity(.015),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
                         ),
-                        rightTitles: AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
+                        borderRadius: BorderRadius.circular(18.r),
+                      ),
+                      child: LineChart(
+                        LineChartData(
+                          minY: 0,
+                          maxY: maxValue + interval,
 
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            reservedSize: 30.w,
-                            showTitles: true,
-                            interval: 2,
-                            getTitlesWidget: (value, meta) {
-                              return Text(
-                                value.toInt().toString(),
-                                style: TextStyle(
-                                  color: Colors.grey.shade500,
-                                  fontSize: 10.sp,
-                                ),
+                          gridData: FlGridData(
+                            show: true,
+                            drawVerticalLine: false,
+                            horizontalInterval: interval,
+                            getDrawingHorizontalLine: (value) {
+                              return FlLine(
+                                color: Colors.grey.withOpacity(.12),
+                                strokeWidth: 1.w,
                               );
                             },
                           ),
-                        ),
 
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 26.h,
-                            interval: 1,
-                            getTitlesWidget: (value, meta) {
-                              if (value % 1 != 0) return const SizedBox();
+                          borderData: FlBorderData(show: false),
 
-                              int index = value.toInt();
+                          titlesData: FlTitlesData(
+                            topTitles: AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
 
-                              if (index >= 0 &&
-                                  index < state.chart.labels.length) {
-                                return Padding(
-                                  padding: EdgeInsets.only(top: 8.h),
-                                  child: Text(
-                                    state.chart.labels[index],
-                                    style: TextStyle(
-                                      fontSize: 10.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.navyDark,
+                            rightTitles: AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+
+                            leftTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                reservedSize: 38.w,
+                                showTitles: true,
+                                interval: interval,
+                                getTitlesWidget: (value, meta) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(right: 6.w),
+                                    child: Text(
+                                      value.toInt().toString(),
+                                      style: TextStyle(
+                                        color: Colors.grey.shade600,
+                                        fontSize: 10.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }
+                                  );
+                                },
+                              ),
+                            ),
 
-                              return const SizedBox();
-                            },
+                            bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                reservedSize: 26.h,
+                                interval: 1,
+                                getTitlesWidget: (value, meta) {
+                                  if (value % 1 != 0) {
+                                    return const SizedBox();
+                                  }
+
+                                  int index = value.toInt();
+
+                                  if (index >= 0 &&
+                                      index < state.chart.labels.length) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(top: 8.h),
+                                      child: Text(
+                                        state.chart.labels[index],
+                                        style: TextStyle(
+                                          fontSize: 10.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.navyDark,
+                                        ),
+                                      ),
+                                    );
+                                  }
+
+                                  return const SizedBox();
+                                },
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
 
-                      lineTouchData: LineTouchData(
-                        touchTooltipData: LineTouchTooltipData(
-                          tooltipRoundedRadius: 12.r,
-                          getTooltipItems: (spots) {
-                            return spots.map((spot) {
-                              return LineTooltipItem(
-                                "${spot.y.toInt()} views",
-                                TextStyle(
-                                  color: AppColors.navyDark,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 11.sp,
+                          lineTouchData: LineTouchData(
+                            touchTooltipData: LineTouchTooltipData(
+                              tooltipRoundedRadius: 12.r,
+                              getTooltipItems: (spots) {
+                                return spots.map((spot) {
+                                  return LineTooltipItem(
+                                    "${spot.y.toInt()} views",
+                                    TextStyle(
+                                      color: AppColors.navyDark,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 11.sp,
+                                    ),
+                                  );
+                                }).toList();
+                              },
+                            ),
+                          ),
+
+                          lineBarsData: [
+                            LineChartBarData(
+                              isCurved: true,
+                              preventCurveOverShooting: true,
+                              curveSmoothness: .35,
+                              barWidth: 4.w,
+                              color: AppColors.gold,
+
+                              belowBarData: BarAreaData(
+                                show: true,
+                                gradient: LinearGradient(
+                                  colors: [
+                                    AppColors.gold.withOpacity(.25),
+                                    AppColors.gold.withOpacity(.02),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
                                 ),
-                              );
-                            }).toList();
-                          },
+                              ),
+
+                              dotData: FlDotData(
+                                show: true,
+                                getDotPainter: (spot, percent, bar, index) {
+                                  return FlDotCirclePainter(
+                                    radius: 4.5.r,
+                                    color: AppColors.gold,
+                                    strokeWidth: 2.w,
+                                    strokeColor: AppColors.white,
+                                  );
+                                },
+                              ),
+
+                              spots: List.generate(
+                                state.chart.data.length,
+                                (index) => FlSpot(
+                                  index.toDouble(),
+                                  state.chart.data[index].toDouble(),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-
-                      lineBarsData: [
-                        LineChartBarData(
-                          isCurved: true,
-                          preventCurveOverShooting: true,
-                          curveSmoothness: .35,
-                          barWidth: 4.w,
-                          color: AppColors.gold,
-
-                          belowBarData: BarAreaData(
-                            show: true,
-                            gradient: LinearGradient(
-                              colors: [
-                                AppColors.gold.withOpacity(.25),
-                                AppColors.gold.withOpacity(.02),
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            ),
-                          ),
-
-                          dotData: FlDotData(
-                            show: true,
-                            getDotPainter: (spot, percent, bar, index) {
-                              return FlDotCirclePainter(
-                                radius: 4.5.r,
-                                color: AppColors.gold,
-                                strokeWidth: 2.w,
-                                strokeColor: AppColors.white,
-                              );
-                            },
-                          ),
-
-                          spots: List.generate(
-                            state.chart.data.length,
-                            (index) => FlSpot(
-                              index.toDouble(),
-                              state.chart.data[index].toDouble(),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                    );
+                  },
                 )
               else if (state is ViewsChartError)
                 SizedBox(
@@ -791,27 +812,6 @@ class _SellerHomeState extends State<SellerHome>
                 ),
               ),
               const SizedBox(height: 8),
-              // Container(
-              //   padding: const EdgeInsets.symmetric(
-              //     horizontal: 10,
-              //     vertical: 6,
-              //   ),
-              //   decoration: BoxDecoration(
-              //     color: status == 'approved'
-              //         ? AppColors.gold.withOpacity(0.12)
-              //         : Colors.grey.withOpacity(0.12),
-              //     borderRadius: BorderRadius.circular(10),
-              //   ),
-              //   child: Text(
-              //     status,
-              //     style: TextStyle(
-              //       fontSize: 12,
-              //       color: status == 'approved'
-              //           ? AppColors.gold
-              //           : Colors.grey[700],
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ],
@@ -930,7 +930,6 @@ class _SellerHomeState extends State<SellerHome>
                       if (mounted) {
                         _refreshSellerDashboard();
                       }
-                    
                     },
                   ),
                 ),
