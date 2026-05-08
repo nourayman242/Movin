@@ -29,6 +29,7 @@ class AuctionListModel {
   final double size;
   final int views;
   Map<String, dynamic> details;
+  String sellerId;
 
   AuctionListModel({
     required this.id,
@@ -47,13 +48,13 @@ class AuctionListModel {
     required this.size,
     required this.views,
     required this.details,
+    required this.sellerId,
   });
 
   factory AuctionListModel.fromJson(Map<String, dynamic> json) {
-    print("TITLE => ${json['title']}");
-print("DETAILS => ${json['details']}");
     return AuctionListModel(
       id: json['_id'] ?? '',
+     sellerId: json['seller']?['_id'] ?? '',
       title: json['title']?.toString() ?? '',
       description: json['description'] ?? '',
       location: json['location'] ?? '',
@@ -69,9 +70,8 @@ print("DETAILS => ${json['details']}");
       size: (json['size'] ?? 0).toDouble(),
       views: json['views'] ?? 0,
       details: json['details'] != null
-    ? Map<String, dynamic>.from(json['details'])
-    : {},
+          ? Map<String, dynamic>.from(json['details'])
+          : {},
     );
-    
   }
 }
