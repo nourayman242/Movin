@@ -69,7 +69,10 @@ class _PropertyDropdownState
 
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
-          value: widget.value,
+          //value: widget.value,
+          value: widget.items.contains(widget.value)
+              ? widget.value
+              : null,
 
           hint: Text(widget.hint),
 
