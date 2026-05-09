@@ -75,59 +75,93 @@ class FilterService {
     double? minPrice,
     double? maxPrice,
     String? sort,
-    int page = 1,
   }) async {
     final dio = getIt<Dio>();
-    final Map<String, dynamic> queryParams = {};
 
+ 
+    final Map<String, dynamic> baseParams = {};
     if (location != null && location.isNotEmpty) {
-      queryParams['location'] = location;
+      baseParams['location'] = location;
     }
     if (type != null && type.isNotEmpty) {
-      queryParams['type'] = type.toLowerCase();
+      baseParams['type'] = type.toLowerCase();
     }
     if (bedrooms != null && bedrooms.isNotEmpty) {
-      queryParams['bedrooms'] = bedrooms.replaceAll('+', '');
+      baseParams['bedrooms'] = bedrooms.replaceAll('+', '');
     }
     if (bathrooms != null && bathrooms.isNotEmpty) {
-      queryParams['bathrooms'] = bathrooms.replaceAll('+', '');
+      baseParams['bathrooms'] = bathrooms.replaceAll('+', '');
     }
     if (pool != null) {
-      queryParams['pool'] = pool.toString();
+      baseParams['pool'] = pool.toString();
     }
     if (minPrice != null && minPrice > 0) {
-      queryParams['minPrice'] = minPrice.toInt();
+      baseParams['minPrice'] = minPrice.toInt();
     }
     if (maxPrice != null && maxPrice < 10000000) {
-      queryParams['maxPrice'] = maxPrice.toInt();
+      baseParams['maxPrice'] = maxPrice.toInt();
     }
     if (_apiSortSupported && sort != null && sort.isNotEmpty) {
-      queryParams['sort'] = sort;
+      baseParams['sort'] = sort;
     }
 
-    queryParams['page'] = page;
-
-    // ✅ Don't catch DioException here — let it bubble up to the
-    // AuthInterceptor so it can refresh the token and retry automatically.
-    // Only catch it AFTER the interceptor has had its chance.
     try {
-      final response = await dio.get(
+    
+      final firstResponse = await dio.get(
         _endpoint,
-        queryParameters: queryParams,
+        queryParameters: {
+          ...baseParams,
+          'page': 1,
+          'limit': 50, 
+        },
       );
 
-      var result = FilteredPropertiesResponse.fromJson(
-        response.data as Map<String, dynamic>,
+      var firstResult = FilteredPropertiesResponse.fromJson(
+        firstResponse.data as Map<String, dynamic>,
       );
 
-      if (!_apiSortSupported && sort != null && sort.isNotEmpty) {
-        result = result.withSortedProperties(_apiSortToUiLabel(sort));
+      final totalPages = firstResult.totalPages;
+      final allProperties = List<PropertyModel>.from(firstResult.properties);
+
+      
+      if (totalPages > 1) {
+        final remainingFutures = List.generate(
+          totalPages - 1,
+          (i) => dio.get(
+            _endpoint,
+            queryParameters: {
+              ...baseParams,
+              'page': i + 2,
+              'limit': 50,
+            },
+          ),
+        );
+
+        final remainingResponses = await Future.wait(remainingFutures);
+        for (final response in remainingResponses) {
+          final pageResult = FilteredPropertiesResponse.fromJson(
+            response.data as Map<String, dynamic>,
+          );
+          allProperties.addAll(pageResult.properties);
+        }
       }
 
-      return result;
+     
+      var fullResult = FilteredPropertiesResponse(
+        page: 1,
+        limit: firstResult.limit,
+        total: firstResult.total,
+        totalPages: totalPages,
+        properties: allProperties,
+      );
+
+     
+      if (!_apiSortSupported && sort != null && sort.isNotEmpty) {
+        fullResult = fullResult.withSortedProperties(_apiSortToUiLabel(sort));
+      }
+
+      return fullResult;
     } on DioException catch (e) {
-      // ✅ Only reaches here if the interceptor already tried refreshing
-      // and still got an error (e.g. refresh token itself expired)
       final status = e.response?.statusCode;
       final message = e.response?.data?['message'] ?? e.message;
       throw Exception('Request failed [$status]: $message');
