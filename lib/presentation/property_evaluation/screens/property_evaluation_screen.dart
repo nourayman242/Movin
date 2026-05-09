@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 import '../../../data_injection/getIt/service_locator.dart';
-
 
 import '../managers/poperty_evaluation_bloc/property_evaluation_bloc.dart';
 import '../managers/poperty_evaluation_bloc/property_evaluation_state.dart';
@@ -12,46 +10,29 @@ import '../widgets/property_dropdown.dart';
 import '../widgets/property_textfield.dart';
 import '../widgets/result_card.dart';
 
-class PropertyEvaluationScreen
-    extends StatefulWidget {
-  const PropertyEvaluationScreen({
-    super.key,
-  });
+class PropertyEvaluationScreen extends StatefulWidget {
+  const PropertyEvaluationScreen({super.key});
 
   @override
-  State<PropertyEvaluationScreen>
-  createState() =>
+  State<PropertyEvaluationScreen> createState() =>
       _PropertyEvaluationScreenState();
 }
 
-class _PropertyEvaluationScreenState
-    extends State<PropertyEvaluationScreen> {
-  final sizeController =
-  TextEditingController();
+class _PropertyEvaluationScreenState extends State<PropertyEvaluationScreen> {
+  final sizeController = TextEditingController();
 
-  final bedroomsController =
-  TextEditingController();
+  final bedroomsController = TextEditingController();
 
-  final bathroomsController =
-  TextEditingController();
+  final bathroomsController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create:
-          (_) =>
-      getIt<
-          PropertyEvaluationBloc
-      >()
-        ..add(
-          GetPropertyMetadataEvent(),
-        ),
+      create: (_) =>
+          getIt<PropertyEvaluationBloc>()..add(GetPropertyMetadataEvent()),
 
       child: Scaffold(
-        backgroundColor: const Color(
-          0xFFF5F7FA,
-
-        ),
+        backgroundColor: const Color(0xFFF5F7FA),
         appBar: AppBar(
           backgroundColor: const Color(0xFFF5F7FA),
           elevation: 0,
@@ -79,50 +60,31 @@ class _PropertyEvaluationScreenState
           centerTitle: false,
         ),
 
-        body: BlocConsumer<
-            PropertyEvaluationBloc,
-            PropertyEvaluationState
-        >(
+        body: BlocConsumer<PropertyEvaluationBloc, PropertyEvaluationState>(
           listener: (context, state) {
             if (state.error != null) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  backgroundColor:
-                  Colors.redAccent,
+                  backgroundColor: Colors.redAccent,
 
-                  content: Text(
-                    state.error!,
-                  ),
+                  content: Text(state.error!),
                 ),
               );
             }
           },
 
           builder: (context, state) {
-            final bloc =
-            context.read<
-                PropertyEvaluationBloc
-            >();
+            final bloc = context.read<PropertyEvaluationBloc>();
 
             if (state.loadingMetadata) {
               return const Center(
-                child:
-                CircularProgressIndicator(
-                  color: Color(
-                    0xFFD4AF37,
-                  ),
-                ),
+                child: CircularProgressIndicator(color: Color(0xFFD4AF37)),
               );
             }
 
             return SafeArea(
               child: SingleChildScrollView(
-                padding:
-                const EdgeInsets.all(
-                  20,
-                ),
+                padding: const EdgeInsets.all(20),
 
                 child: Column(
                   children: [
@@ -131,50 +93,24 @@ class _PropertyEvaluationScreenState
                     Container(
                       width: double.infinity,
 
-                      padding:
-                      const EdgeInsets.all(
-                        28,
-                      ),
+                      padding: const EdgeInsets.all(28),
 
                       decoration: BoxDecoration(
-                        borderRadius:
-                        BorderRadius.circular(
-                          32,
-                        ),
+                        borderRadius: BorderRadius.circular(32),
 
-                        gradient:
-                        const LinearGradient(
-                          begin:
-                          Alignment
-                              .topLeft,
-
-                          end:
-                          Alignment
-                              .bottomRight,
-
-                          colors: [
-                            Color(
-                              0xFF0B1F3A,
-                            ),
-
-                            Colors.black,
-                          ],
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Color(0xFF0B1F3A), Colors.black],
                         ),
 
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black
-                                .withOpacity(
-                              0.14,
-                            ),
+                            color: Colors.black.withOpacity(0.14),
 
                             blurRadius: 25,
 
-                            offset:
-                            const Offset(
-                              0,
-                              10,
-                            ),
+                            offset: const Offset(0, 10),
                           ),
                         ],
                       ),
@@ -182,14 +118,11 @@ class _PropertyEvaluationScreenState
                       child: const Column(
                         children: [
                           Icon(
-                            Icons
-                                .real_estate_agent_rounded,
+                            Icons.real_estate_agent_rounded,
 
                             size: 54,
 
-                            color: Color(
-                              0xFFD4AF37,
-                            ),
+                            color: Color(0xFFD4AF37),
                           ),
 
                           SizedBox(height: 16),
@@ -197,18 +130,14 @@ class _PropertyEvaluationScreenState
                           Text(
                             'AI Property Evaluation',
 
-                            textAlign:
-                            TextAlign.center,
+                            textAlign: TextAlign.center,
 
                             style: TextStyle(
-                              color:
-                              Colors.white,
+                              color: Colors.white,
 
                               fontSize: 26,
 
-                              fontWeight:
-                              FontWeight
-                                  .bold,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
 
@@ -217,12 +146,10 @@ class _PropertyEvaluationScreenState
                           Text(
                             'Get accurate AI-powered property evaluation instantly.',
 
-                            textAlign:
-                            TextAlign.center,
+                            textAlign: TextAlign.center,
 
                             style: TextStyle(
-                              color:
-                              Colors.white70,
+                              color: Colors.white70,
 
                               fontSize: 15,
                             ),
@@ -234,25 +161,15 @@ class _PropertyEvaluationScreenState
                     const SizedBox(height: 30),
 
                     PropertyDropdown(
-                      items:
-                      state
-                          .metadata
-                          ?.propertyTypes ??
-                          [],
+                      items: state.metadata?.propertyTypes ?? [],
 
-                      value:
-                      state.selectedType,
+                      value: state.selectedType,
 
-                      hint:
-                      'Select Property Type',
+                      hint: 'Select Property Type',
 
                       onChanged: (value) {
                         if (value != null) {
-                          bloc.add(
-                            UpdatePropertyTypeEvent(
-                              value,
-                            ),
-                          );
+                          bloc.add(UpdatePropertyTypeEvent(value));
                         }
                       },
                     ),
@@ -260,28 +177,15 @@ class _PropertyEvaluationScreenState
                     const SizedBox(height: 18),
 
                     PropertyDropdown(
-                      items:
-                      state
-                          .metadata
-                          ?.areas
-                          .keys
-                          .toList() ??
-                          [],
+                      items: state.metadata?.areas.keys.toList() ?? [],
 
-                      value:
-                      state
-                          .selectedMainArea,
+                      value: state.selectedMainArea,
 
-                      hint:
-                      'Select Main Area',
+                      hint: 'Select Main Area',
 
                       onChanged: (value) {
                         if (value != null) {
-                          bloc.add(
-                            UpdateMainAreaEvent(
-                              value,
-                            ),
-                          );
+                          bloc.add(UpdateMainAreaEvent(value));
                         }
                       },
                     ),
@@ -289,21 +193,17 @@ class _PropertyEvaluationScreenState
                     const SizedBox(height: 18),
 
                     PropertyDropdown(
+                      key: ValueKey(state.selectedMainArea),
                       items: state.subAreas,
-
-                      value:
-                      state.selectedSubArea,
-
-                      hint:
-                      'Select Sub Area',
+                      //value: state.selectedSubArea,
+                      value: state.subAreas.contains(state.selectedSubArea)
+                          ? state.selectedSubArea
+                          : null,
+                      hint: 'Select Sub Area',
 
                       onChanged: (value) {
                         if (value != null) {
-                          bloc.add(
-                            UpdateSubAreaEvent(
-                              value,
-                            ),
-                          );
+                          bloc.add(UpdateSubAreaEvent(value));
                         }
                       },
                     ),
@@ -311,24 +211,15 @@ class _PropertyEvaluationScreenState
                     const SizedBox(height: 18),
 
                     PropertyDropdown(
-                      items: const [
-                        'Cash',
-                        'Installments',
-                      ],
+                      items: const ['Cash', 'Installments'],
 
-                      value:
-                      state.selectedPayment,
+                      value: state.selectedPayment,
 
-                      hint:
-                      'Payment Method',
+                      hint: 'Payment Method',
 
                       onChanged: (value) {
                         if (value != null) {
-                          bloc.add(
-                            UpdatePaymentEvent(
-                              value,
-                            ),
-                          );
+                          bloc.add(UpdatePaymentEvent(value));
                         }
                       },
                     ),
@@ -336,8 +227,7 @@ class _PropertyEvaluationScreenState
                     const SizedBox(height: 18),
 
                     PropertyTextField(
-                      controller:
-                      sizeController,
+                      controller: sizeController,
 
                       hint: 'Size (sqm)',
 
@@ -347,8 +237,7 @@ class _PropertyEvaluationScreenState
                     const SizedBox(height: 18),
 
                     PropertyTextField(
-                      controller:
-                      bedroomsController,
+                      controller: bedroomsController,
 
                       hint: 'Bedrooms',
 
@@ -358,8 +247,7 @@ class _PropertyEvaluationScreenState
                     const SizedBox(height: 18),
 
                     PropertyTextField(
-                      controller:
-                      bathroomsController,
+                      controller: bathroomsController,
 
                       hint: 'Bathrooms',
 
@@ -374,107 +262,69 @@ class _PropertyEvaluationScreenState
                       height: 60,
 
                       child: ElevatedButton(
-                        onPressed:
-                        state.loadingPrediction
+                        onPressed: state.loadingPrediction
                             ? null
                             : () {
-                          if (sizeController
-                              .text
-                              .isEmpty ||
-                              bedroomsController
-                                  .text
-                                  .isEmpty ||
-                              bathroomsController
-                                  .text
-                                  .isEmpty ||
-                              state
-                                  .selectedType ==
-                                  null ||
-                              state
-                                  .selectedMainArea ==
-                                  null ||
-                              state
-                                  .selectedPayment ==
-                                  null) {
-                            ScaffoldMessenger.of(
-                              context,
-                            ).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Please fill all required fields',
-                                ),
-                              ),
-                            );
+                                if (sizeController.text.isEmpty ||
+                                    bedroomsController.text.isEmpty ||
+                                    bathroomsController.text.isEmpty ||
+                                    state.selectedType == null ||
+                                    state.selectedMainArea == null ||
+                                    state.selectedPayment == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Please fill all required fields',
+                                      ),
+                                    ),
+                                  );
 
-                            return;
-                          }
+                                  return;
+                                }
 
-                          bloc.add(
-                            PredictPropertyPriceEvent(
-                              size:
-                              sizeController
-                                  .text,
+                                bloc.add(
+                                  PredictPropertyPriceEvent(
+                                    size: sizeController.text,
 
-                              bedrooms:
-                              bedroomsController
-                                  .text,
+                                    bedrooms: bedroomsController.text,
 
-                              bathrooms:
-                              bathroomsController
-                                  .text,
-                            ),
-                          );
-                        },
+                                    bathrooms: bathroomsController.text,
+                                  ),
+                                );
+                              },
 
-                        style:
-                        ElevatedButton.styleFrom(
-                          backgroundColor:
-                          const Color(
-                            0xFF0B1F3A,
-                          ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF0B1F3A),
 
                           elevation: 0,
 
-                          shape:
-                          RoundedRectangleBorder(
-                            borderRadius:
-                            BorderRadius.circular(
-                              22,
-                            ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(22),
                           ),
                         ),
 
-                        child:
-                        state.loadingPrediction
+                        child: state.loadingPrediction
                             ? const CircularProgressIndicator(
-                          color:
-                          Colors.white,
-                        )
+                                color: Colors.white,
+                              )
                             : const Text(
-                          'Evaluate Property',
+                                'Evaluate Property',
 
-                          style: TextStyle(
-                            color:
-                            Colors.white,
+                                style: TextStyle(
+                                  color: Colors.white,
 
-                            fontSize: 18,
+                                  fontSize: 18,
 
-                            fontWeight:
-                            FontWeight
-                                .w600,
-                          ),
-                        ),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                       ),
                     ),
 
                     const SizedBox(height: 32),
 
-                    if (state.predictedPrice !=
-                        null)
-                      ResultCard(
-                        price:
-                        state.predictedPrice!,
-                      ),
+                    if (state.predictedPrice != null)
+                      ResultCard(price: state.predictedPrice!),
 
                     const SizedBox(height: 40),
                   ],

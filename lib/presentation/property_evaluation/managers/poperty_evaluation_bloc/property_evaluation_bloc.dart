@@ -9,173 +9,114 @@ import '../../../../domain/repositories/property_evaluation_repository.dart';
 import 'property_evaluation_state.dart';
 
 @injectable
-class PropertyEvaluationBloc extends Bloc<
-    PropertyEvaluationEvent,
-    PropertyEvaluationState> {
+class PropertyEvaluationBloc
+    extends Bloc<PropertyEvaluationEvent, PropertyEvaluationState> {
   final PropertyEvaluationRepository repository;
 
   PropertyEvaluationBloc(this.repository)
-      : super(const PropertyEvaluationState()) {
-    on<GetPropertyMetadataEvent>(
-      _getMetadata,
-    );
+    : super(const PropertyEvaluationState()) {
+    on<GetPropertyMetadataEvent>(_getMetadata);
 
-    on<UpdateMainAreaEvent>(
-      _updateMainArea,
-    );
+    on<UpdateMainAreaEvent>(_updateMainArea);
 
-    on<UpdatePropertyTypeEvent>(
-      _updatePropertyType,
-    );
+    on<UpdatePropertyTypeEvent>(_updatePropertyType);
 
-    on<UpdateSubAreaEvent>(
-      _updateSubArea,
-    );
+    on<UpdateSubAreaEvent>(_updateSubArea);
 
-    on<UpdatePaymentEvent>(
-      _updatePayment,
-    );
+    on<UpdatePaymentEvent>(_updatePayment);
 
-    on<PredictPropertyPriceEvent>(
-      _predictPrice,
-    );
+    on<PredictPropertyPriceEvent>(_predictPrice);
   }
 
   Future<void> _getMetadata(
-      GetPropertyMetadataEvent event,
-      Emitter<PropertyEvaluationState> emit,
-      ) async {
+    GetPropertyMetadataEvent event,
+    Emitter<PropertyEvaluationState> emit,
+  ) async {
     try {
-      emit(
-        state.copyWith(
-          loadingMetadata: true,
-        ),
-      );
+      emit(state.copyWith(loadingMetadata: true));
 
-      final metadata =
-      await repository.getMetadata();
+      final metadata = await repository.getMetadata();
 
-      emit(
-        state.copyWith(
-          loadingMetadata: false,
-          metadata: metadata,
-        ),
-      );
+      emit(state.copyWith(loadingMetadata: false, metadata: metadata));
     } catch (e) {
       emit(
         state.copyWith(
           loadingMetadata: false,
 
-          error:
-          ErrorHandler.handle(e).message,
+          error: ErrorHandler.handle(e).message,
         ),
       );
     }
   }
 
   void _updatePropertyType(
-      UpdatePropertyTypeEvent event,
-      Emitter<PropertyEvaluationState> emit,
-      ) {
-    emit(
-      state.copyWith(
-        selectedType: event.type,
-      ),
-    );
+    UpdatePropertyTypeEvent event,
+    Emitter<PropertyEvaluationState> emit,
+  ) {
+    emit(state.copyWith(selectedType: event.type));
   }
 
   void _updateSubArea(
-      UpdateSubAreaEvent event,
-      Emitter<PropertyEvaluationState> emit,
-      ) {
-    emit(
-      state.copyWith(
-        selectedSubArea: event.subArea,
-      ),
-    );
+    UpdateSubAreaEvent event,
+    Emitter<PropertyEvaluationState> emit,
+  ) {
+    emit(state.copyWith(selectedSubArea: event.subArea));
   }
 
   void _updatePayment(
-      UpdatePaymentEvent event,
-      Emitter<PropertyEvaluationState> emit,
-      ) {
-    emit(
-      state.copyWith(
-        selectedPayment: event.payment,
-      ),
-    );
+    UpdatePaymentEvent event,
+    Emitter<PropertyEvaluationState> emit,
+  ) {
+    emit(state.copyWith(selectedPayment: event.payment));
   }
 
   void _updateMainArea(
-      UpdateMainAreaEvent event,
-      Emitter<PropertyEvaluationState> emit,
-      ) {
-    final areas =
-        state.metadata?.areas[event.mainArea] ??
-            [];
+    UpdateMainAreaEvent event,
+    Emitter<PropertyEvaluationState> emit,
+  ) {
+    final areas = state.metadata?.areas[event.mainArea] ?? [];
 
     emit(
       state.copyWith(
         selectedMainArea: event.mainArea,
-
         subAreas: areas,
-
         selectedSubArea: null,
       ),
     );
   }
 
   Future<void> _predictPrice(
-      PredictPropertyPriceEvent event,
-      Emitter<PropertyEvaluationState> emit,
-      ) async {
+    PredictPropertyPriceEvent event,
+    Emitter<PropertyEvaluationState> emit,
+  ) async {
     try {
-      emit(
-        state.copyWith(
-          loadingPrediction: true,
-          error: null,
-        ),
-      );
+      emit(state.copyWith(loadingPrediction: true, error: null));
 
       final request = PredictionRequestModel(
         sizeSqm: int.parse(event.size),
 
-        bedroomNum:
-        int.parse(event.bedrooms),
+        bedroomNum: int.parse(event.bedrooms),
 
-        bathroomsNumeric:
-        int.parse(event.bathrooms),
+        bathroomsNumeric: int.parse(event.bathrooms),
 
-        isLand:
-        state.selectedType == 'Land'
-            ? 1
-            : 0,
+        isLand: state.selectedType == 'Land' ? 1 : 0,
 
-        isCash:
-        state.selectedPayment == 'Cash'
-            ? 1
-            : 0,
+        isCash: state.selectedPayment == 'Cash' ? 1 : 0,
 
-        mainArea:
-        state.selectedMainArea ?? '',
+        mainArea: state.selectedMainArea ?? '',
 
         type: state.selectedType ?? '',
 
-        subArea:
-        state.selectedSubArea ?? '',
+        subArea: state.selectedSubArea ?? '',
       );
 
-      final response =
-      await repository.predictPrice(
-        request,
-      );
+      final response = await repository.predictPrice(request);
 
       emit(
         state.copyWith(
           loadingPrediction: false,
 
-          predictedPrice:
-          response.predictedPrice,
+          predictedPrice: response.predictedPrice,
         ),
       );
     } catch (e) {
@@ -183,8 +124,7 @@ class PropertyEvaluationBloc extends Bloc<
         state.copyWith(
           loadingPrediction: false,
 
-          error:
-          ErrorHandler.handle(e).message,
+          error: ErrorHandler.handle(e).message,
         ),
       );
     }

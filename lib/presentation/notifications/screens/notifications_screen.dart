@@ -209,10 +209,12 @@ class _NotificationsScreenState
                 ),
               );
             }
-            Navigator.push(
-              context,
-              NotificationRoute.resolve(notification),
-            );
+
+            // Navigator.push(
+            //   context,
+            //   NotificationRoute.resolve(notification),
+            // );
+
           }
         );
       },
