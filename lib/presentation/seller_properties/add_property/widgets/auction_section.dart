@@ -6,25 +6,37 @@ import '../add_property_viewmodel.dart';
 class AuctionSection extends StatelessWidget {
   const AuctionSection({super.key});
 
-  Future<void> _pickDate(
-    BuildContext context,
-    bool isStart,
-  ) async {
+  Future<void> _pickDate(BuildContext context, bool isStart) async {
     final vm = context.read<AddPropertyViewModel>();
 
-    final picked = await showDatePicker(
+    final pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
     );
 
-    if (picked != null) {
-      if (isStart) {
-        vm.setAuctionStart(picked);
-      } else {
-        vm.setAuctionEnd(picked);
-      }
+    if (pickedDate == null) return;
+
+    final pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (pickedTime == null) return;
+
+    final fullDateTime = DateTime(
+      pickedDate.year,
+      pickedDate.month,
+      pickedDate.day,
+      pickedTime.hour,
+      pickedTime.minute,
+    );
+
+    if (isStart) {
+      vm.setAuctionStart(fullDateTime);
+    } else {
+      vm.setAuctionEnd(fullDateTime);
     }
   }
 
@@ -39,10 +51,7 @@ class AuctionSection extends StatelessWidget {
         color: AppColors.white,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-          ),
+          BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12),
         ],
       ),
       child: Column(
@@ -51,16 +60,41 @@ class AuctionSection extends StatelessWidget {
           /// 🔘 Title + Radio
           Row(
             children: [
-              Radio<bool>(
-                value: true,
-                groupValue: vm.isAuction,
-                activeColor: AppColors.gold,
-                onChanged: (val) => vm.setAuction(val ?? false),
-              ),
-              const Text(
-                "Mazad (Auction)",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+              GestureDetector(
+                onTap: () {
+                  vm.setAuction(!vm.isAuction);
+                },
+                child: Row(
+                  children: [
+                    Container(
+                      width: 22,
+                      height: 22,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: vm.isAuction ? AppColors.gold : Colors.grey,
+                          width: 2,
+                        ),
+                      ),
+                      child: vm.isAuction
+                          ? Center(
+                              child: Container(
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppColors.gold,
+                                ),
+                              ),
+                            )
+                          : null,
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
+                      "Mazad (Auction)",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -139,7 +173,6 @@ class AuctionSection extends StatelessWidget {
     );
   }
 
-  /// 📅 Date Field Styled Like Your Inputs
   Widget _dateField(
     BuildContext context, {
     required String label,
@@ -153,8 +186,9 @@ class AuctionSection extends StatelessWidget {
           decoration: AppInputDecoration.rounded(
             hintText: value == null
                 ? label
-                : "${value.year}-${value.month}-${value.day}",
-            prefixIcon: Icons.calendar_today, // 👈 BLACK by default
+                : "${value.year}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')} "
+                      "${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}",
+            prefixIcon: Icons.calendar_today,
           ),
         ),
       ),

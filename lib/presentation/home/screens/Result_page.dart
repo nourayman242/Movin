@@ -307,8 +307,8 @@ List<String> get _activeChips {
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.tune),
-              label: const Text("Edit Filters"),
+              icon: const Icon(Icons.tune,color: Colors.white,),
+              label: const Text("Edit Filters", style: TextStyle(color: Colors.white),),
               style: ElevatedButton.styleFrom(backgroundColor: widget.navy),
             ),
           ],

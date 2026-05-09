@@ -60,8 +60,7 @@ class _FilterScreenState extends State<FilterScreen> {
   }
 
   /// Strip commas before parsing
-  double _parse(String text) =>
-      double.tryParse(text.replaceAll(',', '')) ?? 0;
+  double _parse(String text) => double.tryParse(text.replaceAll(',', '')) ?? 0;
 
   void _updateSliderFromText() {
     double start = _parse(priceMinController.text).clamp(_minPrice, _maxPrice);
@@ -222,8 +221,7 @@ class _AreaSelectorCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
-          BoxShadow(
-              color: Colors.black12, blurRadius: 8, offset: Offset(0, 3)),
+          BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 3)),
         ],
       ),
       child: Column(
@@ -245,30 +243,30 @@ class _AreaSelectorCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
             decoration: BoxDecoration(
-              color: offWhite,
+              color: Colors.white,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.grey.shade300),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 isExpanded: true,
+                dropdownColor: Colors.white,
+                borderRadius: BorderRadius.circular(12),
                 hint: Text(
                   'Select your area',
-                  style: TextStyle(
-                      color: Colors.grey.shade500, fontSize: 14),
+                  style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
                 ),
                 value: selectedArea,
-                icon:
-                    Icon(Icons.keyboard_arrow_down_rounded, color: navy),
+                icon: Icon(Icons.keyboard_arrow_down_rounded, color: navy),
                 items: kCairoAreas
-                    .map((area) => DropdownMenuItem(
-                          value: area,
-                          child: Text(area,
-                              style: const TextStyle(fontSize: 14)),
-                        ))
+                    .map(
+                      (area) => DropdownMenuItem(
+                        value: area,
+                        child: Text(area, style: const TextStyle(fontSize: 14)),
+                      ),
+                    )
                     .toList(),
                 onChanged: onAreaChanged,
               ),
@@ -278,13 +276,15 @@ class _AreaSelectorCard extends StatelessWidget {
             const SizedBox(height: 10),
             Row(
               children: [
-                Icon(Icons.info_outline_rounded,
-                    size: 13, color: Colors.grey.shade500),
+                Icon(
+                  Icons.info_outline_rounded,
+                  size: 13,
+                  color: Colors.grey.shade500,
+                ),
                 const SizedBox(width: 5),
                 Text(
                   'Heatmap will center on $selectedArea',
-                  style: TextStyle(
-                      fontSize: 12, color: Colors.grey.shade500),
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                 ),
               ],
             ),

@@ -26,4 +26,12 @@ class SocketService {
       print("❌ Connect Error: $err");
     });
   }
+        void disconnect() {
+    socket.disconnect();
+  }
+
+  void reconnect() {
+    disconnect();
+    connect();
+  }
 }
