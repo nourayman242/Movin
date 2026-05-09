@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
+import 'package:movin/data/api_services/socket_service.dart';
 import 'package:movin/presentation/login/cubit/auth_cubit.dart';
 import 'package:movin/presentation/login/cubit/auth_state.dart';
 import 'package:movin/presentation/register/screens/register_screen.dart';
@@ -192,38 +193,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       final email = userValue.text.trim();
                       final password = passValue.text.trim();
 
-                      // final entity = LoginEntity(
-                      //   email: email,
-                      //   password: password,
-                      // );
+                  
                       context.read<AuthCubit>().login(email, password);
-
-                      // try {
-                      //   final response = await repo.loginUser(entity);
-                      //
-                      //   // ✅ Token saved here — role switch API will use this
-                      //   await SharedHelper.saveToken(response.token);
-                      //   await SharedHelper.saveUserId(response.user.id);
-                      //   print("USER ID: ${response.user.id}");
-                      //   await SharedHelper.setLoggedIn(true);
-                      //
-                      //   if (!context.mounted) return;
-                      //
-                      //   ScaffoldMessenger.of(context).showSnackBar(
-                      //     const SnackBar(content: Text('Login successful')),
-                      //   );
-
-                        //Navigator.pushReplacementNamed(context, '/role');
-
-                      //   userValue.clear();
-                      //   passValue.clear();
-                      // } catch (e) {
-                      //   if (!context.mounted) return;
-                      //
-                      //   ScaffoldMessenger.of(
-                      //     context,
-                      //   ).showSnackBar(SnackBar(content: Text(e.toString())));
-                      // }
+                      
                     },
                     child: const Text(
                       'Login',

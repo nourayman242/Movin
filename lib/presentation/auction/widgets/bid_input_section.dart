@@ -17,6 +17,7 @@ class PlaceBidSection extends StatefulWidget {
 class _PlaceBidSectionState extends State<PlaceBidSection> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController controller = TextEditingController();
+  bool _isPlacingBid = false;
   @override
   void initState() {
     super.initState();
@@ -33,7 +34,9 @@ class _PlaceBidSectionState extends State<PlaceBidSection> {
           previous.bidSuccess != current.bidSuccess ||
           previous.errorMessage != current.errorMessage,
       listener: (context, state) {
-        if (state.bidSuccess) {
+        if (state.bidSuccess && _isPlacingBid) {
+          _isPlacingBid = false;
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: AppColors.background,
@@ -56,10 +59,12 @@ class _PlaceBidSectionState extends State<PlaceBidSection> {
           );
         }
 
-        if (state.errorMessage != null) {
+        if (state.errorMessage != null && _isPlacingBid) {
+          _isPlacingBid = false;
+
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text(" ${state.errorMessage}")));
+          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
         }
       },
       child: Padding(
@@ -155,6 +160,17 @@ class _PlaceBidSectionState extends State<PlaceBidSection> {
                         );
                         return;
                       }
+                      if (userId == widget.property.sellerId) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "You cannot participate in your own auction.",
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+                      _isPlacingBid = true;
 
                       context.read<AuctionCubit>().placeIncrementBid(
                         widget.property.id,
@@ -202,8 +218,25 @@ class _QuickBidButton extends StatelessWidget {
         onTap: () async {
           final userId = await SharedHelper.getUserId();
 
-          if (userId == null) return;
+          if (userId == null) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text("User not found")));
+            return;
+          }
 
+          if (userId == property.sellerId) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("You cannot participate in your own auction."),
+              ),
+            );
+            return;
+          }
+
+          (context.findAncestorStateOfType<_PlaceBidSectionState>())
+                  ?._isPlacingBid =
+              true;
           context.read<AuctionCubit>().placeIncrementBid(
             property.id,
             value,
@@ -243,7 +276,23 @@ class _QuickBidButtonPercent extends StatelessWidget {
         onTap: () async {
           final userId = await SharedHelper.getUserId();
 
-          if (userId == null) return;
+          if (userId == null) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text("User not found")));
+            return;
+          }
+          if (userId == property.sellerId) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("You cannot participate in your own auction."),
+              ),
+            );
+            return;
+          }
+          (context.findAncestorStateOfType<_PlaceBidSectionState>())
+                  ?._isPlacingBid =
+              true;
 
           context.read<AuctionCubit>().placePercentBid(
             property.id,

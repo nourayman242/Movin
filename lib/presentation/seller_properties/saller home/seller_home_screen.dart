@@ -35,12 +35,15 @@ class SellerHome extends StatefulWidget {
 class _SellerHomeState extends State<SellerHome>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
-  void _refreshSellerDashboard() {
-    context.read<SellerDashboardCubit>().getSellerDashboardStats();
-    context.read<ViewsChartCubit>().getSellerViewsChart();
-    context.read<MostviewedCubit>().getMostViewedProperties();
-    context.read<PropertyCubit>().getAllSellerProperties();
+  final ScrollController _scrollController = ScrollController();
+  Future<void> _refreshSellerDashboard() async {
+    await Future.wait([
+      context.read<SellerDashboardCubit>().getSellerDashboardStats(),
+      context.read<ViewsChartCubit>().getSellerViewsChart(),
+      context.read<MostviewedCubit>().getMostViewedProperties(),
+      context.read<PropertyCubit>().getAllSellerProperties(),
+      context.read<NewsCubit>().getNews(),
+    ]);
   }
 
   @override
@@ -55,15 +58,16 @@ class _SellerHomeState extends State<SellerHome>
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<PropertyCubit, PropertyState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is PropertyDeleteSuccess) {
-          _refreshSellerDashboard();
+          await _refreshSellerDashboard();
 
           ScaffoldMessenger.of(
             context,
@@ -108,18 +112,23 @@ class _SellerHomeState extends State<SellerHome>
     int unreadCount = 0;
 
     if (notificationBloc.state is NotificationLoaded) {
-      unreadCount = (notificationBloc.state as NotificationLoaded)
-          .notifications
+      unreadCount = (notificationBloc.state as NotificationLoaded).notifications
           .where((e) => !e.read)
           .length;
     }
     return Scaffold(
       backgroundColor: AppColors.background,
-
       drawer: CustomDrawer(profile: safeProfile),
+
       body: DefaultTabController(
         length: 3,
+
         child: NestedScrollView(
+          controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
+
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
               SliverToBoxAdapter(
@@ -132,40 +141,51 @@ class _SellerHomeState extends State<SellerHome>
                         right: 20,
                         bottom: 30,
                       ),
+
                       decoration: const BoxDecoration(
                         color: AppColors.primaryNavy,
                       ),
+
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                             children: [
                               Builder(
                                 builder: (context) => InkWell(
                                   borderRadius: BorderRadius.circular(12),
+
                                   onTap: () =>
                                       Scaffold.of(context).openDrawer(),
+
                                   child: iconContainer(Icons.menu),
                                 ),
                               ),
+
                               Row(
                                 children: [
                                   Container(
                                     margin: const EdgeInsets.only(right: 14),
+
                                     child: ElevatedButton.icon(
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: AppColors.gold,
+
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
                                             30,
                                           ),
                                         ),
                                       ),
+
                                       icon: const Icon(
                                         Icons.add,
                                         color: Colors.black,
                                       ),
+
                                       label: const Text(
                                         "Add Property",
                                         style: TextStyle(color: Colors.black),
@@ -178,11 +198,12 @@ class _SellerHomeState extends State<SellerHome>
                                         );
 
                                         if (mounted) {
-                                          _refreshSellerDashboard();
+                                          await _refreshSellerDashboard();
                                         }
                                       },
                                     ),
                                   ),
+
                                   GestureDetector(
                                     onTap: () {
                                       Navigator.push(
@@ -193,13 +214,15 @@ class _SellerHomeState extends State<SellerHome>
                                         ),
                                       );
                                     },
+
                                     child: iconContainer(
                                       Icons.notifications_none_outlined,
-                                      // hasBadge: true,
                                       hasBadge: unreadCount > 0,
                                     ),
                                   ),
-                                  SizedBox(width: 10),
+
+                                  const SizedBox(width: 10),
+
                                   GestureDetector(
                                     onTap: () {
                                       Navigator.push(
@@ -210,13 +233,16 @@ class _SellerHomeState extends State<SellerHome>
                                         ),
                                       );
                                     },
+
                                     child: iconContainer(Icons.gavel_outlined),
                                   ),
                                 ],
                               ),
                             ],
                           ),
+
                           const SizedBox(height: 30),
+
                           const Text(
                             "Seller Dashboard",
                             style: TextStyle(
@@ -225,6 +251,7 @@ class _SellerHomeState extends State<SellerHome>
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+
                           const Text(
                             "Manage your properties and track performance",
                             style: TextStyle(
@@ -232,7 +259,9 @@ class _SellerHomeState extends State<SellerHome>
                               fontSize: 18,
                             ),
                           ),
+
                           const SizedBox(height: 30),
+
                           BlocBuilder<
                             SellerDashboardCubit,
                             SellerDashboardState
@@ -242,6 +271,7 @@ class _SellerHomeState extends State<SellerHome>
                                 return const Center(
                                   child: Padding(
                                     padding: EdgeInsets.all(20),
+
                                     child: CircularProgressIndicator(
                                       color: AppColors.gold,
                                     ),
@@ -255,6 +285,7 @@ class _SellerHomeState extends State<SellerHome>
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
+
                                       children: [
                                         Expanded(
                                           child: _statCard(
@@ -264,7 +295,9 @@ class _SellerHomeState extends State<SellerHome>
                                             Icons.home_outlined,
                                           ),
                                         ),
+
                                         const SizedBox(width: 20),
+
                                         Expanded(
                                           child: _statCard(
                                             "Total Views",
@@ -274,10 +307,13 @@ class _SellerHomeState extends State<SellerHome>
                                         ),
                                       ],
                                     ),
+
                                     const SizedBox(height: 20),
+
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
+
                                       children: [
                                         Expanded(
                                           child: _statCard(
@@ -287,7 +323,9 @@ class _SellerHomeState extends State<SellerHome>
                                             Icons.favorite_border,
                                           ),
                                         ),
+
                                         const SizedBox(width: 20),
+
                                         Expanded(
                                           child: _statCard(
                                             "Auctions",
@@ -331,9 +369,42 @@ class _SellerHomeState extends State<SellerHome>
           body: TabBarView(
             controller: _tabController,
             children: [
-              SingleChildScrollView(child: _overviewContent()),
-              SingleChildScrollView(child: _myListingsContent(context)),
-              SingleChildScrollView(child: _newsContent()),
+              RefreshIndicator(
+                color: AppColors.gold,
+                onRefresh: _refreshSellerDashboard,
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+                  padding: EdgeInsets.zero,
+                  children: [_overviewContent()],
+                ),
+              ),
+
+              RefreshIndicator(
+                color: AppColors.gold,
+                onRefresh: _refreshSellerDashboard,
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+                  padding: EdgeInsets.zero,
+                  children: [_myListingsContent(context)],
+                ),
+              ),
+
+              RefreshIndicator(
+                backgroundColor: AppColors.background,
+                color: AppColors.gold,
+                onRefresh: _refreshSellerDashboard,
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+                  padding: EdgeInsets.zero,
+                  children: [_newsContent()],
+                ),
+              ),
             ],
           ),
         ),
@@ -424,261 +495,6 @@ class _SellerHomeState extends State<SellerHome>
     );
   }
 
-  // Widget _perfCard() {
-  //   return BlocBuilder<ViewsChartCubit, ViewsChartState>(
-  //     builder: (context, state) {
-  //       return Container(
-  //         margin: const EdgeInsets.only(top: 12, left: 16, right: 16),
-  //         padding: const EdgeInsets.all(18),
-  //         decoration: BoxDecoration(
-  //           color: AppColors.white,
-  //           borderRadius: BorderRadius.circular(22),
-  //           boxShadow: [
-  //             BoxShadow(
-  //               color: AppColors.primaryNavy.withOpacity(.05),
-  //               blurRadius: 20,
-  //               offset: const Offset(0, 8),
-  //             ),
-  //           ],
-  //         ),
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             /// HEADER
-  //             Row(
-  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //               children: [
-  //                 Row(
-  //                   children: [
-  //                     const SizedBox(width: 12),
-  //                     Column(
-  //                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                       children: const [
-  //                         Text(
-  //                           'Performance Overview',
-  //                           style: TextStyle(
-  //                             fontSize: 16,
-  //                             fontWeight: FontWeight.bold,
-  //                             color: AppColors.navyDark,
-  //                           ),
-  //                         ),
-  //                         SizedBox(height: 2),
-  //                         Text(
-  //                           'Seller property views in last months',
-  //                           style: TextStyle(fontSize: 12, color: Colors.grey),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ],
-  //                 ),
-
-  //                 if (state is ViewsChartLoaded)
-  //                   Container(
-  //                     padding: const EdgeInsets.symmetric(
-  //                       horizontal: 14,
-  //                       vertical: 8,
-  //                     ),
-  //                     decoration: BoxDecoration(
-  //                       color: AppColors.primaryNavy,
-  //                       borderRadius: BorderRadius.circular(30),
-  //                     ),
-  //                     child: Text(
-  //                       "${state.chart.data.fold(0, (a, b) => a + b)} Views",
-  //                       style: const TextStyle(
-  //                         color: AppColors.gold,
-  //                         fontWeight: FontWeight.bold,
-  //                         fontSize: 12,
-  //                       ),
-  //                     ),
-  //                   ),
-  //               ],
-  //             ),
-
-  //             const SizedBox(height: 25),
-
-  //             if (state is ViewsChartLoading)
-  //               const SizedBox(
-  //                 height: 220,
-  //                 child: Center(
-  //                   child: CircularProgressIndicator(color: AppColors.gold),
-  //                 ),
-  //               )
-  //             else if (state is ViewsChartLoaded)
-  //               Container(
-  //                 height: 240,
-  //                 padding: const EdgeInsets.only(
-  //                   top: 20,
-  //                   right: 12,
-  //                   left: 0,
-  //                   bottom: 0,
-  //                 ),
-  //                 decoration: BoxDecoration(
-  //                   gradient: LinearGradient(
-  //                     colors: [
-  //                       AppColors.gold.withOpacity(.03),
-  //                       AppColors.primaryNavy.withOpacity(.015),
-  //                     ],
-  //                     begin: Alignment.topCenter,
-  //                     end: Alignment.bottomCenter,
-  //                   ),
-  //                   borderRadius: BorderRadius.circular(18),
-  //                 ),
-  //                 child: LineChart(
-  //                   LineChartData(
-  //                     minY: 0,
-  //                     gridData: FlGridData(
-  //                       show: true,
-  //                       drawVerticalLine: false,
-  //                       horizontalInterval: 2,
-  //                       getDrawingHorizontalLine: (value) {
-  //                         return FlLine(
-  //                           color: Colors.grey.withOpacity(.12),
-  //                           strokeWidth: 1,
-  //                         );
-  //                       },
-  //                     ),
-  //                     borderData: FlBorderData(show: false),
-
-  //                     titlesData: FlTitlesData(
-  //                       topTitles: AxisTitles(
-  //                         sideTitles: SideTitles(showTitles: false),
-  //                       ),
-  //                       rightTitles: AxisTitles(
-  //                         sideTitles: SideTitles(showTitles: false),
-  //                       ),
-
-  //                       leftTitles: AxisTitles(
-  //                         sideTitles: SideTitles(
-  //                           reservedSize: 28,
-  //                           showTitles: true,
-  //                           interval: 2,
-  //                           getTitlesWidget: (value, meta) {
-  //                             return Text(
-  //                               value.toInt().toString(),
-  //                               style: TextStyle(
-  //                                 color: Colors.grey.shade500,
-  //                                 fontSize: 11,
-  //                               ),
-  //                             );
-  //                           },
-  //                         ),
-  //                       ),
-
-  //                       bottomTitles: AxisTitles(
-  //                         sideTitles: SideTitles(
-  //                           showTitles: true,
-  //                           reservedSize: 24,
-  //                           interval: 1, // VERY IMPORTANT
-  //                           getTitlesWidget: (value, meta) {
-  //                             if (value % 1 != 0) {
-  //                               return const SizedBox();
-  //                             }
-
-  //                             int index = value.toInt();
-
-  //                             if (index >= 0 &&
-  //                                 index < state.chart.labels.length) {
-  //                               return Padding(
-  //                                 padding: const EdgeInsets.only(top: 8),
-  //                                 child: Text(
-  //                                   state.chart.labels[index],
-  //                                   style: const TextStyle(
-  //                                     fontSize: 11,
-  //                                     fontWeight: FontWeight.w600,
-  //                                     color: AppColors.navyDark,
-  //                                   ),
-  //                                 ),
-  //                               );
-  //                             }
-
-  //                             return const SizedBox();
-  //                           },
-  //                         ),
-  //                       ),
-  //                     ),
-
-  //                     lineTouchData: LineTouchData(
-  //                       touchTooltipData: LineTouchTooltipData(
-  //                         tooltipRoundedRadius: 12,
-  //                         getTooltipItems: (spots) {
-  //                           return spots.map((spot) {
-  //                             return LineTooltipItem(
-  //                               "${spot.y.toInt()} views",
-  //                               const TextStyle(
-  //                                 color: AppColors.navyDark,
-  //                                 fontWeight: FontWeight.bold,
-  //                               ),
-  //                             );
-  //                           }).toList();
-  //                         },
-  //                       ),
-  //                     ),
-
-  //                     lineBarsData: [
-  //                       LineChartBarData(
-  //                         isCurved: true,
-  //                         preventCurveOverShooting: true,
-  //                         curveSmoothness: .35,
-  //                         barWidth: 4,
-  //                         color: AppColors.gold,
-
-  //                         belowBarData: BarAreaData(
-  //                           show: true,
-  //                           gradient: LinearGradient(
-  //                             colors: [
-  //                               AppColors.gold.withOpacity(.25),
-  //                               AppColors.gold.withOpacity(.02),
-  //                             ],
-  //                             begin: Alignment.topCenter,
-  //                             end: Alignment.bottomCenter,
-  //                           ),
-  //                         ),
-
-  //                         dotData: FlDotData(
-  //                           show: true,
-  //                           getDotPainter: (spot, percent, bar, index) {
-  //                             return FlDotCirclePainter(
-  //                               radius: 4.5,
-  //                               color: AppColors.gold,
-  //                               strokeWidth: 2,
-  //                               strokeColor: AppColors.white,
-  //                             );
-  //                           },
-  //                         ),
-
-  //                         spots: List.generate(
-  //                           state.chart.data.length,
-  //                           (index) => FlSpot(
-  //                             index.toDouble(),
-  //                             state.chart.data[index].toDouble(),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               )
-  //             else if (state is ViewsChartError)
-  //               SizedBox(
-  //                 height: 220,
-  //                 child: Center(
-  //                   child: Text(
-  //                     state.message,
-  //                     style: const TextStyle(color: Colors.red),
-  //                   ),
-  //                 ),
-  //               )
-  //             else
-  //               const SizedBox(
-  //                 height: 220,
-  //                 child: Center(child: Text("No chart data")),
-  //               ),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
   Widget _perfCard() {
     return BlocBuilder<ViewsChartCubit, ViewsChartState>(
       builder: (context, state) {
@@ -766,158 +582,180 @@ class _SellerHomeState extends State<SellerHome>
                   ),
                 )
               else if (state is ViewsChartLoaded)
-                Container(
-                  height: 240.h,
-                  padding: EdgeInsets.only(
-                    top: 20.h,
-                    right: 12.w,
-                    left: 0,
-                    bottom: 0,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.gold.withOpacity(.03),
-                        AppColors.primaryNavy.withOpacity(.015),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                    borderRadius: BorderRadius.circular(18.r),
-                  ),
-                  child: LineChart(
-                    LineChartData(
-                      minY: 0,
-                      gridData: FlGridData(
-                        show: true,
-                        drawVerticalLine: false,
-                        horizontalInterval: 2,
-                        getDrawingHorizontalLine: (value) {
-                          return FlLine(
-                            color: Colors.grey.withOpacity(.12),
-                            strokeWidth: 1.w,
-                          );
-                        },
+                Builder(
+                  builder: (context) {
+                    final maxValue = state.chart.data.isEmpty
+                        ? 10
+                        : state.chart.data.reduce((a, b) => a > b ? a : b);
+
+                    final interval = maxValue <= 10
+                        ? 2.0
+                        : (maxValue / 5).ceilToDouble();
+
+                    return Container(
+                      height: 240.h,
+                      padding: EdgeInsets.only(
+                        top: 20.h,
+                        right: 12.w,
+                        left: 0,
+                        bottom: 0,
                       ),
-                      borderData: FlBorderData(show: false),
-
-                      titlesData: FlTitlesData(
-                        topTitles: AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.gold.withOpacity(.03),
+                            AppColors.primaryNavy.withOpacity(.015),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
                         ),
-                        rightTitles: AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
+                        borderRadius: BorderRadius.circular(18.r),
+                      ),
+                      child: LineChart(
+                        LineChartData(
+                          minY: 0,
+                          maxY: maxValue + interval,
 
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            reservedSize: 30.w,
-                            showTitles: true,
-                            interval: 2,
-                            getTitlesWidget: (value, meta) {
-                              return Text(
-                                value.toInt().toString(),
-                                style: TextStyle(
-                                  color: Colors.grey.shade500,
-                                  fontSize: 10.sp,
-                                ),
+                          gridData: FlGridData(
+                            show: true,
+                            drawVerticalLine: false,
+                            horizontalInterval: interval,
+                            getDrawingHorizontalLine: (value) {
+                              return FlLine(
+                                color: Colors.grey.withOpacity(.12),
+                                strokeWidth: 1.w,
                               );
                             },
                           ),
-                        ),
 
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 26.h,
-                            interval: 1,
-                            getTitlesWidget: (value, meta) {
-                              if (value % 1 != 0) return const SizedBox();
+                          borderData: FlBorderData(show: false),
 
-                              int index = value.toInt();
+                          titlesData: FlTitlesData(
+                            topTitles: AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
 
-                              if (index >= 0 &&
-                                  index < state.chart.labels.length) {
-                                return Padding(
-                                  padding: EdgeInsets.only(top: 8.h),
-                                  child: Text(
-                                    state.chart.labels[index],
-                                    style: TextStyle(
-                                      fontSize: 10.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.navyDark,
+                            rightTitles: AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+
+                            leftTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                reservedSize: 38.w,
+                                showTitles: true,
+                                interval: interval,
+                                getTitlesWidget: (value, meta) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(right: 6.w),
+                                    child: Text(
+                                      value.toInt().toString(),
+                                      style: TextStyle(
+                                        color: Colors.grey.shade600,
+                                        fontSize: 10.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }
+                                  );
+                                },
+                              ),
+                            ),
 
-                              return const SizedBox();
-                            },
+                            bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                reservedSize: 26.h,
+                                interval: 1,
+                                getTitlesWidget: (value, meta) {
+                                  if (value % 1 != 0) {
+                                    return const SizedBox();
+                                  }
+
+                                  int index = value.toInt();
+
+                                  if (index >= 0 &&
+                                      index < state.chart.labels.length) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(top: 8.h),
+                                      child: Text(
+                                        state.chart.labels[index],
+                                        style: TextStyle(
+                                          fontSize: 10.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.navyDark,
+                                        ),
+                                      ),
+                                    );
+                                  }
+
+                                  return const SizedBox();
+                                },
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
 
-                      lineTouchData: LineTouchData(
-                        touchTooltipData: LineTouchTooltipData(
-                          tooltipRoundedRadius: 12.r,
-                          getTooltipItems: (spots) {
-                            return spots.map((spot) {
-                              return LineTooltipItem(
-                                "${spot.y.toInt()} views",
-                                TextStyle(
-                                  color: AppColors.navyDark,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 11.sp,
+                          lineTouchData: LineTouchData(
+                            touchTooltipData: LineTouchTooltipData(
+                              tooltipRoundedRadius: 12.r,
+                              getTooltipItems: (spots) {
+                                return spots.map((spot) {
+                                  return LineTooltipItem(
+                                    "${spot.y.toInt()} views",
+                                    TextStyle(
+                                      color: AppColors.navyDark,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 11.sp,
+                                    ),
+                                  );
+                                }).toList();
+                              },
+                            ),
+                          ),
+
+                          lineBarsData: [
+                            LineChartBarData(
+                              isCurved: true,
+                              preventCurveOverShooting: true,
+                              curveSmoothness: .35,
+                              barWidth: 4.w,
+                              color: AppColors.gold,
+
+                              belowBarData: BarAreaData(
+                                show: true,
+                                gradient: LinearGradient(
+                                  colors: [
+                                    AppColors.gold.withOpacity(.25),
+                                    AppColors.gold.withOpacity(.02),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
                                 ),
-                              );
-                            }).toList();
-                          },
+                              ),
+
+                              dotData: FlDotData(
+                                show: true,
+                                getDotPainter: (spot, percent, bar, index) {
+                                  return FlDotCirclePainter(
+                                    radius: 4.5.r,
+                                    color: AppColors.gold,
+                                    strokeWidth: 2.w,
+                                    strokeColor: AppColors.white,
+                                  );
+                                },
+                              ),
+
+                              spots: List.generate(
+                                state.chart.data.length,
+                                (index) => FlSpot(
+                                  index.toDouble(),
+                                  state.chart.data[index].toDouble(),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-
-                      lineBarsData: [
-                        LineChartBarData(
-                          isCurved: true,
-                          preventCurveOverShooting: true,
-                          curveSmoothness: .35,
-                          barWidth: 4.w,
-                          color: AppColors.gold,
-
-                          belowBarData: BarAreaData(
-                            show: true,
-                            gradient: LinearGradient(
-                              colors: [
-                                AppColors.gold.withOpacity(.25),
-                                AppColors.gold.withOpacity(.02),
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            ),
-                          ),
-
-                          dotData: FlDotData(
-                            show: true,
-                            getDotPainter: (spot, percent, bar, index) {
-                              return FlDotCirclePainter(
-                                radius: 4.5.r,
-                                color: AppColors.gold,
-                                strokeWidth: 2.w,
-                                strokeColor: AppColors.white,
-                              );
-                            },
-                          ),
-
-                          spots: List.generate(
-                            state.chart.data.length,
-                            (index) => FlSpot(
-                              index.toDouble(),
-                              state.chart.data[index].toDouble(),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                    );
+                  },
                 )
               else if (state is ViewsChartError)
                 SizedBox(
@@ -1047,27 +885,6 @@ class _SellerHomeState extends State<SellerHome>
                 ),
               ),
               const SizedBox(height: 8),
-              // Container(
-              //   padding: const EdgeInsets.symmetric(
-              //     horizontal: 10,
-              //     vertical: 6,
-              //   ),
-              //   decoration: BoxDecoration(
-              //     color: status == 'approved'
-              //         ? AppColors.gold.withOpacity(0.12)
-              //         : Colors.grey.withOpacity(0.12),
-              //     borderRadius: BorderRadius.circular(10),
-              //   ),
-              //   child: Text(
-              //     status,
-              //     style: TextStyle(
-              //       fontSize: 12,
-              //       color: status == 'approved'
-              //           ? AppColors.gold
-              //           : Colors.grey[700],
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ],
@@ -1183,12 +1000,9 @@ class _SellerHomeState extends State<SellerHome>
                     ),
                     onPressed: () async {
                       await Navigator.pushNamed(context, '/addproperty');
-                      // if (mounted) {
-                      //   _refreshSellerDashboard();
-                      // }
-                      // if (mounted) {
-                      //   context.read<PropertyCubit>().getAllSellerProperties();
-                      // }
+                      if (mounted) {
+                        await _refreshSellerDashboard();
+                      }
                     },
                   ),
                 ),
@@ -1196,41 +1010,36 @@ class _SellerHomeState extends State<SellerHome>
             );
           }
 
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                ...state.properties.map(
-                  (property) => _fullListingCardFromModel(context, property),
-                ),
+          return Column(
+            children: [
+              ...state.properties.map(
+                (property) => _fullListingCardFromModel(context, property),
+              ),
 
-                const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-                Center(
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
+              Center(
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
                     ),
-                    icon: const Icon(Icons.add, color: Colors.black),
-                    label: const Text(
-                      "Add Property",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/addproperty');
-                      // if (mounted) {
-                      //   context.read<PropertyCubit>().getAllSellerProperties();
-                      // }
-                      if (mounted) {
-                        _refreshSellerDashboard();
-                      }
-                    },
                   ),
+                  icon: const Icon(Icons.add, color: Colors.black),
+                  label: const Text(
+                    "Add Property",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/addproperty');
+                    if (mounted) {
+                      _refreshSellerDashboard();
+                    }
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         }
 
@@ -1354,7 +1163,7 @@ class _SellerHomeState extends State<SellerHome>
             arguments: property,
           );
           if (mounted) {
-            _refreshSellerDashboard();
+            await _refreshSellerDashboard();
           }
         } else if (value == 'delete') {
           _confirmDelete(context, property.id);
@@ -1365,7 +1174,7 @@ class _SellerHomeState extends State<SellerHome>
             arguments: property,
           );
           if (mounted) {
-            _refreshSellerDashboard();
+            await _refreshSellerDashboard();
           }
         }
       },

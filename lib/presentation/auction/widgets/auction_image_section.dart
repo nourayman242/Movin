@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:movin/app_theme.dart';
 import 'package:movin/domain/entities/property_entity.dart';
 import 'package:movin/presentation/auction/cubit/auction_cubit.dart';
 import 'package:movin/presentation/home/widgets/shared/circle_button.dart';
@@ -51,7 +52,7 @@ class AuctionImageSection extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: Color(0xFFD4AF37),
+                  color:state.status == "live" ? AppColors.gold : Colors.red,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(

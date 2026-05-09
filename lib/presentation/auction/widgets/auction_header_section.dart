@@ -26,7 +26,7 @@ class PropertyHeaderSection extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      property.description,
+                      property.title,
                       style: TextStyle(
                         fontSize: 22.sp,
                         fontWeight: FontWeight.bold,
@@ -97,7 +97,7 @@ class PropertyHeaderSection extends StatelessWidget {
                   ),
                   _InfoItem(
                     icon: Icons.square_outlined,
-                    value: property.size.isNotEmpty ? property.size : '-',
+                    value: property.size != 0 ? property.size.toString() : "-",
                     label: "M sq",
                   ),
                 ],

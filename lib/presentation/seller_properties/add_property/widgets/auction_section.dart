@@ -14,6 +14,15 @@ class AuctionSection extends StatelessWidget {
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(primary: AppColors.gold),
+            dialogTheme: DialogThemeData(backgroundColor: Colors.white),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (pickedDate == null) return;
@@ -21,6 +30,15 @@ class AuctionSection extends StatelessWidget {
     final pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(primary: AppColors.gold),
+            dialogTheme: DialogThemeData(backgroundColor: Colors.white),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (pickedTime == null) return;
@@ -57,7 +75,7 @@ class AuctionSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// 🔘 Title + Radio
+          ///  Title + Radio
           Row(
             children: [
               GestureDetector(
@@ -103,7 +121,7 @@ class AuctionSection extends StatelessWidget {
           if (vm.isAuction) ...[
             const SizedBox(height: 10),
 
-            /// 📅 Dates Row
+            ///  Dates Row
             Row(
               children: [
                 Expanded(
@@ -128,7 +146,7 @@ class AuctionSection extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            /// 💰 Starting Bid
+            ///  Starting Bid
             Text(
               'Starting Bid *',
               style: TextStyle(
@@ -148,30 +166,34 @@ class AuctionSection extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            /// 📝 Auction Description
-            Text(
-              'Auction Details',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.grey.shade700,
-              ),
-            ),
-            const SizedBox(height: 6),
-            TextFormField(
-              controller: vm.auctionDescriptionController,
-              minLines: 3,
-              maxLines: 6,
-              decoration: AppInputDecoration.rounded(
-                hintText:
-                    'Add any extra details about the auction, rules, or conditions...',
-              ),
-              onChanged: (_) => vm.notifyListeners(),
-            ),
+            ///  Auction Description
+            // Text(
+            //   'Auction Details',
+            //   style: TextStyle(
+            //     fontWeight: FontWeight.w600,
+            //     color: Colors.grey.shade700,
+            //   ),
+            // ),
+            // const SizedBox(height: 6),
+            // TextFormField(
+            //   controller: vm.auctionDescriptionController,
+            //   minLines: 3,
+            //   maxLines: 6,
+            //   decoration: AppInputDecoration.rounded(
+            //     hintText:
+            //         'Add any extra details about the auction, rules, or conditions...',
+            //   ),
+            //   onChanged: (_) => vm.notifyListeners(),
+            // ),
           ],
         ],
       ),
     );
   }
+
+
+
+  ///  Date Field Styled Like Your Inputs
 
   Widget _dateField(
     BuildContext context, {

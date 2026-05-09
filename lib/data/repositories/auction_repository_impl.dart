@@ -13,7 +13,7 @@ class AuctionRepositoryImpl implements AuctionRepository {
 
   @override
   void joinAuction(String propertyId) {
-    socketService.socket.emit("joinAuction", propertyId);
+    socketService.socket?.emit("joinAuction", propertyId);
   }
 
   @override
@@ -37,39 +37,39 @@ class AuctionRepositoryImpl implements AuctionRepository {
       data["percent"] = percent;
     }
 
-    socketService.socket.emit("placeBid", data);
+    socketService.socket?.emit("placeBid", data);
   }
 
   @override
   void listenAuctionData(Function(dynamic p1) onData) {
-    socketService.socket.on("auctionData", onData);
+    socketService.socket?.on("auctionData", onData);
   }
 
   @override
   void listenNewBid(Function(dynamic p1) onData) {
-    socketService.socket.on("newBid", onData);
+    socketService.socket?.on("newBid", onData);
   }
 
   @override
   void listenAuctionExtended(Function(dynamic p1) onData) {
-    socketService.socket.on("auctionExtended", onData);
+    socketService.socket?.on("auctionExtended", onData);
   }
 
   @override
   void listenAuctionEnded(Function(dynamic p1) onData) {
-    socketService.socket.on("auctionEnded", onData);
+    socketService.socket?.on("auctionEnded", onData);
   }
 
 @override
 void listenBidError(Function(dynamic) onError) {
-  socketService.socket.on("bidError", onError);
+  socketService.socket?.on("bidError", onError);
 }
 
   @override
   void dispose() {
-    socketService.socket.off("auctionData");
-    socketService.socket.off("newBid");
-    socketService.socket.off("auctionExtended");
-    socketService.socket.off("auctionEnded");
+    socketService.socket?.off("auctionData");
+    socketService.socket?.off("newBid");
+    socketService.socket?.off("auctionExtended");
+    socketService.socket?.off("auctionEnded");
   }
 }
