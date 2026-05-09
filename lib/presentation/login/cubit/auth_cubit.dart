@@ -106,6 +106,9 @@ class AuthCubit extends Cubit<AuthState> {
         profile = null;
         isNewGoogleUser = true;
       }
+      // if (profile != null) {
+      //   await SharedHelper.saveUserId(profile.);
+      // }
 
       await SharedHelper.setLoggedIn(true);
 
