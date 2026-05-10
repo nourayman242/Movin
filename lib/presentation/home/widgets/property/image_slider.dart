@@ -80,8 +80,8 @@ class PropertyImageSlider extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (_) => ReportScreen(
-                            targetType: "Property",
-                            targetId: property.id,
+                            propertyId: property.id,
+                            sellerId: property.sellerId,
                           ),
                         ),
                       );
