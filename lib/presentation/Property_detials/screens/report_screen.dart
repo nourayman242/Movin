@@ -5,13 +5,13 @@ import 'package:movin/presentation/Property_detials/cubit/report_cubit.dart';
 import 'package:movin/presentation/Property_detials/cubit/report_state.dart';
 
 class ReportScreen extends StatefulWidget {
-  final String targetType;
-  final String targetId;
+  final String propertyId;
+  final String sellerId;
 
   const ReportScreen({
     super.key,
-    required this.targetType,
-    required this.targetId,
+    required this.propertyId,
+    required this.sellerId,
   });
 
   @override
@@ -21,6 +21,7 @@ class ReportScreen extends StatefulWidget {
 class _ReportScreenState extends State<ReportScreen> {
   final subjectController = TextEditingController();
   final messageController = TextEditingController();
+  String selectedTarget = "Property";
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,10 @@ class _ReportScreenState extends State<ReportScreen> {
         if (state is ReportSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message,style: const TextStyle(color: Colors.white),),
+              content: Text(
+                state.message,
+                style: const TextStyle(color: Colors.white),
+              ),
               backgroundColor: AppColors.navyDark,
             ),
           );
@@ -48,7 +52,7 @@ class _ReportScreenState extends State<ReportScreen> {
           appBar: AppBar(
             backgroundColor: AppColors.primaryNavy,
             title: Text(
-              widget.targetType == "User" ? "Report Seller" : "Report Property",
+              selectedTarget == "User" ? "Report Seller" : "Report Property",
               style: const TextStyle(color: Colors.white),
             ),
             iconTheme: const IconThemeData(color: Colors.white),
@@ -96,6 +100,30 @@ class _ReportScreenState extends State<ReportScreen> {
                       ),
 
                       const SizedBox(height: 25),
+                      DropdownButtonFormField<String>(
+                        dropdownColor: AppColors.white,
+                        value: selectedTarget,
+                        decoration: AppInputDecoration.rounded(
+                          hintText: "Select Report Target",
+                          prefixIcon: Icons.flag_outlined,
+                        ),
+                        items: const [
+                          DropdownMenuItem(
+                            value: "Property",
+                            child: Text("Report Property"),
+                          ),
+                          DropdownMenuItem(
+                            value: "User",
+                            child: Text("Report Seller"),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            selectedTarget = value!;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 18),
 
                       TextField(
                         controller: subjectController,
@@ -128,8 +156,10 @@ class _ReportScreenState extends State<ReportScreen> {
                                   context.read<ReportCubit>().createReport(
                                     subject: subjectController.text.trim(),
                                     message: messageController.text.trim(),
-                                    targetType: widget.targetType,
-                                    targetId: widget.targetId,
+                                    targetType: selectedTarget,
+                                    targetId: selectedTarget == "User"
+                                        ? widget.sellerId
+                                        : widget.propertyId,
                                   );
                                 },
                           icon: state is ReportLoading

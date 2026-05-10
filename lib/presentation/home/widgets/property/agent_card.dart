@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movin/app_theme.dart';
 import 'package:movin/domain/entities/property_entity.dart';
-import 'package:movin/presentation/Property_detials/screens/report_screen.dart';
 import 'package:movin/presentation/controllers/property_details_controller.dart';
 import 'package:movin/presentation/home/inner_pages/rate_properties_page.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -72,59 +71,6 @@ class _AgentCardState extends State<AgentCard> {
       ),
       child: Stack(
         children: [
-          Positioned(
-            top: -15,
-            right: -10,
-            child: PopupMenuButton<String>(
-              iconColor: Colors.black,
-              elevation: 4,
-              color: AppColors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              onSelected: (value) async {
-                if (value == 'report') {
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ReportScreen(
-                        targetType: "User",
-                        targetId: widget.property.sellerId,
-                      ),
-                    ),
-                  );
-                }
-              },
-              itemBuilder: (_) => [
-                PopupMenuItem(
-                  value: 'report',
-                  padding: EdgeInsets.zero,
-                  child: InkWell(
-                    splashColor: AppColors.gold,
-                    highlightColor: AppColors.gold,
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      child: Row(
-                        children: const [
-                          Icon(
-                            Icons.report_outlined,
-                            size: 20,
-                            color: AppColors.navyDark,
-                          ),
-                          SizedBox(width: 10),
-                          Text("Report"),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
           Column(
             children: [
               CircleAvatar(

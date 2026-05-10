@@ -60,7 +60,7 @@ class AuctionImageSection extends StatelessWidget {
                     Icon(Icons.gavel, size: 10, color: Colors.white),
                     SizedBox(width: 10),
                      Text(
-                      "${state.status} Auction",
+                      state.status,
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
