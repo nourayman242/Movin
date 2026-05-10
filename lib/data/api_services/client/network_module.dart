@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:injectable/injectable.dart';
 import 'package:movin/data/api_services/auction_list_services.dart';
+import 'package:movin/data/api_services/change_password_service.dart';
 import 'package:movin/data/api_services/client/auth_interceptor.dart';
 import 'package:movin/data/api_services/forget_pass_services.dart';
 import 'package:movin/data/api_services/login_services.dart';
@@ -18,6 +19,7 @@ import 'package:movin/data/repositories/forget_pass_repository_imp.dart';
 import 'package:movin/data/repositories/profile_repository_impl.dart';
 
 import 'package:movin/data/repositories/property_repository_impl.dart';
+import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/domain/repositories/auction_repository.dart';
 import 'package:movin/domain/repositories/forget_pass_repository.dart';
 import 'package:movin/domain/repositories/otp_repository.dart';
@@ -186,7 +188,9 @@ abstract class NetworkModule {
     return NotificationService(dio);
   }
 
-
+  @lazySingleton
+  ChangePasswordService changePasswordService(Dio dio) =>
+      ChangePasswordService(dio);
 }
 
 class _RetryInterceptor extends Interceptor {

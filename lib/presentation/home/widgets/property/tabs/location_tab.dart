@@ -19,7 +19,6 @@ class LocationTab extends StatefulWidget {
 class _LocationTabState extends State<LocationTab> {
   final dio = Dio();
 
-
   String? school;
   String? hospital;
   String? mall;
@@ -45,7 +44,6 @@ class _LocationTabState extends State<LocationTab> {
       return;
     }
 
-
     final results = await Future.wait([
       _getClosest(lat, lng, 'school'),
       _getClosest(lat, lng, 'hospital'),
@@ -56,48 +54,64 @@ class _LocationTabState extends State<LocationTab> {
     if (!mounted) return;
 
     setState(() {
-      school   = results[0];
+      school = results[0];
       hospital = results[1];
-      mall     = results[2];
-      metro    = results[3];
+      mall = results[2];
+      metro = results[3];
     });
   }
 
   Future<String> _getClosest(double lat, double lng, String type) async {
+    const typeMap = {
+      'school': 'amenity=school',
+      'hospital': 'amenity=hospital',
+      'shopping_mall': 'shop=mall',
+      'subway_station': 'railway=station',
+    };
+
+    final tag = typeMap[type] ?? 'amenity=$type';
+
+    final query =
+        '''
+[out:json][timeout:10];
+(
+  node[$tag](around:5000,$lat,$lng);
+  way[$tag](around:5000,$lat,$lng);
+);
+out center 10;
+''';
+
     try {
       final response = await dio.get(
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json',
-        queryParameters: {
-          'location': '$lat,$lng',
-          'radius': 3000,
-          'type': type,
-          'key': 'AIzaSyCfUhipRKNuYrW1ucfUPFmXwT7OYViZ9cQ',
-        },
+        'https://overpass-api.de/api/interpreter',
+        queryParameters: {'data': query},
       );
 
-      final results = response.data['results'] as List? ?? [];
-      if (results.isEmpty) return 'Not found nearby';
+      final elements = response.data['elements'] as List? ?? [];
+      if (elements.isEmpty) return 'Not found nearby';
 
       double minDistance = double.infinity;
       String best = 'Not found nearby';
 
-      for (final place in results) {
-        final loc = place['geometry']?['location'];
-        if (loc == null) continue;
+      for (final el in elements) {
+        
+        final elLat = (el['lat'] ?? el['center']?['lat'] as num?)?.toDouble();
+        final elLng = (el['lon'] ?? el['center']?['lon'] as num?)?.toDouble();
 
-        final d = _haversineKm(lat, lng, loc['lat'], loc['lng']);
+        if (elLat == null || elLng == null) continue;
+
+        final name = el['tags']?['name'] ?? el['tags']?['name:en'] ?? 'Unnamed';
+
+        final d = _haversineKm(lat, lng, elLat, elLng);
         if (d < minDistance) {
           minDistance = d;
-          best = '${place['name']} (${d.toStringAsFixed(1)} km)';
+          best = '$name (${d.toStringAsFixed(1)} km)';
         }
       }
 
       return best;
-    } on DioException catch (e) {
-      debugPrint('Places API error [$type]: ${e.message}');
-      return 'Unavailable';
     } catch (e) {
-      debugPrint('Unexpected error [$type]: $e');
+      debugPrint('Overpass error [$type]: $e');
       return 'Unavailable';
     }
   }
@@ -106,11 +120,9 @@ class _LocationTabState extends State<LocationTab> {
     const R = 6371.0;
     final dLat = _toRad(lat2 - lat1);
     final dLon = _toRad(lon2 - lon1);
-    final a = sin(dLat / 2) * sin(dLat / 2) +
-        cos(_toRad(lat1)) *
-            cos(_toRad(lat2)) *
-            sin(dLon / 2) *
-            sin(dLon / 2);
+    final a =
+        sin(dLat / 2) * sin(dLat / 2) +
+        cos(_toRad(lat1)) * cos(_toRad(lat2)) * sin(dLon / 2) * sin(dLon / 2);
     return R * 2 * atan2(sqrt(a), sqrt(1 - a));
   }
 
@@ -167,7 +179,6 @@ class _LocationTabState extends State<LocationTab> {
                             ),
                           },
                           zoomControlsEnabled: false,
-                          
                           scrollGesturesEnabled: false,
                           zoomGesturesEnabled: false,
                           tiltGesturesEnabled: false,
@@ -181,7 +192,6 @@ class _LocationTabState extends State<LocationTab> {
                 ),
               ),
 
-              
               if (lat != null && lng != null)
                 Positioned(
                   bottom: 10,
@@ -237,32 +247,32 @@ class _LocationTabState extends State<LocationTab> {
         SizedBox(height: 20.h),
 
         // ── Nearby places ───────────────────────────────────────────
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _item(Icons.school_rounded, 'Nearby Schools', school),
-                  SizedBox(height: 14.h),
-                  _item(Icons.train_rounded, 'Metro Station', metro),
-                ],
-              ),
-            ),
-            SizedBox(width: 20.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _item(Icons.local_mall_rounded, 'Shopping Malls', mall),
-                  SizedBox(height: 14.h),
-                  _item(Icons.local_hospital_rounded, 'Hospitals', hospital),
-                ],
-              ),
-            ),
-          ],
-        ),
+        // Row(
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: [
+        //     Expanded(
+        //       child: Column(
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: [
+        //           _item(Icons.school_rounded, 'Nearby Schools', school),
+        //           SizedBox(height: 14.h),
+        //           _item(Icons.train_rounded, 'Metro Station', metro),
+        //         ],
+        //       ),
+        //     ),
+        //     SizedBox(width: 20.w),
+        //     Expanded(
+        //       child: Column(
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: [
+        //           _item(Icons.local_mall_rounded, 'Shopping Malls', mall),
+        //           SizedBox(height: 14.h),
+        //           _item(Icons.local_hospital_rounded, 'Hospitals', hospital),
+        //         ],
+        //       ),
+        //     ),
+        //   ],
+        // ),
       ],
     );
   }

@@ -13,6 +13,7 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
 import '../../data/api_services/auction_list_services.dart' as _i655;
+import '../../data/api_services/change_password_service.dart' as _i279;
 import '../../data/api_services/client/network_module.dart' as _i979;
 import '../../data/api_services/favorite_api_service.dart' as _i653;
 import '../../data/api_services/forget_pass_services.dart' as _i959;
@@ -37,6 +38,7 @@ import '../../data/api_services/views_chart_service.dart' as _i54;
 import '../../data/data_source/local/auth_local_services.dart' as _i401;
 import '../../data/data_source/local/settings_local_services.dart' as _i998;
 import '../../data/repositories/auth_repository_impl.dart' as _i895;
+import '../../data/repositories/change_password_repo_imp.dart' as _i404;
 import '../../data/repositories/fav_repository_imp.dart' as _i76;
 import '../../data/repositories/login_repository_imp.dart' as _i809;
 import '../../data/repositories/news_repository_impl.dart' as _i213;
@@ -54,6 +56,7 @@ import '../../data/repositories/verify_email_repository_imp.dart' as _i662;
 import '../../data/repositories/views_chart_repository_impl.dart' as _i225;
 import '../../domain/repositories/auction_repository.dart' as _i892;
 import '../../domain/repositories/auth_repository.dart' as _i1073;
+import '../../domain/repositories/change_password_repository.dart' as _i769;
 import '../../domain/repositories/fav_repository.dart' as _i66;
 import '../../domain/repositories/forget_pass_repository.dart' as _i6;
 import '../../domain/repositories/login_repositories.dart' as _i386;
@@ -156,6 +159,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => networkModule.switchRoleService(gh<_i361.Dio>()));
     gh.lazySingleton<_i398.NotificationService>(
         () => networkModule.notificationService(gh<_i361.Dio>()));
+    gh.lazySingleton<_i279.ChangePasswordService>(
+        () => networkModule.changePasswordService(gh<_i361.Dio>()));
     gh.lazySingleton<_i800.LogoutService>(
         () => _i800.LogoutService(gh<_i361.Dio>()));
     gh.lazySingleton<_i384.PropertyEvaluationService>(
@@ -190,6 +195,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i371.FavoriteBloc(gh<_i66.FavoriteRepository>()));
     gh.factory<_i126.ViewsChartCubit>(
         () => _i126.ViewsChartCubit(gh<_i782.ViewsChartRepository>()));
+    gh.lazySingleton<_i769.ChangePasswordRepository>(() =>
+        _i404.ChangePasswordRepositoryImpl(gh<_i279.ChangePasswordService>()));
     gh.factory<_i111.SettingsBloc>(() => _i111.SettingsBloc(
           gh<_i998.SettingsLocalService>(),
           gh<_i401.AuthLocalService>(),

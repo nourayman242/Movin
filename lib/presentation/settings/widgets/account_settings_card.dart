@@ -8,6 +8,7 @@ import 'package:movin/presentation/login/cubit/reset_pass_cubit.dart';
 import 'package:movin/presentation/login/screens/reset_password_page.dart';
 import 'package:movin/presentation/profile/cubit/profile_cubit.dart';
 import 'package:movin/presentation/profile/edit_profile_screen.dart';
+import 'package:movin/presentation/settings/screens/change_password_screen.dart';
 import 'package:movin/presentation/settings/screens/manage_subscription_screen.dart';
 
 class AccountSettingsCard extends StatelessWidget {
@@ -95,12 +96,7 @@ class AccountSettingsCard extends StatelessWidget {
                 if (!context.mounted) return;
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => BlocProvider(
-                      create: (_) => getIt<ResetPasswordCubit>(),
-                      child: ResetPasswordPage(email: email ?? ''),
-                    ),
-                  ),
+                  MaterialPageRoute(builder: (_) => const ChangePasswordPage()),
                 );
               },
             ),
@@ -111,9 +107,7 @@ class AccountSettingsCard extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => ManageSubscriptionScreen(),
-                  ),
+                  MaterialPageRoute(builder: (_) => ManageSubscriptionScreen()),
                 );
               },
             ),
