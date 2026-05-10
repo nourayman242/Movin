@@ -217,7 +217,7 @@ class _SelectedAreaBanner extends StatelessWidget {
     final selected = areas.firstWhere((a) => a.name == selectedName);
 
     final nearbyListings = areas
-        .where((a) => a.name != selectedName && a.score >= 70)
+        .where((a) => a.score >= 70)
         .fold<int>(0, (sum, a) => sum + a.listingCount);
 
     final moderateListings = areas
