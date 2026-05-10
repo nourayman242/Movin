@@ -41,7 +41,6 @@
 - [Compilation Steps](#compilation-steps)
 - [Run Instructions](#run-instructions)
 - [Environment Setup & Configuration](#environment-setup--configuration)
-- [Project Structure](#project-structure)
 - [Architecture Overview](#architecture-overview)
 
 ---
