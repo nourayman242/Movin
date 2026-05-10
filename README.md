@@ -458,58 +458,9 @@ See the [Installation Steps → Add your Google Maps API Key](#5-add-your-google
 
 There is **no `.env` file** in this project. The only external configuration required is the Google Maps API key placed directly in the platform-specific manifest files as described above.
 
-### Assets
 
-All image assets are bundled in the `assets/` folder and declared in `pubspec.yaml`:
 
-```
-assets/
-├── images/
-│   ├── placeholder.webp
-│   ├── building1.jpeg
-│   ├── building2.jpeg
-│   └── onboarding/
-```
 
-No additional asset setup is needed after cloning.
-
----
-
-## Project Structure
-
-```
-lib/
-├── main.dart                        # App entry point, BLoC providers, routing
-├── app_theme.dart                   # Colors, spacing, theme constants
-├── data/
-│   ├── api_services/                # Dio services & interceptors
-│   │   └── client/
-│   │       ├── auth_interceptor.dart
-│   │       └── network_module.dart  # Injectable DI module
-│   ├── data_source/local/           # SharedPreferences & Hive helpers
-│   ├── models/                      # JSON-serializable data models
-│   └── repositories/               # Repository implementations
-├── domain/
-│   ├── entities/                    # Pure business objects
-│   ├── repositories/               # Abstract repository interfaces
-│   └── use_cases/                  # (if applicable)
-├── presentation/
-│   ├── home/                        # Buyer home screen
-│   ├── seller_properties/           # Seller dashboard, listings, chart
-│   ├── auction/                     # Live auction screens
-│   ├── login/                       # Auth screens & cubits
-│   ├── register/                    # Registration & email verification
-│   ├── profile/                     # User profile
-│   ├── fav_screen/                  # Favorites
-│   ├── notifications/               # Push notifications
-│   ├── settings/                    # App settings
-│   └── onboarding/                  # Onboarding screens
-└── data_injection/
-    └── getIt/
-        └── service_locator.dart     # get_it configuration
-```
-
----
 
 ## Architecture Overview
 
