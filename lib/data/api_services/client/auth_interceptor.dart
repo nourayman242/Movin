@@ -3,6 +3,8 @@ import 'package:movin/data/api_services/socket_service.dart';
 import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
 import 'package:movin/data_injection/getIt/service_locator.dart';
 
+import '../../data_source/local/token_cache.dart';
+
 class AuthInterceptor extends Interceptor {
   final Dio dio;
   bool _isRefreshing = false;
@@ -14,15 +16,29 @@ class AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    final token = await SharedHelper.getToken();
+    //final token = await SharedHelper.getToken();
+    final token =
+        TokenCache.accessToken ?? await SharedHelper.getToken();
     print("🔐 REQUEST → ${options.path}");
     print("🔐 TOKEN → $token");
 
     if (token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
     }
+    print("🔐 FINAL TOKEN: $token");
+    print("👤 ROLE FROM PREFS: ${await SharedHelper.getUserRole()}");
+    print("📦 HEADERS → ${options.headers}");
+    print("🧠 DIO BASE URL → ${options.baseUrl}");
+    print("🧠 FULL URL → ${options.uri}");
+    // if (token == null || token.isEmpty) {
+    //   print("❌ NO TOKEN FOUND - REQUEST WILL FAIL");
+    // } else {
+    //   options.headers['Authorization'] = 'Bearer $token';
+    // }
+
     handler.next(options);
   }
+
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
@@ -58,7 +74,8 @@ class AuthInterceptor extends Interceptor {
 
 Future<String?> _refreshToken() async {
   final refreshToken = await SharedHelper.getRefreshToken();
-  if (refreshToken == null) return null;
+  print("🔁 refresh token → $refreshToken");
+  if (refreshToken == null || refreshToken.isEmpty) return null;
 
   final plainDio = Dio(BaseOptions(
     baseUrl: 'https://movin-backend-production.up.railway.app',
@@ -76,11 +93,17 @@ Future<String?> _refreshToken() async {
   final newAccessToken = response.data["accessToken"] as String;
   
   final newRefreshToken = response.data["refreshToken"] as String?;
+
+  //
+  TokenCache.accessToken = newAccessToken;
+  TokenCache.refreshToken = newRefreshToken;
+  await SharedHelper.saveToken(newAccessToken);
+  //
   if (newRefreshToken != null) {
     await SharedHelper.saveRefreshToken(newRefreshToken);
   }
 
-  await SharedHelper.saveToken(newAccessToken);
+  //await SharedHelper.saveToken(newAccessToken);
 
 try {
   final socketService = getIt<SocketService>();

@@ -20,33 +20,19 @@ class GoogleAuthService {
 
     final accessToken = uri.queryParameters['accessToken'];
     final refreshToken = uri.queryParameters['refreshToken'];
+    final userId = uri.queryParameters['userId'];
 
     print("🔥 accessToken → $accessToken");
     print("🔥 refreshToken → $refreshToken");
 
-    if (accessToken == null || refreshToken==null) {
+    if (accessToken == null || refreshToken==null || userId == null) {
       throw Exception("Google login failed - missing tokens");
     }
 
-   
-    // final response = await dio.get(
-    //   "/api/auth/google/callback",
-    //   options: Options(
-    //     headers: {
-    //       "Authorization": "Bearer $token",
-    //     },
-    //   ),
-    // );
-    // final data = response.data;
-    //
-    // return {
-    //   "accessToken": data["accessToken"] ?? "",
-    //   "refreshToken": data["refreshToken"] ?? "",
-    //   "user": data["user"],
-    // };
     return {
       "accessToken": accessToken,
       "refreshToken": refreshToken,
+      "userId": userId,
       //"user": null,
     };
   }
