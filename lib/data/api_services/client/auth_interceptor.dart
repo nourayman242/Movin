@@ -28,7 +28,7 @@ class AuthInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     final statusCode = err.response?.statusCode;
 
-    if ((statusCode == 401 || statusCode == 403) && !_isRefreshing) {
+    if ((statusCode == 401) && !_isRefreshing) {
       _isRefreshing = true;
       print("🔄 Token expired → trying refresh token");
 
