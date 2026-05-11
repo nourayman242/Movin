@@ -58,6 +58,29 @@ class _PlaceBidSectionState extends State<PlaceBidSection> {
             ),
           );
         }
+        if(state.status == "ended" && _isPlacingBid){
+          _isPlacingBid = false;
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: AppColors.background,
+              content: Row(
+                children: [
+                  Icon(Icons.info),
+                  SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Auction has ended. You cannot place a bid.',
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
 
         if (state.errorMessage != null && _isPlacingBid) {
           _isPlacingBid = false;
