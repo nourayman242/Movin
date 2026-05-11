@@ -113,13 +113,20 @@ class _PlaceBidSectionState extends State<PlaceBidSection> {
               ),
 
               const SizedBox(height: 16),
-              Text('Incremental Amount', style: TextStyle(color: AppColors.grey)),
+              Text(
+                'Incremental Amount',
+                style: TextStyle(color: AppColors.grey),
+              ),
               const SizedBox(height: 12),
               TextFormField(
                 keyboardType: TextInputType.number,
                 controller: controller,
                 validator: (value) =>
-                    value == null || value.isEmpty ? 'Enter Bid' : null,
+                    value == null ||
+                        value.isEmpty ||
+                        int.tryParse(value)! < 10000
+                    ? 'Enter Bid Amount (Minimum 10,000)'
+                    : null,
                 cursorColor: AppColors.gold,
                 decoration: InputDecoration(
                   hintText: "Enter bid amount",
