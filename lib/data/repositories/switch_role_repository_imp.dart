@@ -4,6 +4,7 @@ import 'package:movin/data/api_services/switch_role_service.dart';
 import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
 import 'package:movin/domain/repositories/switch_role_repository.dart';
 import '../api_services/role_selection_response.dart';
+import '../data_source/local/token_cache.dart';
 
 @LazySingleton(as: SwitchRoleRepository)
 class SwitchRoleRepositoryImpl implements SwitchRoleRepository {
@@ -16,8 +17,12 @@ class SwitchRoleRepositoryImpl implements SwitchRoleRepository {
     try {
       final response = await service.switchRole({'newRole': newRole});
 
+      TokenCache.accessToken = response.accessToken;
+      TokenCache.refreshToken = response.refreshToken;
+
       await SharedHelper.saveToken(response.accessToken);
       await SharedHelper.saveRefreshToken(response.refreshToken);
+
       await SharedHelper.saveUser(response.safeUser);       
       await SharedHelper.setUserRole(
         response.safeUser.isSeller == true ? 'seller' : 'buyer',
