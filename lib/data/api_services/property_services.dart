@@ -23,9 +23,7 @@ class PropertyService {
       MapEntry("listingType", vm.listingType),
       MapEntry("type", vm.type),
       MapEntry("size", vm.size.toString()),
-
       MapEntry("coordinates[latitude]", vm.latitude.toString()),
-
       MapEntry("coordinates[longitude]", vm.longitude.toString()),
     ]);
 
@@ -87,12 +85,10 @@ class PropertyService {
       MapEntry("size", entity.size.toString()),
     ]);
 
-    /// existing images
     for (final image in entity.images) {
       formData.fields.add(MapEntry("existingImages[]", image));
     }
 
-    /// new images
     for (final image in newImages) {
       formData.files.add(
         MapEntry(
@@ -238,18 +234,23 @@ class PropertyService {
         return [];
       }
 
-      return (response.data['history'] as List).map((item) {
-        final Map<String, dynamic> propertyMap = Map<String, dynamic>.from(
-          item['property'] as Map,
-        );
-        final Map<String, dynamic> sellerMap = Map<String, dynamic>.from(
-          item['seller'] as Map,
-        );
+      final List historyItems = response.data['history'] as List;
 
-        propertyMap['seller'] = sellerMap;
+      final List<PropertyModel> fullProperties = await Future.wait(
+        historyItems.map((item) async {
+          final String propertyId = item['property']['_id'].toString();
+          return await getPropertyById(propertyId);
+        }),
+      );
 
-        return PropertyModel.fromJson(propertyMap);
-      }).toList();
+      // ── DEBUG: print the details map of the first property ──
+      if (fullProperties.isNotEmpty) {
+        print('>>> details keys: ${fullProperties.first.details.keys.toList()}');
+        print('>>> details full: ${fullProperties.first.details}');
+        print('>>> size: ${fullProperties.first.size}');
+      }
+
+      return fullProperties;
     } catch (e) {
       print("VIEW HISTORY API ERROR: $e");
       return [];

@@ -16,7 +16,6 @@ class AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    //final token = await SharedHelper.getToken();
     final token =
         TokenCache.accessToken ?? await SharedHelper.getToken();
     print("🔐 REQUEST → ${options.path}");
@@ -30,25 +29,17 @@ class AuthInterceptor extends Interceptor {
     print("📦 HEADERS → ${options.headers}");
     print("🧠 DIO BASE URL → ${options.baseUrl}");
     print("🧠 FULL URL → ${options.uri}");
-    // if (token == null || token.isEmpty) {
-    //   print("❌ NO TOKEN FOUND - REQUEST WILL FAIL");
-    // } else {
-    //   options.headers['Authorization'] = 'Bearer $token';
-    // }
 
     handler.next(options);
   }
-
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     final statusCode = err.response?.statusCode;
 
-
     print("STATUS CODE => $statusCode");
     print("ACCESS TOKEN => ${TokenCache.accessToken}");
     print("REFRESH TOKEN => ${TokenCache.refreshToken}");
-
 
     if (statusCode == 401 && !_isRefreshing) {
       _isRefreshing = true;
@@ -79,45 +70,42 @@ class AuthInterceptor extends Interceptor {
     handler.next(err);
   }
 
-Future<String?> _refreshToken() async {
-  final refreshToken = await SharedHelper.getRefreshToken();
-  print("🔁 refresh token → $refreshToken");
-  if (refreshToken == null || refreshToken.isEmpty) return null;
+  Future<String?> _refreshToken() async {
+    final refreshToken = await SharedHelper.getRefreshToken();
+    print("🔁 refresh token → $refreshToken");
+    if (refreshToken == null || refreshToken.isEmpty) return null;
 
-  final plainDio = Dio(BaseOptions(
-    baseUrl: 'https://movin-backend-production.up.railway.app',
-    connectTimeout: const Duration(seconds: 30),
-    receiveTimeout: const Duration(seconds: 30),
-  ));
+    final plainDio = Dio(BaseOptions(
+      baseUrl: 'https://movin-backend-production.up.railway.app',
+      connectTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 30),
+    ));
 
-  final response = await plainDio.post(
-    "/api/auth/refresh-token",
-    data: {"refreshToken": refreshToken},
-  );
+    final response = await plainDio.post(
+      "/api/auth/refresh-token",
+      data: {"refreshToken": refreshToken},
+    );
 
-  print("🔁 Refresh response: ${response.data}");
+    print("🔁 Refresh response: ${response.data}");
 
-  final newAccessToken = response.data["accessToken"] as String;
-  
-  final newRefreshToken = response.data["refreshToken"] as String?;
+    final newAccessToken = response.data["accessToken"] as String;
+    final newRefreshToken = response.data["refreshToken"] as String?;
 
-  //
-  TokenCache.accessToken = newAccessToken;
-  TokenCache.refreshToken = newRefreshToken;
-  await SharedHelper.saveToken(newAccessToken);
-  //
-  if (newRefreshToken != null) {
-    await SharedHelper.saveRefreshToken(newRefreshToken);
+    TokenCache.accessToken = newAccessToken;
+    TokenCache.refreshToken = newRefreshToken;
+    await SharedHelper.saveToken(newAccessToken);
+
+    if (newRefreshToken != null) {
+      await SharedHelper.saveRefreshToken(newRefreshToken);
+    }
+
+    try {
+      final socketService = getIt<SocketService>();
+      socketService.reconnect();
+    } catch (e) {
+      print("Socket reconnect skipped: $e");
+    }
+
+    return newAccessToken;
   }
-
-  //await SharedHelper.saveToken(newAccessToken);
-
-try {
-  final socketService = getIt<SocketService>();
-  socketService.reconnect();
-} catch (e) {
-  print("Socket reconnect skipped: $e");
-}
-  return newAccessToken;
-}
 }

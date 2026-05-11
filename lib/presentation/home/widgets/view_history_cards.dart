@@ -16,12 +16,14 @@ class ViewHistoryCard extends StatelessWidget {
     required this.onTap,
   });
 
-  // Returns the best available display title
   String get _displayTitle {
-    print("detials");
-    print(property.details["bedrooms"]);
-    print(property.details["bathrooms"]);
-    print(property.size);
+    // DEBUG - remove once bedrooms/bathrooms are confirmed working
+    print(">>> details: ${property.details}");
+    print(">>> bedrooms: ${property.details["bedrooms"]}");
+    print(">>> bathrooms: ${property.details["bathrooms"]}");
+    print(">>> size: ${property.size}");
+
+    if (property.title.trim().isNotEmpty) return property.title;
     if (property.description.trim().isNotEmpty) return property.description;
     if (property.type.trim().isNotEmpty) {
       return '${property.type[0].toUpperCase()}${property.type.substring(1)}';
@@ -29,13 +31,48 @@ class ViewHistoryCard extends StatelessWidget {
     return property.location;
   }
 
+  /// Tries each key in order and returns the first non-null, non-empty value.
+  /// Returns '-' if none of the keys exist in the details map.
+  String _getDetail(List<String> keys) {
+    for (final key in keys) {
+      final val = property.details[key];
+      if (val != null) {
+        final str = val.toString().trim();
+        if (str.isNotEmpty) return str;
+      }
+    }
+    return '-';
+  }
+
+  String get _bedrooms => _getDetail([
+        'bedrooms',
+        'beds',
+        'bedroom',
+        'bed',
+        'numBedrooms',
+        'num_bedrooms',
+      ]);
+
+  String get _bathrooms => _getDetail([
+        'bathrooms',
+        'baths',
+        'bathroom',
+        'bath',
+        'numBathrooms',
+        'num_bathrooms',
+      ]);
+
+  String get _area {
+    if (property.size != 0) return property.size.toString();
+    return _getDetail(['area', 'size', 'squareMeters', 'square_meters', 'sqm']);
+  }
+
   @override
   Widget build(BuildContext context) {
     const cardHeight = 160.0;
 
-    // Guard: use a placeholder when images list is empty
-    final bool hasImage =
-        property.images.isNotEmpty && property.images.first.trim().isNotEmpty;
+    final bool hasImage = property.images.isNotEmpty &&
+        property.images.first.trim().isNotEmpty;
 
     return GestureDetector(
       onTap: onTap,
@@ -78,7 +115,7 @@ class ViewHistoryCard extends StatelessWidget {
                             : _placeholderImage(),
                       ),
 
-                      // Tag
+                      // Listing type tag
                       Positioned(
                         left: 10,
                         top: 10,
@@ -88,10 +125,9 @@ class ViewHistoryCard extends StatelessWidget {
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color:
-                                property.listingType.toLowerCase().contains(
-                                  'rent',
-                                )
+                            color: property.listingType
+                                    .toLowerCase()
+                                    .contains('rent')
                                 ? AppColors.gold
                                 : AppColors.primaryNavy,
                             borderRadius: BorderRadius.circular(12),
@@ -107,21 +143,21 @@ class ViewHistoryCard extends StatelessWidget {
                         ),
                       ),
 
-                      // Favorite
+                      // Favorite button
                       Positioned(
                         right: 8,
                         top: 8,
                         child: BlocBuilder<FavoriteBloc, FavoriteState>(
                           builder: (context, state) {
-                            final isFav = state.isFavorite(
-                              property.id.toString(),
-                            );
+                            final isFav =
+                                state.isFavorite(property.id.toString());
 
                             return GestureDetector(
                               onTap: () {
                                 context.read<FavoriteBloc>().add(
-                                  FavoriteToggle(property.id.toString()),
-                                );
+                                      FavoriteToggle(
+                                          property.id.toString()),
+                                    );
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(6),
@@ -154,7 +190,7 @@ class ViewHistoryCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // ── Fixed title ──
+                        // Title
                         Text(
                           _displayTitle,
                           style: const TextStyle(
@@ -168,6 +204,7 @@ class ViewHistoryCard extends StatelessWidget {
 
                         const SizedBox(height: 6),
 
+                        // Location
                         Row(
                           children: [
                             Icon(
@@ -189,6 +226,7 @@ class ViewHistoryCard extends StatelessWidget {
 
                         const SizedBox(height: 10),
 
+                        // Price
                         Text(
                           '${property.price} EGP',
                           style: const TextStyle(
@@ -205,27 +243,21 @@ class ViewHistoryCard extends StatelessWidget {
                           children: [
                             Expanded(
                               child: _AttrItem(
-                                value:
-                                    property.details["bedrooms"]?.toString() ??
-                                    '-',
+                                value: _bedrooms,
                                 label: "Beds",
                               ),
                             ),
                             const _VerticalDivider(),
                             Expanded(
                               child: _AttrItem(
-                                value:
-                                    property.details["bathrooms"]?.toString() ??
-                                    '-',
+                                value: _bathrooms,
                                 label: "Baths",
                               ),
                             ),
                             const _VerticalDivider(),
                             Expanded(
                               child: _AttrItem(
-                                value: property.size != 0
-                                    ? property.size.toString()
-                                    : '-',
+                                value: _area,
                                 label: "m²",
                               ),
                             ),
