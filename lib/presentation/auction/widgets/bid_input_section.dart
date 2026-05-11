@@ -113,7 +113,7 @@ class _PlaceBidSectionState extends State<PlaceBidSection> {
               ),
 
               const SizedBox(height: 16),
-              Text('Custom Amount', style: TextStyle(color: AppColors.grey)),
+              Text('Incremental Amount', style: TextStyle(color: AppColors.grey)),
               const SizedBox(height: 12),
               TextFormField(
                 keyboardType: TextInputType.number,

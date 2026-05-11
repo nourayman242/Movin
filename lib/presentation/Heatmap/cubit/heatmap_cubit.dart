@@ -11,60 +11,79 @@ class HeatmapState {
   final HeatmapStatus status;
   final List<AreaScore> areas;
   final Set<Marker> markers;
-  final String? selectedAreaName;
   final String? errorMessage;
+  final AreaScore? tappedArea;
 
   const HeatmapState({
     this.status = HeatmapStatus.initial,
     this.areas = const [],
     this.markers = const {},
-    this.selectedAreaName,
     this.errorMessage,
+    this.tappedArea,
   });
 
   HeatmapState copyWith({
     HeatmapStatus? status,
     List<AreaScore>? areas,
     Set<Marker>? markers,
-    String? selectedAreaName,
     String? errorMessage,
+    AreaScore? tappedArea,
+    bool clearTappedArea = false,
   }) {
     return HeatmapState(
       status: status ?? this.status,
       areas: areas ?? this.areas,
       markers: markers ?? this.markers,
-      selectedAreaName: selectedAreaName ?? this.selectedAreaName,
       errorMessage: errorMessage ?? this.errorMessage,
+      tappedArea: clearTappedArea ? null : (tappedArea ?? this.tappedArea),
     );
   }
 }
 
 class HeatmapCubit extends Cubit<HeatmapState> {
   final HeatmapRepository repository;
-  List<AreaScore> _baseAreas = [];
 
   HeatmapCubit(this.repository) : super(const HeatmapState());
 
   Future<void> loadHeatmap({String? initialArea}) async {
     emit(state.copyWith(status: HeatmapStatus.loading));
     try {
-      _baseAreas = await repository.getAreaScores();
+      final rawAreas = await repository.getAreaScores();
+
+      List<AreaScore> areas;
 
       if (initialArea != null &&
-          _baseAreas.any((a) => a.name == initialArea)) {
-        await selectArea(initialArea);
+          rawAreas.any((a) => a.name == initialArea)) {
+
+        final origin = rawAreas.firstWhere((a) => a.name == initialArea);
+        areas = rawAreas.map((area) {
+          final distKm = area.name == initialArea
+              ? 0.0 
+              : _haversineKm(origin.center, area.center);
+          return AreaScore(
+            name: area.name,
+            center: area.center,
+            listingCount: area.listingCount,
+            distanceKm: distKm,
+            listings: area.listings,
+          );
+        }).toList();
       } else {
-        // ✅ Pass onTap so markers are interactive from the start
-        final markers = await AreaMarkerLayer.buildMarkers(
-          _baseAreas,
-          onTap: (area) => selectArea(area.name),
-        );
-        emit(state.copyWith(
-          status: HeatmapStatus.loaded,
-          areas: _baseAreas,
-          markers: markers,
-        ));
+
+        areas = rawAreas;
       }
+
+
+      final markers = await AreaMarkerLayer.buildMarkers(
+        areas,
+        onTap: (area) => emit(state.copyWith(tappedArea: area)),
+      );
+
+      emit(state.copyWith(
+        status: HeatmapStatus.loaded,
+        areas: areas,
+        markers: markers,
+      ));
     } catch (e) {
       emit(state.copyWith(
         status: HeatmapStatus.error,
@@ -73,39 +92,16 @@ class HeatmapCubit extends Cubit<HeatmapState> {
     }
   }
 
-  Future<void> selectArea(String areaName) async {
-    final origin = _baseAreas.firstWhere((a) => a.name == areaName);
-
-    final rescored = _baseAreas.map((area) {
-      final distKm = _haversineKm(origin.center, area.center);
-      return AreaScore(
-        name: area.name,
-        center: area.center,
-        listingCount: area.listingCount,
-        distanceKm: distKm,
-      );
-    }).toList();
-
-    // ✅ Pass onTap here too so re-tapping another area still works
-    final markers = await AreaMarkerLayer.buildMarkers(
-      rescored,
-      selectedAreaName: areaName,
-      onTap: (area) => selectArea(area.name),
-    );
-
-    emit(state.copyWith(
-      status: HeatmapStatus.loaded,
-      areas: rescored,
-      markers: markers,
-      selectedAreaName: areaName,
-    ));
+  void clearTappedArea() {
+    emit(state.copyWith(clearTappedArea: true));
   }
 
   double _haversineKm(LatLng a, LatLng b) {
     const R = 6371.0;
     final dLat = _deg2rad(b.latitude - a.latitude);
     final dLon = _deg2rad(b.longitude - a.longitude);
-    final h = sin(dLat / 2) * sin(dLat / 2) +
+    final h =
+        sin(dLat / 2) * sin(dLat / 2) +
         cos(_deg2rad(a.latitude)) *
             cos(_deg2rad(b.latitude)) *
             sin(dLon / 2) *

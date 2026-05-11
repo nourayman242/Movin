@@ -1055,7 +1055,7 @@ class _SellerHomeState extends State<SellerHome>
     final status = property.status;
     final auctionStatus = property.isAuction
         ? property.auctionStatus ?? "pending"
-        : "unknown";
+        : "";
 
     String? imageUrl = property.images.isNotEmpty
         ? property.images.first
@@ -1303,7 +1303,7 @@ class _SellerHomeState extends State<SellerHome>
               status.toLowerCase() == "approved" ||
                       status.toLowerCase() == "pending"
                   ? Icons.gavel
-                  : Icons.hourglass_top,
+                  : Icons.gavel,
               size: 14,
               color: color,
             ),

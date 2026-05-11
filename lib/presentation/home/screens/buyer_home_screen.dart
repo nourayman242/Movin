@@ -353,7 +353,7 @@ class _BuyerHomeState extends State<BuyerHome> {
                     height: 320,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.only(left: 20),
+                      padding: const EdgeInsets.only(left: 20,right: 20),
                       itemCount: properties.length,
                       separatorBuilder: (_, __) => const SizedBox(width: 16),
                       itemBuilder: (context, index) {
@@ -447,7 +447,7 @@ class _BuyerHomeState extends State<BuyerHome> {
                     height: 320,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.only(left: 20),
+                      padding: const EdgeInsets.only(left: 20,right: 20),
                       itemCount: properties.length,
                       separatorBuilder: (_, __) => const SizedBox(width: 16),
                       itemBuilder: (context, index) {

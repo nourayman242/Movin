@@ -49,7 +49,6 @@ class _ModeToggleStatementState extends State<ModeToggleStatement> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey.shade200,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: GestureDetector(
         onTap: _isSwitching ? null : () => _toggleModeAndNavigate(context),
