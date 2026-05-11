@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
-import 'package:movin/data/api_services/socket_service.dart';
 import 'package:movin/presentation/login/cubit/auth_cubit.dart';
 import 'package:movin/presentation/login/cubit/auth_state.dart';
 import 'package:movin/presentation/register/screens/register_screen.dart';
@@ -21,7 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController userValue = TextEditingController();
   final TextEditingController passValue = TextEditingController();
-  //final repo = getIt<LoginRepository>();
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +41,8 @@ class _LoginScreenState extends State<LoginScreen> {
           if (Navigator.canPop(context)) {
             Navigator.pop(context);
           }
-          //final token = state.token;
           final user = state.user;
-           // if (user == null) {
-           //  // Google login
-           //   Navigator.pushReplacementNamed(context, '/role');
-           //   return;
-           // }
+
 
           if (user.isBuyer == true) {
             Navigator.pushReplacementNamed(context, '/buyerhome');
@@ -68,34 +61,20 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.pop(context);
           }
 
-        //   final user = state.profile;
-        //
-        //   //  same routing logic but from profile
-        //   if (user.isBuyer == true) {
-        //     Navigator.pushReplacementNamed(context, '/buyerhome');
-        //   }
-        //   else if (user.isSeller == true) {
-        //     Navigator.pushReplacementNamed(context, '/sellerhome');
-        //   }
-        //   else {
-        //     Navigator.pushReplacementNamed(context, '/role');
-        //   }
-        // }
           final profile = state.profile;
 
-          // 🧠 NEW USER
-          if (profile == null ||
-              (profile.isBuyer == false && profile.isSeller == false)) {
+          if (profile == null) {
             Navigator.pushReplacementNamed(context, '/role');
             return;
           }
 
-          // 👇 EXISTING USER
-          if (profile.isBuyer == true) {
+          if (profile.isBuyer) {
             Navigator.pushReplacementNamed(context, '/buyerhome');
-          } else if (profile.isSeller == true) {
+          }
+          else if (profile.isSeller) {
             Navigator.pushReplacementNamed(context, '/sellerhome');
-          } else {
+          }
+          else {
             Navigator.pushReplacementNamed(context, '/role');
           }
         }

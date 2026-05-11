@@ -1,15 +1,16 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:movin/data/api_services/user_response.dart';
 import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
 import 'package:movin/domain/repositories/auth_repository.dart';
-import 'package:movin/presentation/login/cubit/auth_state.dart';
-
-import '../../../data/models/profile_model.dart';
+import '../../../core/utils/token_helper.dart';
+import '../../../data/data_source/local/token_cache.dart';
 import '../../../data_injection/getIt/service_locator.dart';
 import '../../../domain/entities/login_entity.dart';
 import '../../../domain/repositories/login_repositories.dart';
 import '../../../domain/repositories/profile_repository.dart';
+import 'auth_state.dart';
 
 @injectable
 class AuthCubit extends Cubit<AuthState> {
@@ -38,45 +39,6 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-//   Future<void> loginWithGoogle() async {
-//     emit(AuthLoading());
-//
-//     try {
-//       final result = await authRepo.loginWithGoogle();
-//
-//       final accessToken = result['accessToken'] as String;
-//       final refreshToken = result['refreshToken'] as String;
-//
-//       await SharedHelper.saveToken(accessToken);
-//       await SharedHelper.saveRefreshToken(refreshToken);
-//       await SharedHelper.setLoggedIn(true);
-// //gded
-// //       final profileRepo = getIt<ProfileRepository>();
-// //       final profile = await profileRepo.getProfile();
-// //adeeeeeem
-//       // final userJson = result['user'];
-//       // UserResponse? user;
-//       // if (userJson != null) {
-//       //   user = UserResponse.fromJson(userJson);
-//       // }
-//       // await _saveUserData(accessToken, refreshToken, user);
-//       ///////////////
-//       UserResponse? profile;
-//
-//       try {
-//         final profileRepo = getIt<ProfileRepository>();
-//         profile = await profileRepo.getProfile();
-//       } catch (e) {
-//         print("Profile not available → new Google user");
-//         profile = null;
-//       }
-//       emit(AuthGoogleSuccess(accessToken,profile));
-//          // user     //-> adem
-//       //));
-//     } catch (e) {
-//       emit(AuthError(e.toString()));
-//     }
-//   }
   Future<void> loginWithGoogle() async {
     emit(AuthLoading());
 
@@ -86,33 +48,58 @@ class AuthCubit extends Cubit<AuthState> {
       final accessToken = result['accessToken'] as String;
       final refreshToken = result['refreshToken'] as String;
 
+      TokenCache.accessToken = accessToken;
+      TokenCache.refreshToken = refreshToken;
+
       await SharedHelper.saveToken(accessToken);
+      //
+      print("TOKEN SAVED → ${await SharedHelper.getToken()}");
+      //
       await SharedHelper.saveRefreshToken(refreshToken);
+      final userId = TokenHelper.getUserId(accessToken);
+      debugPrint("🔥 USER ID => $userId");
 
-      ProfileModel? profile;
-      bool isNewGoogleUser = false;
-
-      try {
-        final profileRepo = getIt<ProfileRepository>();
-        profile = await profileRepo.getProfile();
-
-        // 🧠 extra safety check
-        if (profile.isBuyer == false && profile.isSeller == false) {
-          isNewGoogleUser = true;
-        }
-
-      } catch (e) {
-        print("🚨 Google user has no profile yet");
-        profile = null;
-        isNewGoogleUser = true;
+      if (userId != null) {
+        await SharedHelper.saveUserId(userId);
       }
+
+      final isBuyer = TokenHelper.isBuyer(accessToken);
+      final isSeller = TokenHelper.isSeller(accessToken);
+      debugPrint("🔥 isBuyer => $isBuyer");
+      debugPrint("🔥 isSeller => $isSeller");
 
       await SharedHelper.setLoggedIn(true);
 
-      emit(AuthGoogleSuccess(
-        accessToken,
-        profile,
-      ));
+      if (isBuyer || isSeller) {
+
+        final profileRepo = getIt<ProfileRepository>();
+
+        final profile = await profileRepo.getProfile();
+
+        // save role locally
+        if (isBuyer) {
+          await SharedHelper.setUserRole('buyer');
+        } else {
+          await SharedHelper.setUserRole('seller');
+        }
+
+        emit(
+          AuthGoogleSuccess(
+            accessToken,
+            profile,
+          ),
+        );
+
+        return;
+      }
+
+      emit(
+        AuthGoogleSuccess(
+          accessToken,
+          null,
+        ),
+      );
+
     } catch (e) {
       emit(AuthError(e.toString()));
     }
@@ -120,13 +107,20 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> _saveUserData( String accessToken,
       String refreshToken,UserResponse? user) async {
+
     await SharedHelper.saveToken(accessToken);
+    //
+    print("TOKEN SAVED → ${await SharedHelper.getToken()}");
+    //
     await SharedHelper.saveRefreshToken(refreshToken);
+
     if (user != null) {
       await SharedHelper.saveUser(user);
       await SharedHelper.saveUserId(user.id);
     }
+
     await SharedHelper.setLoggedIn(true);
+    print("✅ Tokens saved successfully");
   }
 
   Future<void> logout() async {
@@ -134,6 +128,7 @@ class AuthCubit extends Cubit<AuthState> {
 
     try {
       await authRepo.logout();
+      TokenCache.clear();
       await SharedHelper.clearAll();
 
       emit(AuthLoggedOut());
