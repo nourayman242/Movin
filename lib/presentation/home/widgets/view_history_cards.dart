@@ -18,6 +18,10 @@ class ViewHistoryCard extends StatelessWidget {
 
   // Returns the best available display title
   String get _displayTitle {
+    print("detials");
+    print(property.details["bedrooms"]);
+    print(property.details["bathrooms"]);
+    print(property.size);
     if (property.description.trim().isNotEmpty) return property.description;
     if (property.type.trim().isNotEmpty) {
       return '${property.type[0].toUpperCase()}${property.type.substring(1)}';
@@ -30,8 +34,8 @@ class ViewHistoryCard extends StatelessWidget {
     const cardHeight = 160.0;
 
     // Guard: use a placeholder when images list is empty
-    final bool hasImage = property.images.isNotEmpty &&
-        property.images.first.trim().isNotEmpty;
+    final bool hasImage =
+        property.images.isNotEmpty && property.images.first.trim().isNotEmpty;
 
     return GestureDetector(
       onTap: onTap,
@@ -84,9 +88,10 @@ class ViewHistoryCard extends StatelessWidget {
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: property.listingType
-                                    .toLowerCase()
-                                    .contains('rent')
+                            color:
+                                property.listingType.toLowerCase().contains(
+                                  'rent',
+                                )
                                 ? AppColors.gold
                                 : AppColors.primaryNavy,
                             borderRadius: BorderRadius.circular(12),
@@ -108,15 +113,15 @@ class ViewHistoryCard extends StatelessWidget {
                         top: 8,
                         child: BlocBuilder<FavoriteBloc, FavoriteState>(
                           builder: (context, state) {
-                            final isFav =
-                                state.isFavorite(property.id.toString());
+                            final isFav = state.isFavorite(
+                              property.id.toString(),
+                            );
 
                             return GestureDetector(
                               onTap: () {
                                 context.read<FavoriteBloc>().add(
-                                      FavoriteToggle(
-                                          property.id.toString()),
-                                    );
+                                  FavoriteToggle(property.id.toString()),
+                                );
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(6),
@@ -200,8 +205,8 @@ class ViewHistoryCard extends StatelessWidget {
                           children: [
                             Expanded(
                               child: _AttrItem(
-                                value: property.details["bedrooms"]
-                                        ?.toString() ??
+                                value:
+                                    property.details["bedrooms"]?.toString() ??
                                     '-',
                                 label: "Beds",
                               ),
@@ -209,8 +214,8 @@ class ViewHistoryCard extends StatelessWidget {
                             const _VerticalDivider(),
                             Expanded(
                               child: _AttrItem(
-                                value: property.details["bathrooms"]
-                                        ?.toString() ??
+                                value:
+                                    property.details["bathrooms"]?.toString() ??
                                     '-',
                                 label: "Baths",
                               ),
@@ -218,7 +223,9 @@ class ViewHistoryCard extends StatelessWidget {
                             const _VerticalDivider(),
                             Expanded(
                               child: _AttrItem(
-                                value: property.size != 0 ? property.size.toString() : '-',
+                                value: property.size != 0
+                                    ? property.size.toString()
+                                    : '-',
                                 label: "m²",
                               ),
                             ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movin/app_theme.dart';
@@ -9,8 +11,31 @@ import 'package:movin/presentation/auction/screens/auction_screen.dart';
 import '../widgets/auction_header.dart';
 import '../widgets/auction_property_card.dart';
 
-class PropertyAuctionsScreen extends StatelessWidget {
+class PropertyAuctionsScreen extends StatefulWidget {
   const PropertyAuctionsScreen({super.key});
+
+  @override
+  State<PropertyAuctionsScreen> createState() => _PropertyAuctionsScreenState();
+}
+
+class _PropertyAuctionsScreenState extends State<PropertyAuctionsScreen> {
+  Timer? _timer;
+  @override
+  void initState() {
+    super.initState();
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,28 +152,45 @@ class PropertyAuctionsScreen extends StatelessWidget {
       details: a.details,
       status: a.status,
       isAuction: true,
-       sellerName: a.seller.username, 
-       sellerPhone: '', 
-       sellerLocation: '', views: 0, sellerId: a.sellerId, title:a.title,
+      sellerName: a.seller.username,
+      sellerPhone: '',
+      sellerLocation: '',
+      views: 0,
+      sellerId: a.sellerId,
+      title: a.title,
     );
   }
 
-  // Format ISO date → "2d 5h 32m"
   String _formatEndTime(String endTime) {
     if (endTime.isEmpty) return 'N/A';
+
     try {
-      final end = DateTime.parse(endTime);
+      final end = DateTime.parse(endTime).toLocal();
+
       final diff = end.difference(DateTime.now());
 
-      if (diff.isNegative) return 'Ended';
+      if (diff.inSeconds <= 0) {
+        return 'Ended';
+      }
 
       final days = diff.inDays;
       final hours = diff.inHours % 24;
       final mins = diff.inMinutes % 60;
+      final secs = diff.inSeconds % 60;
 
-      if (days > 0) return '${days}d ${hours}h ${mins}m';
-      if (hours > 0) return '${hours}h ${mins}m';
-      return '${mins}m';
+      if (days > 0) {
+        return '${days}d ${hours}h ${mins}m ${secs}s';
+      }
+
+      if (hours > 0) {
+        return '${hours}h ${mins}m ${secs}s';
+      }
+
+      if (mins > 0) {
+        return '${mins}m ${secs}s';
+      }
+
+      return '${secs}s';
     } catch (_) {
       return 'N/A';
     }
