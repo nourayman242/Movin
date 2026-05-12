@@ -4,7 +4,10 @@ import 'package:movin/data/data_source/local/settings_local_services.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_events.dart';
 import 'package:injectable/injectable.dart';
 import 'package:movin/presentation/settings/managers/settings_bloc/settings_state.dart' hide AuthLoggedOut;
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../data/data_source/local/shard_prefrence/shared_helper.dart';
+import '../../../../data/data_source/local/token_cache.dart';
 import '../../../login/cubit/auth_state.dart';
 
 @injectable
@@ -62,7 +65,9 @@ on<TogglePropertyAlerts>((event, emit) async {
 
 
     on<LogoutRequested>((event, emit)async {
-      await AuthLocalService.clearAll();
+     //await AuthLocalService.clearAll();
+      TokenCache.clear();
+      await SharedHelper.clearAuth();
 
     });
 
