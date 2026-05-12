@@ -19,7 +19,7 @@ class DescriptionTab extends StatelessWidget {
         SizedBox(height: 16.h),
         Divider(),
         SizedBox(height: 8.h),
-        _propertyDetailRow('Property ID', property.id, 'Year Built', property.createdAt.toString()),
+       // _propertyDetailRow('Property ID', property.id, 'Year Built', property.createdAt.toString()),
         SizedBox(height: 6.h),
         // _propertyDetailRow(
         //   'Furnishing',
@@ -31,23 +31,23 @@ class DescriptionTab extends StatelessWidget {
     );
   }
 
-  Widget _propertyDetailRow(String k1, String v1, String k2, String v2) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Text(
-            '$k1: $v1',
-            style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade700),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            '$k2: $v2',
-            style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade700),
-          ),
-        ),
-      ],
-    );
-  }
+  // Widget _propertyDetailRow(String k1, String v1, String k2, String v2) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     children: [
+  //       Expanded(
+  //         child: Text(
+  //           '$k1: $v1',
+  //           style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade700),
+  //         ),
+  //       ),
+  //       Expanded(
+  //         child: Text(
+  //           '$k2: $v2',
+  //           style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade700),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 }
