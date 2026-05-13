@@ -41,7 +41,7 @@ class AuthInterceptor extends Interceptor {
     print("ACCESS TOKEN => ${TokenCache.accessToken}");
     print("REFRESH TOKEN => ${TokenCache.refreshToken}");
 
-    if (statusCode == 401 && !_isRefreshing) {
+    if ((statusCode == 401   || statusCode == 403)&& !_isRefreshing) {
       _isRefreshing = true;
       print("🔄 Token expired → trying refresh token");
 
@@ -60,8 +60,8 @@ class AuthInterceptor extends Interceptor {
         }
       } catch (e) {
         print("❌ Refresh token failed → logging out: $e");
-        TokenCache.clear();
-        await SharedHelper.clearAuth();
+        //TokenCache.clear();
+        await SharedHelper.clearAll();
       }
 
       _isRefreshing = false;
