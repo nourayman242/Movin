@@ -19,7 +19,6 @@ import 'package:movin/data/repositories/forget_pass_repository_imp.dart';
 import 'package:movin/data/repositories/profile_repository_impl.dart';
 
 import 'package:movin/data/repositories/property_repository_impl.dart';
-import 'package:movin/data_injection/getIt/service_locator.dart';
 import 'package:movin/domain/repositories/auction_repository.dart';
 import 'package:movin/domain/repositories/forget_pass_repository.dart';
 import 'package:movin/domain/repositories/otp_repository.dart';
@@ -44,7 +43,7 @@ import '../verify_email_service.dart';
 abstract class NetworkModule {
   @lazySingleton
   Dio provideDio() {
-    const base = 'https://movin-backend-production.up.railway.app';
+    const base = 'https://movin-backend-production-e804.up.railway.app';
 
     final dio = Dio(
       BaseOptions(

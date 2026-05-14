@@ -19,7 +19,7 @@ final _kAreaCenters = <String, LatLng>{
 };
 
 class HeatmapRepositoryImpl implements HeatmapRepository {
-  static const _baseUrl = 'https://movin-backend-production.up.railway.app';
+  static const _baseUrl = 'https://movin-backend-production-e804.up.railway.app';
   static const _filterEndpoint = '$_baseUrl/api/seller/properties/filter';
 
   static final _dio = Dio(BaseOptions(

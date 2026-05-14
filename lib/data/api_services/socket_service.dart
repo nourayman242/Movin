@@ -1,32 +1,4 @@
-// import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-// class SocketService {
-//   late IO.Socket socket;
-
-//   void connect() {
-//     socket = IO.io(
-//       "https://movin-backend-production.up.railway.app",
-//       {
-//         "transports": ["websocket"],
-//         "autoConnect": false,
-//       },
-//     );
-
-//     socket.connect();
-
-//     socket.onConnect((_) {
-//       print("✅ Socket Connected");
-//     });
-
-//     socket.onDisconnect((_) {
-//       print("❌ Socket Disconnected");
-//     });
-
-//     socket.onConnectError((err) {
-//       print("❌ Connect Error: $err");
-//     });
-//   }
-// }
 import 'package:movin/data/data_source/local/shard_prefrence/shared_helper.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -43,7 +15,7 @@ class SocketService {
     }
 
     socket = IO.io(
-      "https://movin-backend-production.up.railway.app",
+      "https://movin-backend-production-e804.up.railway.app",
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .disableAutoConnect()

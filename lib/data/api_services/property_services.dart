@@ -110,7 +110,7 @@ class PropertyService {
       final token = await SharedHelper.getToken();
 
       final response = await dio.get(
-        'https://movin-backend-production.up.railway.app/api/seller/properties/search',
+        'https://movin-backend-production-e804.up.railway.app/api/seller/properties/search',
         queryParameters: {"location": location},
         options: Options(headers: {"Authorization": "Bearer $token"}),
       );

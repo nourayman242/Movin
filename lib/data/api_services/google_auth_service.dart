@@ -7,12 +7,12 @@ import 'package:injectable/injectable.dart';
 class GoogleAuthService {
   
    final Dio dio = Dio(
-    BaseOptions(baseUrl: "https://movin-backend-production.up.railway.app"),
+    BaseOptions(baseUrl: "https://movin-backend-production-e804.up.railway.app"),
   );
 
   Future<Map<String, dynamic>> signInWithGoogle() async {
     final result = await FlutterWebAuth2.authenticate(
-      url: "https://movin-backend-production.up.railway.app/api/auth/google",
+      url: "https://movin-backend-production-e804.up.railway.app/api/auth/google",
       callbackUrlScheme: "movin",
     );
     print("🔥 GOOGLE RESULT → $result");
