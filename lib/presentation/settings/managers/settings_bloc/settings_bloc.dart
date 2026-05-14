@@ -65,9 +65,9 @@ on<TogglePropertyAlerts>((event, emit) async {
 
 
     on<LogoutRequested>((event, emit)async {
-     //await AuthLocalService.clearAll();
-      TokenCache.clear();
-      await SharedHelper.clearAuth();
+     await AuthLocalService.clearAll();
+      //TokenCache.clear();
+     // await SharedHelper.clearAuth();
 
     });
 
