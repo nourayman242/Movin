@@ -45,32 +45,31 @@ class _ResultsPageState extends State<ResultsPage> {
     _future = _fetchProperties();
   }
 
- Future<FilteredPropertiesResponse> _fetchProperties() {
-  return FilterService.fetchFilteredProperties(
-    location: widget.selectedArea,   
-    type: widget.propertyType,
-    bedrooms: widget.bedrooms,
-    bathrooms: widget.bathrooms,
-    pool: widget.hasPool,
-    minPrice: widget.minPrice,
-    maxPrice: widget.maxPrice,
-    sort: FilterService.mapSortToApi(widget.sortLabel),
-  );
-}
+  Future<FilteredPropertiesResponse> _fetchProperties() {
+    return FilterService.fetchFilteredProperties(
+      location: widget.selectedArea,
+      type: widget.propertyType,
+      bedrooms: widget.bedrooms,
+      bathrooms: widget.bathrooms,
+      pool: widget.hasPool,
+      minPrice: widget.minPrice,
+      maxPrice: widget.maxPrice,
+      sort: FilterService.mapSortToApi(widget.sortLabel),
+    );
+  }
 
-
-List<String> get _activeChips {
-  final chips = <String>[];
-  if (widget.selectedArea != null) chips.add('📍 ${widget.selectedArea}');
-  if (widget.propertyType != null) chips.add(widget.propertyType!); 
-  if (widget.bedrooms != null) chips.add('${widget.bedrooms} Bed');
-  if (widget.bathrooms != null) chips.add('${widget.bathrooms} Bath');
-  if (widget.hasPool == true) chips.add('Pool');
-  if (widget.minPrice > 0) chips.add('Min ${_fmt(widget.minPrice)}');
-  if (widget.maxPrice < 100000000) chips.add('Max ${_fmt(widget.maxPrice)}');
-  if (widget.sortLabel != null) chips.add(widget.sortLabel!);
-  return chips;
-}
+  List<String> get _activeChips {
+    final chips = <String>[];
+    if (widget.selectedArea != null) chips.add('📍 ${widget.selectedArea}');
+    if (widget.propertyType != null) chips.add(widget.propertyType!);
+    if (widget.bedrooms != null) chips.add('${widget.bedrooms} Bed');
+    if (widget.bathrooms != null) chips.add('${widget.bathrooms} Bath');
+    if (widget.hasPool == true) chips.add('Pool');
+    if (widget.minPrice > 0) chips.add('Min ${_fmt(widget.minPrice)}');
+    if (widget.maxPrice < 10000000) chips.add('Max ${_fmt(widget.maxPrice)}');
+    if (widget.sortLabel != null) chips.add(widget.sortLabel!);
+    return chips;
+  }
 
   String _fmt(double v) {
     if (v >= 1000000) return 'EGP ${(v / 1000000).toStringAsFixed(1)}M';
@@ -238,7 +237,16 @@ List<String> get _activeChips {
           ),
 
           // ── Heatmap FAB ──────────────────────────────────────────────────────
-          floatingActionButton: _HeatmapFab(navy: widget.navy,selectedArea: widget.selectedArea,),
+          floatingActionButton: _HeatmapFab(
+            navy: widget.navy,
+            selectedArea: widget.selectedArea,
+            propertyType: widget.propertyType,
+            bedrooms: widget.bedrooms,
+            bathrooms: widget.bathrooms,
+            hasPool: widget.hasPool,
+            minPrice: widget.minPrice,
+            maxPrice: widget.maxPrice,
+          ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
 
           body: _buildBody(snapshot),
@@ -307,8 +315,11 @@ List<String> get _activeChips {
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.tune,color: Colors.white,),
-              label: const Text("Edit Filters", style: TextStyle(color: Colors.white),),
+              icon: const Icon(Icons.tune, color: Colors.white),
+              label: const Text(
+                "Edit Filters",
+                style: TextStyle(color: Colors.white),
+              ),
               style: ElevatedButton.styleFrom(backgroundColor: widget.navy),
             ),
           ],
@@ -322,17 +333,17 @@ List<String> get _activeChips {
       itemCount: properties.length,
       itemBuilder: (context, index) {
         return GestureDetector(
-  onTap: () => Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => BlocProvider(
-        create: (_) => getIt<PropertyCubit>(),
-        child: PropertyDetailsScreen(propertyId: properties[index].id),
-      ),
-    ),
-  ),
-  child: _PropertyCard(property: properties[index], navy: widget.navy),
-);
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => getIt<PropertyCubit>(),
+                child: PropertyDetailsScreen(propertyId: properties[index].id),
+              ),
+            ),
+          ),
+          child: _PropertyCard(property: properties[index], navy: widget.navy),
+        );
       },
     );
   }
@@ -342,7 +353,22 @@ List<String> get _activeChips {
 class _HeatmapFab extends StatelessWidget {
   final Color navy;
   final String? selectedArea;
-   const _HeatmapFab({required this.navy, this.selectedArea});
+  final String? propertyType;
+  final String? bedrooms;
+  final String? bathrooms;
+  final bool? hasPool;
+  final double minPrice;
+  final double maxPrice;
+  const _HeatmapFab({
+    required this.navy,
+    this.selectedArea,
+    this.propertyType,
+    this.bedrooms,
+    this.bathrooms,
+    this.hasPool,
+    required this.minPrice,
+    required this.maxPrice,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -357,9 +383,17 @@ class _HeatmapFab extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => HeatmapPage(
-              initialArea: selectedArea,
-            )),
+            MaterialPageRoute(
+              builder: (_) => HeatmapPage(
+                initialArea: selectedArea,
+                propertyType: propertyType,
+                bedrooms: bedrooms,
+                bathrooms: bathrooms,
+                hasPool: hasPool,
+                minPrice: minPrice,
+                maxPrice: maxPrice,
+              ),
+            ),
           );
         },
         icon: Stack(

@@ -45,10 +45,25 @@ class HeatmapCubit extends Cubit<HeatmapState> {
 
   HeatmapCubit(this.repository) : super(const HeatmapState());
 
-  Future<void> loadHeatmap({String? initialArea}) async {
-    emit(state.copyWith(status: HeatmapStatus.loading));
+  Future<void> loadHeatmap({
+  String? initialArea,
+  String? propertyType,
+  String? bedrooms,
+  String? bathrooms,
+  bool? hasPool,
+  double? minPrice,
+  double? maxPrice,
+}) async {
+  emit(state.copyWith(status: HeatmapStatus.loading));
     try {
-      final rawAreas = await repository.getAreaScores();
+      final rawAreas = await repository.getAreaScores(
+      propertyType: propertyType,
+      bedrooms: bedrooms,
+      bathrooms: bathrooms,
+      hasPool: hasPool,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+    );
 
       List<AreaScore> areas;
 

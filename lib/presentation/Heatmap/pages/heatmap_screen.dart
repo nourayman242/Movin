@@ -9,16 +9,40 @@ import 'package:movin/presentation/Property_detials/screens/property_detials.dar
 import 'package:movin/presentation/seller_properties/cubit/property_cubit.dart';
 import '../cubit/heatmap_cubit.dart';
 
+// heatmap_screen.dart
 class HeatmapPage extends StatelessWidget {
   final String? initialArea;
-  const HeatmapPage({super.key, this.initialArea});
+  final String? propertyType;
+  final String? bedrooms;
+  final String? bathrooms;
+  final bool? hasPool;
+  final double? minPrice;
+  final double? maxPrice;
+
+  const HeatmapPage({
+    super.key,
+    this.initialArea,
+    this.propertyType,
+    this.bedrooms,
+    this.bathrooms,
+    this.hasPool,
+    this.minPrice,
+    this.maxPrice,
+  });
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          HeatmapCubit(HeatmapRepositoryImpl())
-            ..loadHeatmap(initialArea: initialArea),
+      create: (_) => HeatmapCubit(HeatmapRepositoryImpl())
+        ..loadHeatmap(
+          initialArea: initialArea,
+          propertyType: propertyType,
+          bedrooms: bedrooms,
+          bathrooms: bathrooms,
+          hasPool: hasPool,
+          minPrice: minPrice,
+          maxPrice: maxPrice,
+        ),
       child: _HeatmapView(initialArea: initialArea),
     );
   }
